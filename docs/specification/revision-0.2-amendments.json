@@ -1,0 +1,589 @@
+{
+  "revision": "0.2",
+  "status": "proposed",
+  "acceptedBy": null,
+  "acceptedAt": null,
+  "acceptedDocumentSha256": null,
+  "baseRfcRevision": "0.1",
+  "baseDesignRevision": "0.1",
+  "proposal": "docs/specification/PlainUI-revision-0.2-proposal.md",
+  "amendments": [
+    {
+      "id": "A001",
+      "decision": "C01",
+      "title": "Toolchain and dependency baseline",
+      "sourceClauses": "RFC §§2–3,18; Design §§2,12,16",
+      "classification": "engineering selection; CLI/runtime delivery requirements",
+      "status": "proposed",
+      "fixtureFamilies": [
+        "workspace.*",
+        "build.*",
+        "spike.*",
+        "package.*"
+      ],
+      "textSha256": "2f66cc2bdacfa87bfb9d7428db3b417ff49a1a28b92da05517a882282891a4ae"
+    },
+    {
+      "id": "A002",
+      "decision": "C02",
+      "title": "Repository and package layout",
+      "sourceClauses": "RFC §§2.1,3,14; Design §2",
+      "classification": "engineering selection; distribution contract",
+      "status": "proposed",
+      "fixtureFamilies": [
+        "build.boundaries",
+        "build.no-duplicate-core",
+        "package.exports"
+      ],
+      "textSha256": "6084e0f329a17e633c4a77f82c9bb301e02490800fd76b17c6ab479749320f3e"
+    },
+    {
+      "id": "A003",
+      "decision": "C03",
+      "title": "Public startup and official module installation",
+      "sourceClauses": "RFC §§3,14; Design §§4,14",
+      "classification": "public additions and lifecycle clarification",
+      "status": "proposed",
+      "fixtureFamilies": [
+        "boot.*",
+        "config.*",
+        "api.*",
+        "registry.*",
+        "inspect.*"
+      ],
+      "textSha256": "95d0b78741917ff6072e79390870a9e2549494ec65b43ea9cf1d184aa1da9a7f"
+    },
+    {
+      "id": "A004",
+      "decision": "C04",
+      "title": "Shared records and interfaces",
+      "sourceClauses": "RFC §§4.1–4.2,5,14–15; Design §§3,5–6,14",
+      "classification": "internal records plus public normalization/API clarification",
+      "status": "proposed",
+      "fixtureFamilies": [
+        "json.*",
+        "path.*",
+        "scope.*",
+        "api.*",
+        "adapter.*"
+      ],
+      "textSha256": "d08b05fdac1eaba45f896c4c853bacb7d5e79adc5b08b96ffdc795ad5763a29e"
+    },
+    {
+      "id": "A005",
+      "decision": "C05",
+      "title": "Grammar details and expression failures",
+      "sourceClauses": "RFC §§4.1–4.3,5,8.1; Design §5",
+      "classification": "public grammar and error semantics",
+      "status": "proposed",
+      "fixtureFamilies": [
+        "parse.*",
+        "eval.*",
+        "format.*",
+        "path.*",
+        "command.*"
+      ],
+      "textSha256": "0995cf5fee2362445c48ab955118d722802ffe83719f372cdc3fa8c12d43693d"
+    },
+    {
+      "id": "A006",
+      "decision": "C06",
+      "title": "Scope, scheduling, and ownership",
+      "sourceClauses": "RFC §§4.2–6,14–15; Design §§3–4,6–7",
+      "classification": "internal algorithms plus observable disposal/flush semantics",
+      "status": "proposed",
+      "fixtureFamilies": [
+        "scope.*",
+        "scheduler.*",
+        "derived.*",
+        "owner.*",
+        "range.*",
+        "observe.*"
+      ],
+      "textSha256": "4237ebaa19b83a8f561b57df330ff8bebfff157dda12baa6a47cec3e9f6b7a1b"
+    },
+    {
+      "id": "A007",
+      "decision": "C07",
+      "title": "Configuration and persistence",
+      "sourceClauses": "RFC §§3.1,5; Design §6",
+      "classification": "public configuration and persistence clarification",
+      "status": "proposed",
+      "fixtureFamilies": [
+        "config.*",
+        "persist.*"
+      ],
+      "textSha256": "84a6f204b0b7fda3d1a1ebd85c3a58989f91a2dfa78d0f6438aef87910bc64cb"
+    },
+    {
+      "id": "A008",
+      "decision": "C08",
+      "title": "HTTP identity and cancellation",
+      "sourceClauses": "RFC §§7–8,14–15; Design §8",
+      "classification": "public HTTP/cache/cancellation clarification",
+      "status": "proposed",
+      "fixtureFamilies": [
+        "request.*",
+        "transport.*",
+        "adapter.*",
+        "flight.*",
+        "cache.*",
+        "resource.*",
+        "load.*",
+        "refresh.*",
+        "session.*",
+        "retry.*"
+      ],
+      "textSha256": "e80911a7cc152d3c0c26151a4dcbdd543b70c5fda65150b784605468f3057f75"
+    },
+    {
+      "id": "A009",
+      "decision": "C09",
+      "title": "Action and lifecycle rules",
+      "sourceClauses": "RFC §§8–9; Design §9",
+      "classification": "public action and lifecycle clarification",
+      "status": "proposed",
+      "fixtureFamilies": [
+        "action.*",
+        "lifecycle.*",
+        "invalidate.*",
+        "submit.*",
+        "form.*"
+      ],
+      "textSha256": "c4f4faf1c4a7a91f38ec609852f9dc65b62675776b153309e630bdd128754a8c"
+    },
+    {
+      "id": "A010",
+      "decision": "C10",
+      "title": "Components and template clarifications",
+      "sourceClauses": "RFC §§4.2,11; Design §10",
+      "classification": "public component clarification",
+      "status": "proposed",
+      "fixtureFamilies": [
+        "component.*",
+        "import.*",
+        "props.*",
+        "slot.*",
+        "ids.*",
+        "instance.*"
+      ],
+      "textSha256": "1918942ef1e5e53ae91c64bed7c511d7cd2b475f5b0663b40fb1beb6b8ef1e8c"
+    },
+    {
+      "id": "A011",
+      "decision": "C11",
+      "title": "Router decisions",
+      "sourceClauses": "RFC §10; Design §11",
+      "classification": "public navigation clarification and design conflict resolution",
+      "status": "proposed",
+      "fixtureFamilies": [
+        "route.*",
+        "link.*",
+        "router.*",
+        "navigate.*",
+        "guard.*",
+        "history.*"
+      ],
+      "textSha256": "12023b14a1d40cc98376f9ed7025900898e8a664ebddf6b2baa83e04c9139704"
+    },
+    {
+      "id": "A012",
+      "decision": "C12",
+      "title": "Fragment policy and transactional ownership",
+      "sourceClauses": "RFC §§8,12,15–16; Design §12",
+      "classification": "public fragment/security clarification",
+      "status": "proposed",
+      "fixtureFamilies": [
+        "sanitize.*",
+        "tt.*",
+        "candidate.*",
+        "fragment.*",
+        "swap.*"
+      ],
+      "textSha256": "b9ec0ac88fdc1e0b7c76c699a6820060996a07f3fd020cb6b96d8ee1c85cf721"
+    },
+    {
+      "id": "A013",
+      "decision": "C13",
+      "title": "UI defaults and CSS values",
+      "sourceClauses": "RFC §13,16.4; Design §13",
+      "classification": "public UI/defaults clarification",
+      "status": "proposed",
+      "fixtureFamilies": [
+        "dialog.*",
+        "toast.*",
+        "tabs.*",
+        "styles.*"
+      ],
+      "textSha256": "b56a39901849b78e5b2d198bb1ff07af38456e9053f3bd5c14cc9d47df798a80"
+    },
+    {
+      "id": "A014",
+      "decision": "C14",
+      "title": "Errors, diagnostics, and release evidence",
+      "sourceClauses": "RFC §§9,14–15,18; Design §§14–16",
+      "classification": "public errors/diagnostics and evidence rules",
+      "status": "proposed",
+      "fixtureFamilies": [
+        "diagnostic.*",
+        "inspect.*",
+        "error.*",
+        "baseline.*",
+        "release gates"
+      ],
+      "textSha256": "019add79bb8235439be60c7e9fea7d51a3e0755cc4e1088eced4e9e97c6761e2"
+    },
+    {
+      "id": "S001",
+      "decision": null,
+      "title": "Safe JSON ingestion and snapshots",
+      "sourceClauses": "RFC §§4.1,5,14–15; Design §5",
+      "classification": "supplemental public behavior from detailed plan",
+      "planSource": "specs/implementation/02-foundation.md",
+      "task": "T008",
+      "steps": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "status": "proposed",
+      "verification": "`json.pollution` tests nested/computed forbidden names; `json.getter` getter invocation count stays zero; `json.cycle`, `json.class`, `json.undefined`, `path.sibling-sharing`, `path.readonly`, `path.missing-container`, and snapshot mutation tests pass.",
+      "textSha256": "bf93ea04477d5710cdf7140f53bd4985b1973b047bfe50d51df4bd1331ec0455"
+    },
+    {
+      "id": "S002",
+      "decision": null,
+      "title": "Registry and lexical reference boundaries",
+      "sourceClauses": "RFC §§4.2,14",
+      "classification": "supplemental public behavior from detailed plan",
+      "planSource": "specs/implementation/02-foundation.md",
+      "task": "T011",
+      "steps": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "status": "proposed",
+      "verification": "`scope.shadow`, `scope.duplicate-cross-kind`, `scope.reserved`, `scope.ref-shadow`, `scope.app-only`, `registry.after-mount`, `registry.builtin`, and `scope.component-isolation` pass.",
+      "textSha256": "169ba28a73c11082b3bacd51dffd4eb52f20b9bc1e50adbd9de2207432727ae3"
+    },
+    {
+      "id": "S003",
+      "decision": null,
+      "title": "Persistence restoration shape and storage failures",
+      "sourceClauses": "RFC §5; Design §6",
+      "classification": "supplemental public behavior from detailed plan",
+      "planSource": "specs/implementation/02-foundation.md",
+      "task": "T015",
+      "steps": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "status": "proposed",
+      "verification": "`persist.local-session`, `persist.version`, `persist.corrupt`, `persist.quota`, `persist.coalesced`, `persist.key-collision`, `persist.reset-session` pass.",
+      "textSha256": "07ed5151c13637e4e292df1db7dc2d204f74fe5924ad2011a9de83945950f227"
+    },
+    {
+      "id": "S004",
+      "decision": null,
+      "title": "Command grammar, modifiers, and event snapshot ordering",
+      "sourceClauses": "RFC §8.1",
+      "classification": "supplemental public behavior from detailed plan",
+      "planSource": "specs/implementation/02-foundation.md",
+      "task": "T022",
+      "steps": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "status": "proposed",
+      "verification": "`command.quoted-semicolon`, `command.nested-expression`, `event.self-order`, `event.once`, `event.no-dom-leak`, `event.lifecycle-modifier`, `event.request-conflict` pass.",
+      "textSha256": "62dcdd04ac212bbc5feb6ac7569f1f103e5140cde59e6caae7ddc058ff87e181"
+    },
+    {
+      "id": "S005",
+      "decision": null,
+      "title": "Core commands and post-await liveness",
+      "sourceClauses": "RFC §§8.1,14",
+      "classification": "supplemental public behavior from detailed plan",
+      "planSource": "specs/implementation/02-foundation.md",
+      "task": "T023",
+      "steps": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "status": "proposed",
+      "verification": "`command.sequential`, `command.reads-prior-write`, `command.stop-on-failure`, `command.module-missing`, `command.focus-after-flush`, `command.async-disposal`, `command.emit-detail` pass.",
+      "textSha256": "171b26714001c03b3734ca2b5d6d7cac07dc7929a828700bee7170cf1d9c6f60"
+    },
+    {
+      "id": "S006",
+      "decision": null,
+      "title": "Response decoding, empty body, opaque response, and correlation bounds",
+      "sourceClauses": "RFC §§7–8,15",
+      "classification": "supplemental public behavior from detailed plan",
+      "planSource": "specs/implementation/03-data-and-forms.md",
+      "task": "T029",
+      "steps": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "status": "proposed",
+      "verification": "`transport.empty-204`, `transport.empty-200`, `transport.whitespace-json`, `transport.plus-json`, `transport.wrong-type`, `transport.redirect-no-follow`, `transport.body-once`, `transport.abort-vs-timeout` pass.",
+      "textSha256": "9f4a12c560b7e1b736f89140cfbfb70591a8c15a448f8a2ae4cae557821824ce"
+    },
+    {
+      "id": "S007",
+      "decision": null,
+      "title": "Action option placement and context",
+      "sourceClauses": "RFC §§8,16.3–16.4",
+      "classification": "supplemental public behavior from detailed plan",
+      "planSource": "specs/implementation/03-data-and-forms.md",
+      "task": "T036",
+      "steps": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "status": "proposed",
+      "verification": "`action.default-trigger`, `action.method-conflict`, `action.name-collision`, `action.unnamed-context`, `action.body-get`, `action.missing-module`, `action.invalid-native-fallback` pass.",
+      "textSha256": "a3f1e94c03f3b21210e2b767dc2a2d22098f2345abb77c8d4445beccba00c757"
+    },
+    {
+      "id": "S008",
+      "decision": null,
+      "title": "Control adapter switching and invalid numeric input",
+      "sourceClauses": "RFC §9",
+      "classification": "supplemental public behavior from detailed plan",
+      "planSource": "specs/implementation/03-data-and-forms.md",
+      "task": "T039",
+      "steps": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "status": "proposed",
+      "verification": "`model.text-input`, `model.ime`, `model.number-empty`, `model.number-invalid`, `model.no-synthetic-events`, `model.caret`, `model.file-rejected` pass in actual browsers.",
+      "textSha256": "bf925045e151f1051fa12c680f62cee5b6bdae7bc20ff85283a7412581aad800"
+    },
+    {
+      "id": "S009",
+      "decision": null,
+      "title": "Radio and select model edge cases",
+      "sourceClauses": "RFC §9",
+      "classification": "supplemental public behavior from detailed plan",
+      "planSource": "specs/implementation/03-data-and-forms.md",
+      "task": "T040",
+      "steps": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "status": "proposed",
+      "verification": "`model.checkbox-boolean`, `model.radio-string`, `model.radio-group-error`, `model.multiselect-order`, `model.no-selection`, `model.dynamic-options`, `model.cleanup-group` pass.",
+      "textSha256": "fccf6e13dd60d699902fcf0af71e21e93b7e5a23cb1ad2a35c5289da1105d16b"
+    },
+    {
+      "id": "S010",
+      "decision": null,
+      "title": "Reset cancellation and snapshot boundaries",
+      "sourceClauses": "RFC §9",
+      "classification": "supplemental public behavior from detailed plan",
+      "planSource": "specs/implementation/03-data-and-forms.md",
+      "task": "T043",
+      "steps": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "status": "proposed",
+      "verification": "`reset.persisted-defaults`, `reset.only-bound-paths`, `reset.native-file`, `reset.canceled`, `reset.radio-once`, `reset.no-refetch`, `reset.remount` pass.",
+      "textSha256": "9e95aab4762660ca3245348ee10c7e8da7f3326af830a662b313304473d9a9c1"
+    },
+    {
+      "id": "S011",
+      "decision": null,
+      "title": "Static ID rewriting boundaries and collision recovery",
+      "sourceClauses": "RFC §11",
+      "classification": "supplemental public behavior from detailed plan",
+      "planSource": "specs/implementation/04-composition.md",
+      "task": "T051",
+      "steps": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "status": "proposed",
+      "verification": "`ids.two-instances`, `ids.multitoken-aria`, `ids.external-retained`, `ids.projected-unchanged`, `ids.dynamic-explicit`, `ids.generated-collision` pass with label and accessible-name assertions.",
+      "textSha256": "736998aebe1176ec0fc07f3536b5cd4b3fd80d0f315f6953aa459db601055637"
+    },
+    {
+      "id": "S012",
+      "decision": null,
+      "title": "Component event names and recursion limit",
+      "sourceClauses": "RFC §§11,14",
+      "classification": "supplemental public behavior from detailed plan",
+      "planSource": "specs/implementation/04-composition.md",
+      "task": "T052",
+      "steps": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "status": "proposed",
+      "verification": "`instance.local-isolation`, `instance.preserved-host`, `instance.event-caller`, `instance.nested-cleanup`, `instance.recursion`, `instance.import-fallback` pass.",
+      "textSha256": "44cd697bca0e0fa23e7dc7cd52be3defcdd02d20e62f4e5f714a9a98424e00fc"
+    },
+    {
+      "id": "S013",
+      "decision": null,
+      "title": "History ownership, unchanged URL, and correction behavior",
+      "sourceClauses": "RFC §10; Design §11",
+      "classification": "supplemental public behavior from detailed plan",
+      "planSource": "specs/implementation/04-composition.md",
+      "task": "T057",
+      "steps": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "status": "proposed",
+      "verification": "`history.preserve-state`, `history.push-count`, `history.cancel-back`, `history.cancel-forward`, `history.no-guard-on-correction`, `history.rapid-traversal`, `history.unknown-entry`, `history.hash-dedup` pass in real browsers.",
+      "textSha256": "11cff72c42abc982a3fb124618cd85dd98932810a3a7b31781cb78277d6fcdb8"
+    },
+    {
+      "id": "S014",
+      "decision": null,
+      "title": "Route title null values and temporary focusability",
+      "sourceClauses": "RFC §10",
+      "classification": "supplemental public behavior from detailed plan",
+      "planSource": "specs/implementation/04-composition.md",
+      "task": "T059",
+      "steps": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "status": "proposed",
+      "verification": "`route.title-expression`, `route.focus-h1`, `route.focus-outlet`, `route.scroll-top`, `route.traversal-scroll`, `route.hash-priority`, `route.no-refresh-focus`, `route.superseded-postflush` pass.",
+      "textSha256": "452750aef6d8c4ca02f4b7aef82ee67e6dee939a8c99e46712f83d4361ef2615"
+    },
+    {
+      "id": "S015",
+      "decision": null,
+      "title": "Behavior setup order, return contract, and failure cleanup",
+      "sourceClauses": "RFC §14",
+      "classification": "supplemental public behavior from detailed plan",
+      "planSource": "specs/implementation/05-fragments-and-ui.md",
+      "task": "T069",
+      "steps": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "status": "proposed",
+      "verification": "`behavior.order`, `behavior.options-json`, `behavior.cleanup-on-failure`, `behavior.async-factory-invalid`, `behavior.ignore-widget`, `behavior.postdispose-write` pass.",
+      "textSha256": "72bda088113330e564554fc485dc79c056ecd5811a243f30877323b96508f675"
+    },
+    {
+      "id": "S016",
+      "decision": null,
+      "title": "Dialog cancellation and focus return",
+      "sourceClauses": "RFC §13",
+      "classification": "supplemental public behavior from detailed plan",
+      "planSource": "specs/implementation/05-fragments-and-ui.md",
+      "task": "T070",
+      "steps": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "status": "proposed",
+      "verification": "`dialog.name-required`, `dialog.modal`, `dialog.escape`, `dialog.prevented-cancel`, `dialog.focus-return`, `dialog.removed-opener`, `dialog.dispose-open` pass with keyboard tests.",
+      "textSha256": "0b41adc4dcd5fd29d2ee14e68c6512626800aea15ec5387726ba9eb89330343b"
+    },
+    {
+      "id": "S017",
+      "decision": null,
+      "title": "Tabs selection and dynamic removal behavior",
+      "sourceClauses": "RFC §13",
+      "classification": "supplemental public behavior from detailed plan",
+      "planSource": "specs/implementation/05-fragments-and-ui.md",
+      "task": "T072",
+      "steps": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "status": "proposed",
+      "verification": "`tabs.manual`, `tabs.automatic`, `tabs.rtl`, `tabs.vertical`, `tabs.disabled`, `tabs.active-removal`, `tabs.relationship-errors`, `tabs.cleanup` pass using keyboard and focus assertions.",
+      "textSha256": "9eab7c357d206f1f08b68793956ee6fde714ac7362a2bdbdbde08e81aab2db89"
+    },
+    {
+      "id": "S018",
+      "decision": null,
+      "title": "Schema allowlists, suffixes, integers, enums, and diagnostic assignments",
+      "sourceClauses": "RFC §§4,9,12–16; Design §§12,14",
+      "classification": "supplemental public behavior from detailed plan",
+      "planSource": "specs/implementation/09-schema-details.md",
+      "task": null,
+      "steps": null,
+      "status": "proposed",
+      "verification": "schema.*,sanitize.*,bind.*,diagnostic.*,cli/runtime parity",
+      "textSha256": "a7660710d96e88eff9ce32a7fa8c55bf9e5edf5a20ff07c3ea573223befdce33"
+    }
+  ]
+}

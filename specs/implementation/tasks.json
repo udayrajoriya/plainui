@@ -21,7 +21,9 @@
       ],
       "stepCount": 6,
       "acceptance": "`baseline.sources` hashes both inputs; `baseline.decisions` has C01\u2013C14; `baseline.clarifications` lists every change to public semantics with no hidden TBD; no source document is overwritten.",
-      "status": "pending"
+      "status": "completed",
+      "completedDate": "2026-10-10",
+      "evidence": "../../evidence/tasks/T001.md"
     },
     {
       "id": "T002",

@@ -4,6 +4,8 @@ All file paths are repository-relative. All tasks include the common definition 
 
 ## T001 Freeze the implementation baseline
 
+**Status:** completed 10 October 2026. [Completion evidence](../../evidence/tasks/T001.md). Revision 0.2 acceptance remains proposed and is tracked separately from task completion.
+
 **Depends on:** none. **Sources:** RFC §§1,19; Design §§1,18. **Files:** `docs/decisions/0001-baseline.md`, `docs/specification/`, `evidence/spec-baseline.json`.
 
 1. Record SHA-256 hashes, titles, revisions, and dates of both supplied DOCX files. Preserve their originals.

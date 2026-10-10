@@ -1,0 +1,360 @@
+{
+  "schemaVersion": 1,
+  "task": "T001",
+  "recordedDate": "2026-10-10",
+  "sourceCommit": "1bcdaff1e32c1ed9e91d44b18fac4f1502913bec",
+  "baselineStatus": "source-revision-0.1-preserved",
+  "proposalStatus": "proposed-not-accepted",
+  "sources": [
+    {
+      "path": "specs/PlainUI-1.0-RFC.docx",
+      "sha256": "bdcc6dd2f9e30f4c21001ff2057b07c1e00711e6c74fb1ff92acc1796bb32e48",
+      "title": "PlainUI Version 1 RFC",
+      "revision": "0.1",
+      "date": "2026-10-10",
+      "status": "Proposed",
+      "revisionLine": "RFC 0001 • Revision 0.1 • 10 October 2026 • Status Proposed",
+      "transcription": "docs/specification/PlainUI-1.0-RFC-revision-0.1.md",
+      "transcriptionSha256": "6e443a56daa8381c1fb11dbc5ad5923e7368d10da1d18f805c81b375cdfd2b2d",
+      "transcriptionHashMode": "utf8-lf-normalized",
+      "nonemptyParagraphs": 180,
+      "codeLines": 52,
+      "tables": 9,
+      "tableRows": 121,
+      "tableCells": 317,
+      "normativeKeywords": {
+        "MUST": 3,
+        "MUST NOT": 1,
+        "SHOULD": 1,
+        "MAY": 1
+      }
+    },
+    {
+      "path": "specs/PlainUI-1.0-Technical-Design.docx",
+      "sha256": "db7def0ef5bcc5e5c03d4053e95fdd1a30373bb03e350bc4732148535c401d3a",
+      "title": "PlainUI Version 1 Technical Design",
+      "revision": "0.1",
+      "date": "2026-10-10",
+      "status": "Proposed",
+      "revisionLine": "Companion to RFC 0001 • Revision 0.1 • 10 October 2026 • Status Proposed",
+      "transcription": "docs/specification/PlainUI-1.0-Technical-Design-revision-0.1.md",
+      "transcriptionSha256": "45d89d85af4d4d3ff5c26e394b5229e9afe3e55e765ec05178a078bca3f48d41",
+      "transcriptionHashMode": "utf8-lf-normalized",
+      "nonemptyParagraphs": 109,
+      "codeLines": 0,
+      "tables": 5,
+      "tableRows": 53,
+      "tableCells": 146,
+      "normativeKeywords": {
+        "MUST": 0,
+        "MUST NOT": 0,
+        "SHOULD": 0,
+        "MAY": 0
+      }
+    }
+  ],
+  "implementationContract": {
+    "path": "specs/implementation/01-contract.md",
+    "sha256": "c21ef81730910dd18027a38131050f104fc6377b31f7810e0cec5a67b0db115c",
+    "status": "proposed-plan-baseline",
+    "hashMode": "utf8-lf-normalized"
+  },
+  "decisions": {
+    "path": "docs/decisions/0001-baseline.md",
+    "items": [
+      {
+        "id": "C01",
+        "title": "Toolchain and dependency baseline",
+        "sourceClauses": "RFC §§2–3,18; Design §§2,12,16",
+        "rationale": "Pin one reproducible implementation environment and use a maintained sanitizer while leaving consuming applications free of build-tool requirements. Compatibility and package metadata must be verified in T002; this baseline preserves the planning selections, not an install result.",
+        "fixtureFamilies": [
+          "workspace.*",
+          "build.*",
+          "spike.*",
+          "package.*"
+        ],
+        "classification": "engineering selection; CLI/runtime delivery requirements",
+        "selectedBehaviorSha256": "2f66cc2bdacfa87bfb9d7428db3b417ff49a1a28b92da05517a882282891a4ae"
+      },
+      {
+        "id": "C02",
+        "title": "Repository and package layout",
+        "sourceClauses": "RFC §§2.1,3,14; Design §2",
+        "rationale": "Keep source responsibilities isolated while shipping core/data/forms/components together and optional modules separately; avoid duplicate runtimes and accidental public internal-package contracts.",
+        "fixtureFamilies": [
+          "build.boundaries",
+          "build.no-duplicate-core",
+          "package.exports"
+        ],
+        "classification": "engineering selection; distribution contract",
+        "selectedBehaviorSha256": "6084e0f329a17e633c4a77f82c9bb301e02490800fd76b17c6ab479749320f3e"
+      },
+      {
+        "id": "C03",
+        "title": "Public startup and official module installation",
+        "sourceClauses": "RFC §§3,14; Design §§4,14",
+        "rationale": "Bound asynchronous boot without changing the synchronous App return contract; make readiness, module installation, diagnostics, and mount lifetime explicit.",
+        "fixtureFamilies": [
+          "boot.*",
+          "config.*",
+          "api.*",
+          "registry.*",
+          "inspect.*"
+        ],
+        "classification": "public additions and lifecycle clarification",
+        "selectedBehaviorSha256": "95d0b78741917ff6072e79390870a9e2549494ec65b43ea9cf1d184aa1da9a7f"
+      },
+      {
+        "id": "C04",
+        "title": "Shared records and interfaces",
+        "sourceClauses": "RFC §§4.1–4.2,5,14–15; Design §§3,5–6,14",
+        "rationale": "Use safe JSON and explicit lexical/lifecycle records so readonly data, projected slots, and async extension work cannot escape ownership boundaries.",
+        "fixtureFamilies": [
+          "json.*",
+          "path.*",
+          "scope.*",
+          "api.*",
+          "adapter.*"
+        ],
+        "classification": "internal records plus public normalization/API clarification",
+        "selectedBehaviorSha256": "d08b05fdac1eaba45f896c4c853bacb7d5e79adc5b08b96ffdc795ad5763a29e"
+      },
+      {
+        "id": "C05",
+        "title": "Grammar details and expression failures",
+        "sourceClauses": "RFC §§4.1–4.3,5,8.1; Design §5",
+        "rationale": "Specify parser edge cases and distinguish missing data from evaluation failure so effect handlers cannot proceed on invalid arguments.",
+        "fixtureFamilies": [
+          "parse.*",
+          "eval.*",
+          "format.*",
+          "path.*",
+          "command.*"
+        ],
+        "classification": "public grammar and error semantics",
+        "selectedBehaviorSha256": "0995cf5fee2362445c48ab955118d722802ffe83719f372cdc3fa8c12d43693d"
+      },
+      {
+        "id": "C06",
+        "title": "Scope, scheduling, and ownership",
+        "sourceClauses": "RFC §§4.2–6,14–15; Design §§3–4,6–7",
+        "rationale": "Separate scope from ownership, flush in a fixed order, and journal framework DOM changes so teardown and observation stay deterministic.",
+        "fixtureFamilies": [
+          "scope.*",
+          "scheduler.*",
+          "derived.*",
+          "owner.*",
+          "range.*",
+          "observe.*"
+        ],
+        "classification": "internal algorithms plus observable disposal/flush semantics",
+        "selectedBehaviorSha256": "4237ebaa19b83a8f561b57df330ff8bebfff157dda12baa6a47cec3e9f6b7a1b"
+      },
+      {
+        "id": "C07",
+        "title": "Configuration and persistence",
+        "sourceClauses": "RFC §§3.1,5; Design §6",
+        "rationale": "Fix nested option merging and persistence envelopes/key identity to avoid ambiguous restore and unsafe implicit state retention.",
+        "fixtureFamilies": [
+          "config.*",
+          "persist.*"
+        ],
+        "classification": "public configuration and persistence clarification",
+        "selectedBehaviorSha256": "84a6f204b0b7fda3d1a1ebd85c3a58989f91a2dfa78d0f6438aef87910bc64cb"
+      },
+      {
+        "id": "C08",
+        "title": "HTTP identity and cancellation",
+        "sourceClauses": "RFC §§7–8,14–15; Design §8",
+        "rationale": "Separate cache identity, flight policy, invalidation, consumer generation, and principal epoch to preserve freshness and reject obsolete async results.",
+        "fixtureFamilies": [
+          "request.*",
+          "transport.*",
+          "adapter.*",
+          "flight.*",
+          "cache.*",
+          "resource.*",
+          "load.*",
+          "refresh.*",
+          "session.*",
+          "retry.*"
+        ],
+        "classification": "public HTTP/cache/cancellation clarification",
+        "selectedBehaviorSha256": "e80911a7cc152d3c0c26151a4dcbdd543b70c5fda65150b784605468f3057f75"
+      },
+      {
+        "id": "C09",
+        "title": "Action and lifecycle rules",
+        "sourceClauses": "RFC §§8–9; Design §9",
+        "rationale": "Define debounce snapshots, form interception, state settlement, and handler order so errors cannot replay submissions or overwrite newer operations.",
+        "fixtureFamilies": [
+          "action.*",
+          "lifecycle.*",
+          "invalidate.*",
+          "submit.*",
+          "form.*"
+        ],
+        "classification": "public action and lifecycle clarification",
+        "selectedBehaviorSha256": "c4f4faf1c4a7a91f38ec609852f9dc65b62675776b153309e630bdd128754a8c"
+      },
+      {
+        "id": "C10",
+        "title": "Components and template clarifications",
+        "sourceClauses": "RFC §§4.2,11; Design §10",
+        "rationale": "Define nullable props, isolated instance state, caller-scoped projection, relocatable imports, and explicit static-ID boundaries.",
+        "fixtureFamilies": [
+          "component.*",
+          "import.*",
+          "props.*",
+          "slot.*",
+          "ids.*",
+          "instance.*"
+        ],
+        "classification": "public component clarification",
+        "selectedBehaviorSha256": "1918942ef1e5e53ae91c64bed7c511d7cd2b475f5b0663b40fb1beb6b8ef1e8c"
+      },
+      {
+        "id": "C11",
+        "title": "Router decisions",
+        "sourceClauses": "RFC §10; Design §11",
+        "rationale": "Give one router responsibility for document history and choose segment-by-segment ranking with cancellable indexed traversal.",
+        "fixtureFamilies": [
+          "route.*",
+          "link.*",
+          "router.*",
+          "navigate.*",
+          "guard.*",
+          "history.*"
+        ],
+        "classification": "public navigation clarification and design conflict resolution",
+        "selectedBehaviorSha256": "12023b14a1d40cc98376f9ed7025900898e8a664ebddf6b2baa83e04c9139704"
+      },
+      {
+        "id": "C12",
+        "title": "Fragment policy and transactional ownership",
+        "sourceClauses": "RFC §§8,12,15–16; Design §12",
+        "rationale": "Reconcile default directive stripping with outer target identity; stage validation before replacement and keep trusted enhancement and unsafe HTML sinks bounded.",
+        "fixtureFamilies": [
+          "sanitize.*",
+          "tt.*",
+          "candidate.*",
+          "fragment.*",
+          "swap.*"
+        ],
+        "classification": "public fragment/security clarification",
+        "selectedBehaviorSha256": "b9ec0ac88fdc1e0b7c76c699a6820060996a07f3fd020cb6b96d8ee1c85cf721"
+      },
+      {
+        "id": "C13",
+        "title": "UI defaults and CSS values",
+        "sourceClauses": "RFC §13,16.4; Design §13",
+        "rationale": "Fix keyboard, notification retention, naming, and CSS defaults so independent implementations do not invent incompatible UI behavior.",
+        "fixtureFamilies": [
+          "dialog.*",
+          "toast.*",
+          "tabs.*",
+          "styles.*"
+        ],
+        "classification": "public UI/defaults clarification",
+        "selectedBehaviorSha256": "b56a39901849b78e5b2d198bb1ff07af38456e9053f3bd5c14cc9d47df798a80"
+      },
+      {
+        "id": "C14",
+        "title": "Errors, diagnostics, and release evidence",
+        "sourceClauses": "RFC §§9,14–15,18; Design §§14–16",
+        "rationale": "Expose stable redacted diagnostics and distinguish actual release evidence from targets or engine-only test results.",
+        "fixtureFamilies": [
+          "diagnostic.*",
+          "inspect.*",
+          "error.*",
+          "baseline.*",
+          "release gates"
+        ],
+        "classification": "public errors/diagnostics and evidence rules",
+        "selectedBehaviorSha256": "019add79bb8235439be60c7e9fea7d51a3e0755cc4e1088eced4e9e97c6761e2"
+      }
+    ],
+    "count": 14
+  },
+  "clarifications": {
+    "proposal": "docs/specification/PlainUI-revision-0.2-proposal.md",
+    "inventory": "docs/specification/revision-0.2-amendments.json",
+    "status": "proposed",
+    "acceptedBy": null,
+    "acceptedAt": null,
+    "count": 32,
+    "ids": [
+      "A001",
+      "A002",
+      "A003",
+      "A004",
+      "A005",
+      "A006",
+      "A007",
+      "A008",
+      "A009",
+      "A010",
+      "A011",
+      "A012",
+      "A013",
+      "A014",
+      "S001",
+      "S002",
+      "S003",
+      "S004",
+      "S005",
+      "S006",
+      "S007",
+      "S008",
+      "S009",
+      "S010",
+      "S011",
+      "S012",
+      "S013",
+      "S014",
+      "S015",
+      "S016",
+      "S017",
+      "S018"
+    ]
+  },
+  "precedence": [
+    "Existing public behavior follows RFC revision 0.1",
+    "Explicitly accepted revision replaces identified clauses only",
+    "Remaining implementation choices follow the Technical Design",
+    "Then the implementation plan and decision record"
+  ],
+  "designConflicts": [
+    {
+      "id": "cache.expiresAt",
+      "source": "Design §§3,8.2; RFC §7.2",
+      "resolution": "Per-declaration TTL against shared acceptedAt; expiresAt is nonauthoritative optional metadata",
+      "decision": "C08",
+      "amendment": "A008"
+    },
+    {
+      "id": "router.ranking",
+      "source": "Design §11; RFC §10",
+      "resolution": "Left-to-right segment specificity, then exact-end over empty catchall; not total literal count",
+      "decision": "C11",
+      "amendment": "A011"
+    }
+  ],
+  "exclusions": {
+    "planSource": "specs/implementation/00-plan.md#release-scope-exclusions",
+    "textSha256": "dbbc02264f3ff3bd9c6c6f7b300a315d69d54f67a4f37b5626f63b21641f9c31"
+  },
+  "validation": {
+    "command": "python scripts/spec_baseline.py --check",
+    "status": "pass",
+    "sourceFidelity": "independent-python-docx-and-xml-roundtrip",
+    "originalsMatchSourceCommit": true,
+    "decisions": 14,
+    "amendments": 32,
+    "paragraphs": 289,
+    "codeLines": 52,
+    "tables": 14,
+    "tableRows": 174,
+    "tableCells": 463
+  }
+}

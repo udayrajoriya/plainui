@@ -1,6 +1,6 @@
 # Requirement coverage and verification matrix
 
-This is the checklist used by T004, T025, T046, T061, T075, and T096 to prevent omissions. A row means work is planned, not already complete. All tasks begin pending. The generated [task index](tasks.json) contains task titles, dependencies, source file, step count, and pending status for importing into an issue tracker.
+This is the checklist used by T004, T025, T046, T061, T075, and T096 to prevent omissions. A row means work is planned, not already complete. The [task index](tasks.json) contains task titles, dependencies, source file, step count, and current execution status for importing into an issue tracker. T001 is complete with [baseline evidence](../../evidence/tasks/T001.md); the proposed specification revision is not yet accepted. All other tasks remain pending.
 
 ## Specification coverage
 
@@ -167,7 +167,7 @@ T096 must reject a release when any item is absent, stale, failing, or merely pl
 
 ## Execution checklist
 
-Use task IDs as issue IDs or labels. A task is checked off only after its `evidence/tasks/Tnnn.md` exists and its named prerequisites pass. The task index records pending status intentionally; this planning exercise does not complete implementation tasks.
+Use task IDs as issue IDs or labels. A task is checked off only after its `evidence/tasks/Tnnn.md` exists and its named prerequisites pass. Individual completion is recorded in tasks.json; an entire milestone remains unchecked until all its tasks pass.
 
 - [ ] M0 T001–T007 contract and harness
 - [ ] M1 T008–T025 runtime foundation
