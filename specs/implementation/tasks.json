@@ -1,0 +1,2282 @@
+{
+  "planVersion": 1,
+  "sourceRevision": "RFC 0001 revision 0.1 plus proposed implementation clarifications",
+  "taskCount": 100,
+  "implementationStepCount": 611,
+  "tasks": [
+    {
+      "id": "T001",
+      "title": "Freeze the implementation baseline",
+      "dependsOn": [],
+      "document": "02-foundation.md",
+      "anchor": "t001-freeze-the-implementation-baseline",
+      "fileTargets": "`docs/decisions/0001-baseline.md`, `docs/specification/`, `evidence/spec-baseline.json`.",
+      "implementationSteps": [
+        "Record SHA-256 hashes, titles, revisions, and dates of both supplied DOCX files. Preserve their originals.",
+        "Produce text/Markdown transcriptions preserving numbered sections, tables, examples, and normative keywords. Check every table row against the DOCX XML text; do not transcribe only headings.",
+        "Copy each C01\u2013C14 plan decision into a decision record with source clause, selected behavior, rationale, and affected fixture family.",
+        "Draft a revision containing every **Specification clarification**, especially ready/diagnostics APIs, outer-ref handling, enhanced-template allowance, one router per document, refresh coalescing, and toast options. Explicitly mark it proposed until accepted by the project owner; implementation can follow this plan as its proposed baseline, but release cannot claim an accepted RFC while that decision is pending.",
+        "Record precedence: RFC public behavior, accepted clarification, design algorithm, then implementation detail. Resolve Design cache expiresAt and router ranking as C08/C11 specify.",
+        "Create an exclusion list matching 00-plan. Attach no estimates or promised dates."
+      ],
+      "stepCount": 6,
+      "acceptance": "`baseline.sources` hashes both inputs; `baseline.decisions` has C01\u2013C14; `baseline.clarifications` lists every change to public semantics with no hidden TBD; no source document is overwritten.",
+      "status": "pending"
+    },
+    {
+      "id": "T002",
+      "title": "Initialize the workspace and pin tools",
+      "dependsOn": [
+        "T001"
+      ],
+      "document": "02-foundation.md",
+      "anchor": "t002-initialize-the-workspace-and-pin-tools",
+      "fileTargets": "root `package.json`, `pnpm-workspace.yaml`, `pnpm-lock.yaml`, `.node-version`, `.npmrc`, `.editorconfig`, `.gitignore`, `tsconfig.base.json`, `evidence/dependencies/`.",
+      "implementationSteps": [
+        "Initialize a Git repository only if one still does not exist; do not create a remote or publish anything. Ignore node_modules, dist, browser reports, local secrets, and transient coverage; retain evidence manifests and source fixtures.",
+        "Create private workspace manifests for the C02 directories. Set root packageManager to `pnpm@12.10.1`, Node engine to `>=24.21.0 <25`, and node-version to 24.21.0 for the reproducible build runner.",
+        "Install the exact C01 versions, save the lockfile, and archive official registry version metadata plus integrity values. Use frozen-lockfile installs thereafter.",
+        "TypeScript options: strict=true, noUncheckedIndexedAccess=true, exactOptionalPropertyTypes=true, useUnknownInCatchVariables=true, declaration=true, sourceMap=true, target=ES2022, module=ESNext, moduleResolution=Bundler, lib=ES2022/DOM/DOM.Iterable. Browser code excludes Node ambient types.",
+        "Add cross-platform Node scripts rather than shell-specific command chains. Script names: `typecheck`, `test:unit`, `test:conformance`, `test:browser`, `test:security`, `build`, `validate:examples`, `check:generated`, `check:boundaries`, `check:size`, `bench`, `check:release`.",
+        "Run a minimal TS compile, Vitest assertion, esbuild classic/ESM build, and one Playwright page in Chromium/Firefox/WebKit. If a dependency combination fails, document the incompatibility and change the exact pin in C01 before proceeding."
+      ],
+      "stepCount": 6,
+      "acceptance": "`workspace.clean-install` succeeds from empty node_modules; `workspace.lock` fails if package metadata diverges; `workspace.windows` and `workspace.linux` execute the same scripts; smoke results record actual tool versions.",
+      "status": "pending"
+    },
+    {
+      "id": "T003",
+      "title": "Establish package boundaries and build entry points",
+      "dependsOn": [
+        "T002"
+      ],
+      "document": "02-foundation.md",
+      "anchor": "t003-establish-package-boundaries-and-build-entry-points",
+      "fileTargets": "`scripts/build.mjs`, `scripts/check-boundaries.mjs`, each package `src/index.ts`, runtime entry files.",
+      "implementationSteps": [
+        "Define allowed imports: core\u2192schema; data/forms/components\u2192core/schema and declared service interfaces; runtime\u2192core/data/forms/components; each optional module\u2192schema/core's official module bridge only. Forms may consume a data action-service interface; it must not import controller implementation.",
+        "Put shared request/DOM service interfaces in core integration types to break cycles. Inject implementations during runtime composition.",
+        "Make build entry stubs for the required distribution filenames and CSS. Use classic IIFE for `.js`, ESM for `.mjs`, minification for release, source maps alongside output.",
+        "Configure ESM optional modules to import the public runtime's module bridge by relative distribution path, never bundle another core. Classic modules consume the existing `window.PlainUI` bridge and fail clearly if core is absent.",
+        "Add a source import-graph checker that rejects boundary violations and cycles. Ensure DOMPurify appears only in fragments, never core.",
+        "Generate development builds from the same entry source with debug assertions enabled. Do not maintain separate implementations for classic/ESM."
+      ],
+      "stepCount": 6,
+      "acceptance": "`build.boundaries` deliberately illegal imports fail; `build.no-duplicate-core` optional artifacts exclude core implementation; `build.entries` all filenames exist; `build.no-eval` no eval/Function constructor appears in emitted browser code.",
+      "status": "pending"
+    },
+    {
+      "id": "T004",
+      "title": "Create the directive and option schema",
+      "dependsOn": [
+        "T001",
+        "T003"
+      ],
+      "document": "02-foundation.md",
+      "anchor": "t004-create-the-directive-and-option-schema",
+      "fileTargets": "`packages/schema/src/{directives,options,diagnostics,allowlists}.ts`, `scripts/generate-schema.mjs`.",
+      "implementationSteps": [
+        "Enter every registry row, dynamic family, alias, enum, default, value kind, placement, companion requirement, conflict, and optional module from 07-coverage.",
+        "Represent presence flags as empty-string-only, integer literals with exact min/max, and identifiers with the RFC regex. Do not parse attributes heuristically by looking at their contents.",
+        "Add cross-attribute rules: one HTTP method; resource requires empty template/get; GET forbids body; loop requires key; if/for conflict; model conflicts value/checked; show conflicts hidden; text conflicts owned children/outlet/component/field-error.",
+        "Add configuration schema from RFC \u00a73.1 and C07, plus prop/behavior-specific schemas. Reject unknown keys recursively.",
+        "Define stable diagnostic codes for every validation rule, mapping to severity and redaction-safe template. Retain all codes named in either source and the plan; do not use free-form exceptions as public diagnostic identifiers.",
+        "Generate JSON schema/metadata and the directive reference table from this source. Include grammar/schema versions for fixture compatibility.",
+        "Add a checker that enumerates registry rows and requires valid, invalid, lifecycle coverage IDs for each spelling/family."
+      ],
+      "stepCount": 7,
+      "acceptance": "`schema.aliases` canonical/data aliases match; `schema.collisions` duplicates fail; `schema.complete` all source rows map to tasks; generated files reproduce byte-for-byte.",
+      "status": "pending"
+    },
+    {
+      "id": "T005",
+      "title": "Build the shared conformance fixture runner",
+      "dependsOn": [
+        "T003",
+        "T004"
+      ],
+      "document": "02-foundation.md",
+      "anchor": "t005-build-the-shared-conformance-fixture-runner",
+      "fileTargets": "`tests/support/{fixture,runner,clock,server,assertions}.ts`, `tests/fixtures/schema.json`.",
+      "implementationSteps": [
+        "Define fixture fields: id, RFC references, HTML, config, module list, registrations, storage seed, HTTP script, steps, expected state/DOM/events/diagnostics, teardown expectations, browser requirements.",
+        "Provide steps for mount, awaitReady, set, dispatch, user input, resolve/reject request, advanceClock, flush, navigate, unmount, and inspect. Each wait has an explicit predicate and maximum timeout; no arbitrary sleeps in deterministic tests.",
+        "Run each compatible fixture once with classic local assets and once with ESM assets. Reset page, storage, registries, history, and server state between fixtures.",
+        "Create a local HTTP server able to hold responses behind named barriers, return chosen status/headers/body, redirect, close sockets, record requests, and expose two distinct origins. Never depend on public network services.",
+        "Inject clock/fetch/randomness only through private test service construction, not a supported production transport replacement API.",
+        "Capture ordered lifecycle events, binding commits, final state, request counts, normalized diagnostics, and instrumented live-owner/timer/listener/subscriber counts.",
+        "Ensure all test-created deferred promises/timers drain or cancel in finally. Add harness self-tests proving an intentional leak or unexpected request fails."
+      ],
+      "stepCount": 7,
+      "acceptance": "`harness.parity` same fixture yields same result in both builds; `harness.race` barriers reverse completion order; `harness.leak` intentional leaked listener is detected; `harness.timeout` missing completion gives a useful bounded failure.",
+      "status": "pending"
+    },
+    {
+      "id": "T006",
+      "title": "Implement configuration and diagnostic infrastructure",
+      "dependsOn": [
+        "T004",
+        "T005"
+      ],
+      "document": "02-foundation.md",
+      "anchor": "t006-implement-configuration-and-diagnostic-infrastructure",
+      "fileTargets": "`packages/core/src/config.ts`, `diagnostics/{codes,emit,redact,inspector}.ts`.",
+      "implementationSteps": [
+        "Resolve ui-config by document ID; require exactly one script[type=application/json], parse as safe JSON, and report missing/duplicate/wrong-type elements.",
+        "Merge/validate C07 defaults, block, and programmatic overrides. Validate origin lists, URL base, locale, zone, integer ranges, enums, and CSRF header/meta names.",
+        "Return immutable resolved options. Do not store tokens read from meta in config.",
+        "Implement diagnostics subscription before mount, unsubscribe, stable location (root-relative child path plus directive), and one dispatch path for compile/runtime/network errors.",
+        "Redact all dynamic data; safe debug spans include offsets and directive names, not raw header/body/URL-template substitution values. Query strings and URL credentials are removed from displayed locations.",
+        "Implement inspector counters and debug gating. Counters change at allocation/release sites and cannot keep owners alive by holding references.",
+        "Catch diagnostic listener exceptions so user logging cannot break disposal or compilation."
+      ],
+      "stepCount": 7,
+      "acceptance": "`config.precedence`, `config.unknown-nested`, `config.bad-json`, `config.locale-zone`, `diagnostic.redaction`, `diagnostic.listener-throws`, `inspector.disabled`, and `inspector.zero` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T007",
+      "title": "Prove sanitizer size and strict CSP feasibility early",
+      "dependsOn": [
+        "T003",
+        "T005"
+      ],
+      "document": "02-foundation.md",
+      "anchor": "t007-prove-sanitizer-size-and-strict-csp-feasibility-early",
+      "fileTargets": "`experiments/sanitizer/`, `evidence/sanitizer-feasibility.md`, `evidence/size-baseline.json`.",
+      "implementationSteps": [
+        "Build a minimal fragment-only bundle importing the pinned DOMPurify. Configure explicit RFC tag/attribute sets and DOM-fragment output.",
+        "Serve a test page with external JS only, `script-src 'self'`, no unsafe-eval, and enforced Trusted Types where supported. Allow precisely the private `plainui-template` and `dompurify` policy names.",
+        "Prove developer template import parsing through the private core HTML service can validate inert templates without adding the sanitizer to core. Ensure scripts do not execute while importing or cloning a definition.",
+        "Prove untrusted sanitization strips directives and enhanced mode can retain only the published permitted subset, including inert declaration templates.",
+        "Exercise a native component import plus an HTML fragment on the same strict-CSP page. Log CSP violations as test failures.",
+        "Measure raw/gzip bytes of core scaffold, optional sanitizer bundle, and combined script set using the production compressor parameters in T094. Record remaining budget; do not claim final size conformance from a scaffold.",
+        "If the sanitizer makes the combined budget unattainable, create a numerical-budget revision proposal now. Do not replace it with regex, loosen policy, or silently exclude dependency bytes."
+      ],
+      "stepCount": 7,
+      "acceptance": "`spike.csp-template`, `spike.csp-fragment`, `spike.no-script-execution`, `spike.allowlist`, and recorded size evidence exist. This is a feasibility gate; T062 still supplies production hardening.",
+      "status": "pending"
+    },
+    {
+      "id": "T008",
+      "title": "Implement safe JSON and writable paths",
+      "dependsOn": [
+        "T006"
+      ],
+      "document": "02-foundation.md",
+      "anchor": "t008-implement-safe-json-and-writable-paths",
+      "fileTargets": "`packages/core/src/json/{normalize,clone,freeze}.ts`, `state/path.ts`.",
+      "implementationSteps": [
+        "Normalize JSON with iterative traversal to avoid stack overflow on deeply nested input data. Track active ancestry for cycle detection, not a global seen set that rejects harmless repeated references.",
+        "Read property descriptors before values; reject getters/setters, symbols, class prototypes, sparse-array holes normalized to null only at explicit JS boundary, and prohibited keys at every depth.",
+        "Normalize undefined to null, reject nonfinite numbers, and use null-prototype internal object records.",
+        "Parse the path subset in C05 with source spans. Distinguish literal array index from object property. Reject forbidden keys before lookup.",
+        "Implement immutable path replacement, missing-intermediate errors, bounds checks, and root-cell writability checks. Return changed path prefixes for invalidation.",
+        "Expose detached frozen snapshots; never return internal mutable state from public get or props."
+      ],
+      "stepCount": 6,
+      "acceptance": "`json.pollution` tests nested/computed forbidden names; `json.getter` getter invocation count stays zero; `json.cycle`, `json.class`, `json.undefined`, `path.sibling-sharing`, `path.readonly`, `path.missing-container`, and snapshot mutation tests pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T009",
+      "title": "Implement tokenizer and Pratt expression parser",
+      "dependsOn": [
+        "T008"
+      ],
+      "document": "02-foundation.md",
+      "anchor": "t009-implement-tokenizer-and-pratt-expression-parser",
+      "fileTargets": "`packages/core/src/expression/{tokens,tokenize,ast,parse,precedence}.ts`.",
+      "implementationSteps": [
+        "Tokenize exact literals/operators/punctuation, tracking UTF-16 source offsets and total UTF-8 input bytes. Check 16 KiB before tokenization.",
+        "Parse literals, quoted-key objects, arrays, identifiers, unary/binary operators, ternary, dot/index access, and allowed identifier-call syntax using the C05 precedence table.",
+        "Track parenthesization explicitly for coalescing-mix validation. Reject assignment, loose equality, new, functions, arrow functions, template strings, regex literals, and member-method calls.",
+        "Enforce maximum AST depth 128 independently of parser recursion; check a guarded recursion counter before each Pratt descent and separately track constructed member-chain depth so hostile nesting cannot overflow first.",
+        "Store spans on AST nodes and parse error diagnostics. Reject leftover tokens and duplicate literal object keys.",
+        "Add an LRU AST cache of 512 entries keyed by grammar version, parser mode, and source; invalid parses may be cached as errors without retaining root state."
+      ],
+      "stepCount": 6,
+      "acceptance": "`parse.precedence` exhaustive operator-pair matrix; `parse.nullish-mix`, `parse.unicode-bytes`, `parse.depth-128-129`, `parse.strings`, `parse.no-executable-syntax`; fast-check arbitrary text terminates with AST or bounded error.",
+      "status": "pending"
+    },
+    {
+      "id": "T010",
+      "title": "Implement evaluator and built-in formatters",
+      "dependsOn": [
+        "T009"
+      ],
+      "document": "02-foundation.md",
+      "anchor": "t010-implement-evaluator-and-built-in-formatters",
+      "fileTargets": "`expression/evaluate.ts`, `expression/builtins.ts`, `expression/intl-cache.ts`.",
+      "implementationSteps": [
+        "Evaluate against an injected lexical read interface; return EvalResult plus tracked dependencies and nonfatal missing-value state. Never evaluate generated JS.",
+        "Implement own-property lookup, null chaining, array indices/length, forbidden computed keys, identity equality, and exact truthiness. Strings expose no methods or `.length`; len supplies length.",
+        "Implement typed arithmetic/order, zero-division and finite-result checks, boolean/coalescing short circuit, ternary, and the out-of-band failure semantics in C05.",
+        "Count AST steps/property reads against a single invocation budget. Stop at step 10001 before executing another operation.",
+        "Implement len, json, number, currency, date. Use string code-unit length for len; object length counts own enumerable keys. Currency uses Intl validation. Date-only input must match an actual Gregorian YYYY-MM-DD date; render its date components without timezone day shift. Timestamp input must be ISO with explicit Z/offset, or a finite epoch-millisecond number; reject ambiguous timezone-less date-times.",
+        "Cache Intl instances in a bounded 128-entry LRU. Custom formatter output passes safe JSON normalization; promises and side-effectful writes during formatter execution are rejected."
+      ],
+      "stepCount": 6,
+      "acceptance": "`eval.null-missing`, `eval.identity`, `eval.no-coercion`, `eval.short-circuit`, `eval.step-limit`, `format.leap-day`, `format.date-zone`, `format.bad-currency`, `format.async-rejected`, and CSP no-eval tests pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T011",
+      "title": "Implement scopes and extension registries",
+      "dependsOn": [
+        "T008",
+        "T010"
+      ],
+      "document": "02-foundation.md",
+      "anchor": "t011-implement-scopes-and-extension-registries",
+      "fileTargets": "`scope/{scope,lookup,declarations,refs}.ts`, `registry.ts`, `public-api/types.ts`.",
+      "implementationSteps": [
+        "Create scopes with explicit lexical parent and owner links. Register declarations before evaluating any dependent binding.",
+        "Reject duplicates across all declaration kinds and reserved names. Allow shadowing in child scopes; do not permit same-scope duplicates.",
+        "Implement refs as lexical names with one live element per name per scope; never return refs as expression values.",
+        "Build immutable command/formatter/behavior/adapter registries with identifier validation, duplicate/built-in rejection, and adapter version metadata. Freeze at compilation start.",
+        "Supply component isolation boundaries and context cells for store, route, props, and lifecycle/event values without making them writable.",
+        "Implement app-scope versus lexical-scope API resolution explicitly; app.refresh cannot reach an arbitrary local resource."
+      ],
+      "stepCount": 6,
+      "acceptance": "`scope.shadow`, `scope.duplicate-cross-kind`, `scope.reserved`, `scope.ref-shadow`, `scope.app-only`, `registry.after-mount`, `registry.builtin`, and `scope.component-isolation` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T012",
+      "title": "Implement owners, ranges, and deterministic disposal",
+      "dependsOn": [
+        "T011"
+      ],
+      "document": "02-foundation.md",
+      "anchor": "t012-implement-owners-ranges-and-deterministic-disposal",
+      "fileTargets": "`ownership/{owner,index,range,transaction}.ts`.",
+      "implementationSteps": [
+        "Implement C04 Owner/DomRange and a WeakMap from owned nodes to ownership records. IDs are monotonically increasing per root.",
+        "Provide createOwner, registerDisposer, createRange, insertRange, moveRange, and disposeOwner primitives. DOM operations use document fragments and comment anchors.",
+        "Mark the entire disposed subtree inactive before abort callbacks can fire; run cleanup in C06 order and isolate exceptions.",
+        "Maintain lifetime links for projected content and destination-linked fragment insertion without creating disposal cycles. A disposer token guarantees once-only invocation.",
+        "Abort owned event listeners, pending postflush work, timers, resource subscriptions, and behavior hooks through the same protocol.",
+        "Prevent crossing root/ignore boundaries. Add consistency assertions that anchors share a parent and ranges are contiguous before moves."
+      ],
+      "stepCount": 6,
+      "acceptance": "`owner.child-before-parent`, `owner.cleanup-connected`, `owner.double-dispose`, `owner.throwing-cleanup`, `owner.abort-reentrancy`, `range.move-focus`, `range.broken-anchor`, `owner.zero-after-unmount` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T013",
+      "title": "Implement state cells and dependency tracking",
+      "dependsOn": [
+        "T011",
+        "T012"
+      ],
+      "document": "02-foundation.md",
+      "anchor": "t013-implement-state-cells-and-dependency-tracking",
+      "fileTargets": "`state/{cell,dependencies,store,api}.ts`.",
+      "implementationSteps": [
+        "Instantiate local/store defaults through safe deep copies. State cell source and writability are immutable metadata.",
+        "Implement synchronous get/set visibility and immutable writes through T008 paths. Increment versions only when a primitive/identity value changes.",
+        "Record exact path reads during evaluation. Whole-object reads, length/iteration reads, and descendant reads use distinct dependency keys.",
+        "Invalidate parent replacement descendants; invalidate child writes for child, ancestor whole-object, and iteration readers, while leaving unrelated sibling-leaf readers untouched.",
+        "Replace dynamic dependency sets after successful evaluation; retain the last safe set on evaluation failure to permit recovery after source changes.",
+        "Implement batch depth with synchronous callback semantics. Detect a returned thenable and throw BATCH_ASYNC; already synchronous writes remain committed, since batch is not rollback. Always decrement depth in finally."
+      ],
+      "stepCount": 6,
+      "acceptance": "`state.immediate-read`, `state.batch-once`, `state.parent-child-invalidation`, `state.sibling-noop`, `state.branch-dependencies`, `state.async-batch`, `state.disposed-write` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T014",
+      "title": "Implement derived values and flush scheduling",
+      "dependsOn": [
+        "T010",
+        "T012",
+        "T013"
+      ],
+      "document": "02-foundation.md",
+      "anchor": "t014-implement-derived-values-and-flush-scheduling",
+      "fileTargets": "`scheduler/{queues,flush,after-flush}.ts`, `state/derived.ts`.",
+      "implementationSteps": [
+        "Create per-root deduplicated queues, schedule the first microtask on transition from clean to dirty, and enforce phase order from C06.",
+        "Evaluate derived values before readers with DFS dependency traversal; keep an evaluation stack and mark only the detected cycle disabled with DERIVED_CYCLE.",
+        "Preserve last valid values on expression limit failure; normal invalid type results publish null plus diagnostic. Prevent recursive reevaluation loops.",
+        "Skip work for dead owners and remove disposed jobs from queues. Writes during flush schedule a new pass without recursive flush calls.",
+        "Implement cancellable afterFlush; tasks run only after all earlier phases in that pass. A postflush write creates another pass.",
+        "Count complete passes per microtask and stop before pass 101, emitting one UPDATE_LOOP for the root. Unmount remains usable."
+      ],
+      "stepCount": 6,
+      "acceptance": "`scheduler.phase-order`, `scheduler.sync-batch`, `derived.multi-hop`, `derived.cycle-partial`, `scheduler.disposal-mid-flush`, `scheduler.limit-100`, `scheduler.other-root`, `afterflush.cancel` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T015",
+      "title": "Implement browser persistence",
+      "dependsOn": [
+        "T006",
+        "T013",
+        "T014"
+      ],
+      "document": "02-foundation.md",
+      "anchor": "t015-implement-browser-persistence",
+      "fileTargets": "`state/persistence.ts`.",
+      "implementationSteps": [
+        "Compile persistence only on an unambiguous state/store declaration with explicit nonempty key and valid session/local enum.",
+        "Claim the namespaced key, read the selected Storage object inside try/catch, and validate the envelope/version/value before first derived evaluation.",
+        "Restore the whole declared object only when it has the same declared top-level keys; wrong/missing/extra keys restore defaults and diagnose. Type evolution is application-managed through namespace version.",
+        "Coalesce changed declaration snapshots into one JSON serialization/storage write after each settled flush. Do not serialize resources/props/refs or descendants.",
+        "Storage denial/quota/JSON failures produce nonfatal diagnostics while live state stays committed. Release key claims on disposal.",
+        "Document and test that session reset does not clear persistence, and no storage-event synchronization exists."
+      ],
+      "stepCount": 6,
+      "acceptance": "`persist.local-session`, `persist.version`, `persist.corrupt`, `persist.quota`, `persist.coalesced`, `persist.key-collision`, `persist.reset-session` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T016",
+      "title": "Implement directive normalization and compile validation",
+      "dependsOn": [
+        "T004",
+        "T011",
+        "T012"
+      ],
+      "document": "02-foundation.md",
+      "anchor": "t016-implement-directive-normalization-and-compile-validation",
+      "fileTargets": "`compiler/{normalize,validate,plan,walk}.ts`.",
+      "implementationSteps": [
+        "Walk DOM nodes and template content explicitly. Map data-ui-* to canonical names while retaining source name/location.",
+        "Reject duplicate spellings, malformed dynamic-family suffixes, unknown directives, nonempty presence flags, illegal placement, missing companions, and sink ownership conflicts from schema.",
+        "Treat ui-ignore host attributes normally but do not traverse/observe its descendants. Treat definition/import/route templates as declarations rather than active content.",
+        "Build a staged BindingPlan per owner with phases for scope, declarations, structure, components, values, events, behaviors, resource start.",
+        "Separate parse/validate from activate. Invalid local plans retain original HTML and attach no invalid handler; root configuration errors prevent all activation.",
+        "Capture source templates for later branch/list/component instantiation without mutating inert source content."
+      ],
+      "stepCount": 6,
+      "acceptance": "`compile.data-alias`, `compile.empty-flags`, `compile.unknown`, `compile.ignore`, `compile.conflicts`, `compile.local-fallback`, `compile.declarations-first` pass, with CLI-compatible structured rule IDs.",
+      "status": "pending"
+    },
+    {
+      "id": "T017",
+      "title": "Implement root startup and distribution semantics",
+      "dependsOn": [
+        "T006",
+        "T011",
+        "T012",
+        "T014",
+        "T016"
+      ],
+      "document": "02-foundation.md",
+      "anchor": "t017-implement-root-startup-and-distribution-semantics",
+      "fileTargets": "`core/src/app.ts`, `runtime/src/{classic,esm,module-bridge}.ts`.",
+      "implementationSteps": [
+        "Discover document ui-app roots only in classic boot after DOM readiness; require unique nonempty names and reject nested roots before any mount.",
+        "Implement C03 App lifecycle and shared document mount markers; scope all application state/caches/registries to the App.",
+        "Apply module installers, validate options, discover definitions/imports/routes, compile declarations, evaluate derived, instantiate structures, bind values, activate listeners/behaviors, then start eligible resources.",
+        "Defer component instances until imports resolve, but allow independent bindings to activate; imported instance failure must not indefinitely delay unrelated content. ready waits for bounded import resolution and initial plan completion.",
+        "Remove ui-cloak only after that owner's first successful binding flush. Leave failed owner cloak in place with diagnostics; do not claim root-fatal readiness.",
+        "Implement synchronous idempotent unmount and ready rejection if interrupted during compilation. Stop classic auto-discovery after its initial pass; application-authored additional roots require explicit mount."
+      ],
+      "stepCount": 6,
+      "acceptance": "`boot.classic-auto`, `boot.esm-explicit`, `boot.nested`, `boot.duplicate-name`, `boot.double-distribution`, `boot.same-app-repeat`, `boot.ready`, `boot.unmount-during-import` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T018",
+      "title": "Implement text, property, and attribute sinks",
+      "dependsOn": [
+        "T010",
+        "T014",
+        "T016",
+        "T017"
+      ],
+      "document": "02-foundation.md",
+      "anchor": "t018-implement-text-property-and-attribute-sinks",
+      "fileTargets": "`bindings/{text,attribute,class,show,url}.ts`.",
+      "implementationSteps": [
+        "ui-text accepts primitive/null and uses textContent; reject array/object unless formatted. Do not interpolate ordinary text nodes.",
+        "Implement the exact bind allowlist; resolve ui-src/ui-href aliases to the same sink. Reject on*, style, srcdoc, data-ui-*, and unlisted names before evaluation.",
+        "Use DOM properties for value/checked, presence/removal for boolean attributes, string values for other permitted attributes, and removal on null. ARIA false becomes string `false`, not removal.",
+        "Validate href/src using context URL policy after evaluation and URL resolution; forbidden URL updates remove the unsafe attribute and emit URL_POLICY. Never leave a newly requested unsafe URL installed.",
+        "ui-class tracks its own tokens and preserves initial static tokens; object values must be booleans. A token static and dynamically false remains present because the framework does not own its static occurrence.",
+        "ui-show applies RFC truthiness to hidden. Compare previous normalized values and skip equal DOM writes."
+      ],
+      "stepCount": 6,
+      "acceptance": "`bind.text-xss`, `bind.array-requires-json`, `bind.boolean-aria`, `bind.url-schemes`, `bind.static-class`, `bind.noop-write`, `bind.show-preserves-state` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T019",
+      "title": "Implement conditional template chains",
+      "dependsOn": [
+        "T012",
+        "T014",
+        "T016",
+        "T018"
+      ],
+      "document": "02-foundation.md",
+      "anchor": "t019-implement-conditional-template-chains",
+      "fileTargets": "`structure/conditional.ts`.",
+      "implementationSteps": [
+        "Group adjacent if/else-if/else templates while ignoring only whitespace text and comments. A non-whitespace sibling terminates a chain; orphan else/else-if is invalid.",
+        "Reject multiple else branches, branches after else, non-template structural directives, and if+for on the same template.",
+        "Create one anchored owner range per chain. Evaluate expressions in order and select the first truthy branch; do not evaluate later branch conditions unnecessarily.",
+        "If selection changes, compile the new branch plan, dispose previous child owner, clone/insert selected content, create its scopes, and activate through scheduler phases.",
+        "If selection stays the same, preserve existing nodes/state/requests. Empty selection retains anchors only.",
+        "Invalid branch evaluation retains last successful branch for limit failure; ordinary null/type failure counts false and diagnoses."
+      ],
+      "stepCount": 6,
+      "acceptance": "`if.whitespace-chain`, `if.orphan`, `if.branch-order`, `if.cleanup-once`, `if.same-branch-state`, `if.no-match`, `if.limit-preserves` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T020",
+      "title": "Implement keyed list reconciliation",
+      "dependsOn": [
+        "T012",
+        "T013",
+        "T014",
+        "T016",
+        "T018"
+      ],
+      "document": "02-foundation.md",
+      "anchor": "t020-implement-keyed-list-reconciliation",
+      "fileTargets": "`structure/{for-parser,keyed-list}.ts`.",
+      "implementationSteps": [
+        "Parse `item[, index] in expression` without splitting inside expression tokens. Validate alias names, collisions, and mandatory ui-key.",
+        "Treat null as empty; reject non-array values. Evaluate every new key in a temporary read-only item/index scope before changing any live alias or DOM.",
+        "Require string/finite-number keys and type-preserving Map identity; normalize -0 to 0 because numeric equality considers them equal. Reject duplicate keys atomically.",
+        "Prepare new owners/plans before mutation. For retained keys update read-only aliases, preserving their local state even when the item object changes.",
+        "Dispose absent keys, create new anchored item ranges, and move whole ranges into final order using a right-to-left anchor insertion walk. Do not add LIS optimization initially.",
+        "Keep focus on moved nodes. If the focused node is removed, focus the list's nearest containing element with temporary tabindex=-1 unless focus already moved deliberately during cleanup."
+      ],
+      "stepCount": 6,
+      "acceptance": "`for.typed-keys`, `for.duplicate-atomic`, `for.invalid-key`, `for.reorder-focus`, `for.item-replacement-state`, `for.remove-dispose`, `for.empty`, `for.alias-readonly` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T021",
+      "title": "Implement mutation observation and external DOM changes",
+      "dependsOn": [
+        "T012",
+        "T016",
+        "T017",
+        "T019",
+        "T020"
+      ],
+      "document": "02-foundation.md",
+      "anchor": "t021-implement-mutation-observation-and-external-dom-changes",
+      "fileTargets": "`compiler/observe.ts`, `ownership/transaction.ts`.",
+      "implementationSteps": [
+        "Observe each root for childList/subtree and directive-attribute changes; filter ignore descendants without compiling them.",
+        "Reconcile MutationRecords against transaction journal and final connectivity. Framework insert/remove/move operations must not remount nodes when delivery occurs later.",
+        "Compile genuinely new app-authored nodes exactly once under the nearest active owner, with declarations and local failure behavior identical to initial mount.",
+        "For a moved complete owned range within one lexical scope, preserve ownership. Across scopes, dispose old ownership and recompile from source with defaults; do not carry old local state.",
+        "Diagnose declaration attribute edits as unsupported, retaining the compiled original behavior. Plain static attribute changes remain browser behavior.",
+        "Dispose disconnected owned nodes/ranges after the observer batch, excluding nodes reinserted safely in the same batch. Abort observation before root teardown."
+      ],
+      "stepCount": 6,
+      "acceptance": "`observe.framework-no-duplicate`, `observe.external-add`, `observe.same-scope-move`, `observe.cross-scope`, `observe.remove-reinsert`, `observe.attribute-change`, `observe.ignore` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T022",
+      "title": "Implement command parsing and safe event snapshots",
+      "dependsOn": [
+        "T009",
+        "T010",
+        "T011",
+        "T016"
+      ],
+      "document": "02-foundation.md",
+      "anchor": "t022-implement-command-parsing-and-safe-event-snapshots",
+      "fileTargets": "`commands/{parse,snapshot,handler}.ts`.",
+      "implementationSteps": [
+        "Parse semicolon-separated exact-name calls with optional final semicolon; reject empty interior commands, arbitrary statements, and nested effect calls in expression arguments.",
+        "Compile set/toggle first arguments as writable paths; all other arguments are pure expression ASTs. Share invocation budget across arguments.",
+        "Validate DOM event names and `.prevent/.stop/.once/.self`; reject duplicates, unknown modifiers, modifiers on lifecycle handlers, and collision with declarative request trigger.",
+        "Snapshot only type/key/button/value/checked/detail. Normalize component detail with safe JSON; omit live Event/target/DOM references. Expose null for inapplicable fields.",
+        "Apply self filtering before prevent/stop/once consumption; prevent/stop occur synchronously during native dispatch. Command execution then awaits sequentially.",
+        "Register listeners through owner disposal. Once removes the listener on the first eligible event even if the handler later fails."
+      ],
+      "stepCount": 6,
+      "acceptance": "`command.quoted-semicolon`, `command.nested-expression`, `event.self-order`, `event.once`, `event.no-dom-leak`, `event.lifecycle-modifier`, `event.request-conflict` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T023",
+      "title": "Implement core command execution",
+      "dependsOn": [
+        "T013",
+        "T014",
+        "T022"
+      ],
+      "document": "02-foundation.md",
+      "anchor": "t023-implement-core-command-execution",
+      "fileTargets": "`commands/{execute,builtins,context}.ts`.",
+      "implementationSteps": [
+        "Implement set and toggle as immediate state writes; wrong boolean/path or expression failure stops the handler before further effects.",
+        "Implement emit with bubbling/composed CustomEvent from the current host and safely normalized detail; forbid reserved request lifecycle event names as component emissions.",
+        "Implement focus by lexical ref lookup, wait for flush, require a connected focusable target, and cancel if owner is disposed while waiting.",
+        "Route refresh/reset/navigate/open/close/toast through registered service interfaces. Missing optional UI/router services produce MODULE_MISSING where required; navigate has native same-origin fallback when router is absent.",
+        "Invoke custom commands with scoped API/signal/host/refs/event snapshot; await promises sequentially, catch failures, diagnose COMMAND_ERROR, and stop only that handler.",
+        "Check liveness before invocation and after each await; refuse postdisposal writes through retained context APIs. Do not roll back completed earlier commands."
+      ],
+      "stepCount": 6,
+      "acceptance": "`command.sequential`, `command.reads-prior-write`, `command.stop-on-failure`, `command.module-missing`, `command.focus-after-flush`, `command.async-disposal`, `command.emit-detail` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T024",
+      "title": "Complete root and lexical public APIs",
+      "dependsOn": [
+        "T011",
+        "T014",
+        "T017",
+        "T023"
+      ],
+      "document": "02-foundation.md",
+      "anchor": "t024-complete-root-and-lexical-public-apis",
+      "fileTargets": "`core/src/public-api/{app,scope,types}.ts`, `tests/types/`.",
+      "implementationSteps": [
+        "Publish exact method signatures and App.ready/onDiagnostic/inspect clarifications. Restrict mutable operations by lifecycle state.",
+        "Provide public readonly snapshot types, command/formatter/behavior/adapter contexts, normalized errors, diagnostics, route/resource/action record types, and module installer types.",
+        "Define rejected/throwing behavior consistently: synchronous invalid API inputs throw a typed PlainUIError carrying code; async work rejects; declarative faults diagnose and localize.",
+        "Implement scoped afterFlush cancellation and beforeNavigate registration through service interfaces without exposing owner/scheduler internals.",
+        "Add plain JS examples plus compile-time accepted/rejected TS fixtures for each API. Never require TypeScript in examples.",
+        "Ensure uninstall/unmount cleans public subscriptions and returned unregister functions remain idempotent."
+      ],
+      "stepCount": 6,
+      "acceptance": "`api.types`, `api.js-usage`, `api.dead-scope`, `api.app-vs-local`, `api.readonly-snapshot`, `api.unregister-twice` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T025",
+      "title": "Close foundation conformance and lifecycle gate",
+      "dependsOn": [
+        "T015",
+        "T018",
+        "T019",
+        "T020",
+        "T021",
+        "T024"
+      ],
+      "document": "02-foundation.md",
+      "anchor": "t025-close-foundation-conformance-and-lifecycle-gate",
+      "fileTargets": "`tests/integration/foundation.spec.ts`, `evidence/milestones/M1.md`.",
+      "implementationSteps": [
+        "Compose nested local state, store persistence, derived chains, if branches, keyed components-as-future-hosts, bindings, refs, and async commands into one fixture.",
+        "Run 100 mount/update/reorder/unmount cycles with instrumented counts. Require zero framework owners/listeners/timers/queued jobs after every unmount.",
+        "Reverse branch switches during pending async commands and remove ranges during flush; assert no later writes or double cleanup.",
+        "Run parser property suite with fixed reproducible seed and at least 10,000 generated strings; save minimized failing inputs as permanent fixtures.",
+        "Compare classic and ESM outcomes for the entire completed foundation registry subset.",
+        "Record passing fixture inventory and remaining module placeholders. Do not mark data/forms/components complete from stubs."
+      ],
+      "stepCount": 6,
+      "acceptance": "M1 evidence names exact build and test results; every foundation directive has valid/invalid/disposal coverage; no unresolved foundation blocker remains.",
+      "status": "pending"
+    },
+    {
+      "id": "T026",
+      "title": "Compile and resolve URL templates",
+      "dependsOn": [
+        "T010",
+        "T016",
+        "T025"
+      ],
+      "document": "03-data-and-forms.md",
+      "anchor": "t026-compile-and-resolve-url-templates",
+      "fileTargets": "`packages/data/src/request/{url-template,query}.ts`.",
+      "implementationSteps": [
+        "Tokenize literal segments and balanced `{expression}` regions using expression string/delimiter rules; do not split braces inside strings/objects. Literal raw unmatched braces fail; `%7B/%7D` stay literal URL content.",
+        "Reject substitutions in scheme/authority by parsing a sentinel-filled template and determining component positions before evaluation. Validate the final URL again after substitution.",
+        "Evaluate scalars: encode string/boolean/finite number using encodeURIComponent; null returns an incomplete result; array/object/type/limit failures return an error. Encoded slashes stay inside one substituted component.",
+        "Resolve requests against api.baseUrl; leading slash uses its origin. Resolve navigation against the document URL through a separate mode.",
+        "Evaluate ui-query as a safe string-keyed object. Remove every literal query occurrence for a supplied key; append its scalar or array values in insertion order; null omits the key and null array elements are omitted. Reject nested arrays/objects and nonfinite values.",
+        "Strip request fragments, reject URL userinfo, non-HTTP(S), and origins outside the normalized allowlist. Preserve canonical query pair order as C08 requires."
+      ],
+      "stepCount": 6,
+      "acceptance": "`url.encoded-slash` id=`a/b` becomes `a%2Fb`; `url.null` suspends; `url.query-replace` `/x?q=old&q=older` plus `{q:['a','b']}` yields two new values; `url.authority`, `url.credentials`, `url.protocol`, and `url.relative-base` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T027",
+      "title": "Build immutable request drafts and final policy validation",
+      "dependsOn": [
+        "T006",
+        "T008",
+        "T026"
+      ],
+      "document": "03-data-and-forms.md",
+      "anchor": "t027-build-immutable-request-drafts-and-final-policy-validation",
+      "fileTargets": "`data/src/{request/draft,policy/headers,policy/origin,policy/csrf}.ts`.",
+      "implementationSteps": [
+        "Define draft fields method, URL, headers, credentials, body, responseMode, timeoutMs, retry, adapter identity, epoch, owner signal, and consumer generation. Body is absent, JSON bytes, URLSearchParams, or FormData.",
+        "Merge app/endpoint headers case-insensitively; endpoint null deletes an inherited value. Reject non-string non-null header values, invalid header names/values, forbidden browser headers, and Sec-/Proxy- names using a published tested policy table.",
+        "Set Accept only if absent; set Content-Type for JSON/form; reject explicit multipart Content-Type so the browser can supply its boundary. GET body is always invalid.",
+        "Run adapter.prepare on a detached draft, then rebuild Headers and validate URL/origin/method/credentials/body again. Do not trust its earlier validated input.",
+        "After prepare, read the CSRF meta token for same-origin unsafe methods (POST/PUT/PATCH/DELETE). Missing/empty token fails before fetch; override any conflicting supplied header with the current token. Do not send this configured token cross-origin.",
+        "Freeze metadata after validation; retain transport body in private storage. Omit all body/header values from diagnostics and cache inspection."
+      ],
+      "stepCount": 6,
+      "acceptance": "`request.header-case`, `request.header-null`, `request.forbidden-header`, `request.prepare-origin`, `request.csrf-late-read`, `request.csrf-missing-no-fetch`, `request.cross-origin-no-token`, `request.multipart-boundary` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T028",
+      "title": "Implement adapters and normalized errors",
+      "dependsOn": [
+        "T011",
+        "T027"
+      ],
+      "document": "03-data-and-forms.md",
+      "anchor": "t028-implement-adapters-and-normalized-errors",
+      "fileTargets": "`data/src/adapter/{registry,identity,invoke,error}.ts`.",
+      "implementationSteps": [
+        "Register identity version 1 automatically; unknown adapter names fail the affected declaration. Custom adapters must have nonempty version strings.",
+        "Implement prepare/success/error optional hooks and default behavior. Copy/freeze hook context metadata so one subscriber cannot alter another.",
+        "Normalize failures to all seven error fields. Default messages are fixed safe text by kind/status, fields={}, code/requestId=null unless a safe mapping supplies them, retryable derived from transport rules.",
+        "Preserve HTTP status for HTTP errors; status=null for network/timeout/security before response. Adapter exceptions become kind=adapter without exposing thrown stack or arbitrary message in production.",
+        "Normalize success hook output with T008. Validate error-hook output kinds, integer status, strings, field string arrays, boolean retryable; invalid output becomes ADAPTER_ERROR.",
+        "Liveness/epoch/generation checks run before and after every hook await. Apply C08's separate per-hook deadline; hook expiry is kind=adapter/code=ADAPTER_TIMEOUT and is not retryable. Abort does not become adapter error. Read response bodies only in transport, never again in adapters."
+      ],
+      "stepCount": 6,
+      "acceptance": "`adapter.envelope`, `adapter.validation-map`, `adapter.async-stale`, `adapter.non-json`, `adapter.invalid-error`, `adapter.throw`, `adapter.version-cache` pass with literal expected normalized objects.",
+      "status": "pending"
+    },
+    {
+      "id": "T029",
+      "title": "Implement Fetch transport and response decoding",
+      "dependsOn": [
+        "T027",
+        "T028"
+      ],
+      "document": "03-data-and-forms.md",
+      "anchor": "t029-implement-fetch-transport-and-response-decoding",
+      "fileTargets": "`data/src/transport/{fetch,decode,response-meta}.ts`.",
+      "implementationSteps": [
+        "Call browser Fetch with the immutable draft, redirect:'error', credentials, and a linked AbortController. Reject opaque/opaqueredirect responses as security failures.",
+        "Keep one attempt deadline covering fetch and body consumption; clear it before invoking response adapters, which use their separate C08 hook deadline. Distinguish transport timeout abort from caller/owner cancellation with an explicit reason token.",
+        "Read successful/failed body once as text. Treat 204 or zero-length 2xx text as null. Whitespace-only JSON text is nonempty and must parse successfully or fail.",
+        "For nonempty JSON success require media type application/json or `application/*+json`, ignoring parameters/case; parse with JSON.parse then safe-normalize. Wrong media type is parse-kind RESPONSE_TYPE; malformed JSON is parse-kind RESPONSE_PARSE.",
+        "HTTP non-2xx never becomes success. Parse JSON error bodies only when JSON media type and valid syntax; otherwise supply null parsed body to error hook with safe default HTTP message. Do not render raw error HTML/text.",
+        "HTML response mode delegates sanitized handling to fragments after text/html validation; no JSON resource receives HTML. Capture correlation header `x-request-id` only as bounded text (maximum 256 characters), never as executable markup.",
+        "Always clear deadline and abort listeners in finally, including decoding/adapter exceptions."
+      ],
+      "stepCount": 7,
+      "acceptance": "`transport.empty-204`, `transport.empty-200`, `transport.whitespace-json`, `transport.plus-json`, `transport.wrong-type`, `transport.redirect-no-follow`, `transport.body-once`, `transport.abort-vs-timeout` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T030",
+      "title": "Implement attempt retries and cancellation",
+      "dependsOn": [
+        "T029"
+      ],
+      "document": "03-data-and-forms.md",
+      "anchor": "t030-implement-attempt-retries-and-cancellation",
+      "fileTargets": "`data/src/transport/retry.ts`.",
+      "implementationSteps": [
+        "Accept retry count 0\u20133 for GET; reject retry on mutation directives at validation. Attempts total `1 + retry`.",
+        "Retry network failures, deadline timeouts, HTTP 502/503/504 only, with delays 500/1000/2000 ms. Do not inspect arbitrary adapter retryable=true to expand this list.",
+        "Allocate a fresh controller/deadline for each attempt. Check operation signal/epoch/liveness before starting and after delay.",
+        "Register backoff timer with operation owner; cancellation clears it immediately and resolves operation cancellation, not a timeout error.",
+        "Preserve only final accepted failure as resource/action error. Intermediate failures do not invoke lifecycle error handlers.",
+        "Never replay POST/PUT/PATCH/DELETE automatically, including after adapter or timeout failures."
+      ],
+      "stepCount": 6,
+      "acceptance": "`retry.timeline` fourth attempt starts after cumulative delays 3500 ms excluding attempt durations; `retry.no-400-500-parse`, `retry.cancel-backoff`, `retry.per-attempt-timeout`, `retry.mutation-once` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T031",
+      "title": "Implement request keys and shared in-flight GETs",
+      "dependsOn": [
+        "T028",
+        "T030"
+      ],
+      "document": "03-data-and-forms.md",
+      "anchor": "t031-implement-request-keys-and-shared-in-flight-gets",
+      "fileTargets": "`data/src/coordinator/{key,flight,subscriber}.ts`.",
+      "implementationSteps": [
+        "Encode cache key fields with length-prefixed canonical segments to prevent delimiter collisions. Digest effective header sequence with the shared SHA-256 service; never use a redacted header list as actual identity.",
+        "Implement root-local inFlight Map keyed by flight identity; track subscriber ID, owner, generation, key, epoch, callbacks, and active state.",
+        "Subscribe an eligible GET to an existing compatible flight or create one. Do not deduplicate non-GET methods or incompatible timeout/retry policies.",
+        "Cancel a consumer by removing its subscription; abort transport only at zero subscribers. A removed subscriber receives no later data/error callback.",
+        "Before notifying each remaining consumer, require active owner, current generation, matching key, matching epoch, and valid invalidation generation.",
+        "Delete settled flights even if callbacks throw; isolate subscriber callbacks. Never let old invalidation generations populate settled cache."
+      ],
+      "stepCount": 6,
+      "acceptance": "`flight.shared-count` two resources\u2192one fetch; `flight.partial-cancel` first dispose leaves fetch alive; `flight.last-cancel` aborts; `flight.secret-header-distinct`, `flight.retry-policy-distinct`, `flight.old-generation`, `flight.callback-throws` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T032",
+      "title": "Implement bounded resource cache and invalidation generations",
+      "dependsOn": [
+        "T031"
+      ],
+      "document": "03-data-and-forms.md",
+      "anchor": "t032-implement-bounded-resource-cache-and-invalidation-generations",
+      "fileTargets": "`data/src/cache/{lru,entry,invalidate}.ts`.",
+      "implementationSteps": [
+        "Maintain per-root LRU Map with data, acceptedAt, adapter identity, epoch, and invalidation generation; never retain errors.",
+        "On usable read move entry to newest; insertion evicts oldest until size<=maxEntries. maxEntries=0 bypasses retained entries.",
+        "Calculate freshness per consumer as `ttl>0 && now-acceptedAt<ttl && generation-current`; exact boundary is stale. ttl=0 never reuses a settled entry.",
+        "Keep resource controllers' own settled values after cache eviction. Cache eviction alone does not clear visible data or refetch.",
+        "On invalidation advance key generation, mark all attached consumers stale, cancel/supersede older revalidation subscribers, and notify eligible automatic controllers once.",
+        "Implement coalesced explicit refresh versus new mutation invalidation per C08. Concurrent refresh callers receive the same accepted-generation outcome."
+      ],
+      "stepCount": 6,
+      "acceptance": "`cache.lru-bound`, `cache.zero`, `cache.ttl-per-consumer`, `cache.boundary`, `cache.error-excluded`, `cache.invalidation-old-flight`, `cache.concurrent-refresh` pass with fake clocks.",
+      "status": "pending"
+    },
+    {
+      "id": "T033",
+      "title": "Implement resource records and load state machine",
+      "dependsOn": [
+        "T014",
+        "T016",
+        "T032"
+      ],
+      "document": "03-data-and-forms.md",
+      "anchor": "t033-implement-resource-records-and-load-state-machine",
+      "fileTargets": "`data/src/resource/{record,controller,dependencies}.ts`.",
+      "implementationSteps": [
+        "Register resource read-only cell before bindings evaluate. Initialize data=null,status=idle,loading=false,refreshing=false,error=null,empty=false,stale=false,updatedAt=null and private hasSuccess=false.",
+        "On complete new key, clear different-key settled data and advance generation. On incomplete URL, clear previous entity and enter idle without fetching.",
+        "First fetch sets loading=true,status=loading; same-key fetch after success sets refreshing=true,status=success while retaining data. Both clear error.",
+        "Accepted success commits normalized data, hasSuccess=true, success status, loading/refreshing=false, correct empty for null/empty string/empty array only, updatedAt=acceptedAt, and freshness-derived stale.",
+        "Accepted failure retains data only from successful same key, sets status=error/error record, and clears pending flags. Cancellation restores the current generation's last settled snapshot without introducing error.",
+        "Track URL/query/header dependencies and reevaluate identity when they change. Adapter/header asynchronous work cannot make an obsolete key current.",
+        "Emit lifecycle handlers through the shared dispatcher only after records and DOM settle; resource declarations support success/error/finally too."
+      ],
+      "stepCount": 7,
+      "acceptance": "`resource.null-success`, `resource.refresh-failure-keeps-data`, `resource.key-switch-clears`, `resource.incomplete`, `resource.late-old-response`, `resource.cancel-restore`, `resource.empty-values` pass against explicit record snapshots.",
+      "status": "pending"
+    },
+    {
+      "id": "T034",
+      "title": "Implement resource activation modes and freshness observability",
+      "dependsOn": [
+        "T033"
+      ],
+      "document": "03-data-and-forms.md",
+      "anchor": "t034-implement-resource-activation-modes-and-freshness-observability",
+      "fileTargets": "`data/src/resource/{activation,visibility,freshness}.ts`.",
+      "implementationSteps": [
+        "auto resources start after initial bindings and automatically respond to eligible dependency changes. manual resources never initiate without refresh.",
+        "visible resources observe the declaration template's nearest containing Element, excluding disconnected/template-content-only targets. Diagnose missing/unobservable parents.",
+        "On first intersection, disconnect that resource observation and permanently behave as auto until disposal. Scope visibility state does not reset on ui-show hiding.",
+        "Use the earliest positive TTL deadline among live consumers to schedule a shared root timer that updates stale flags; reschedule when consumers/entries change. No automatic fetch solely from expiry.",
+        "Invalidation refreshes active auto and already-visible consumers; marks manual/not-visible consumers stale. Explicit refresh works for all modes.",
+        "Stop visibility observers/timers on disposal and avoid registering a new observer from a late callback."
+      ],
+      "stepCount": 6,
+      "acceptance": "`load.manual`, `load.visible-first-only`, `load.visibility-target`, `load.hidden-stale-no-fetch`, `load.explicit-hidden-refresh`, `load.ttl-stale`, `load.dispose-observer` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T035",
+      "title": "Implement session reset and public resource refresh",
+      "dependsOn": [
+        "T024",
+        "T034"
+      ],
+      "document": "03-data-and-forms.md",
+      "anchor": "t035-implement-session-reset-and-public-resource-refresh",
+      "fileTargets": "`data/src/session.ts`, `data/src/resource/public.ts`.",
+      "implementationSteps": [
+        "app.resetSession increments epoch before touching controllers; abort resource/action/import-related authenticated operations where applicable, clear flights/cache, reset resource/action records to idle.",
+        "Prevent old async prepare/success/error hooks and fragment candidates from committing under previous epoch. Static component definition imports are not authenticated resource data; root unmount still aborts them.",
+        "Preserve declared local/store/persisted state and explain this in the logout example.",
+        "Implement lexical and app-scope refresh resolution; reject unknown names/read-only nonresource names synchronously or through command diagnostics as appropriate.",
+        "A refresh promise resolves only after next accepted data and binding flush. Failure rejects normalized error; disposal/supersession/session reset rejects AbortError; incomplete URL rejects RESOURCE_SUSPENDED.",
+        "Ensure resetSession does not start fresh requests with credentials being cleared; subsequent explicit refresh can restart."
+      ],
+      "stepCount": 6,
+      "acceptance": "`session.epoch-first`, `session.late-adapter`, `session.idle-records`, `session.preserve-store`, `refresh.await-bindings`, `refresh.manual`, `refresh.incomplete` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T036",
+      "title": "Compile action declarations and action records",
+      "dependsOn": [
+        "T016",
+        "T022",
+        "T033"
+      ],
+      "document": "03-data-and-forms.md",
+      "anchor": "t036-compile-action-declarations-and-action-records",
+      "fileTargets": "`data/src/action/{compile,record,context}.ts`.",
+      "implementationSteps": [
+        "Distinguish resource template from action by ui-data. For action require one method, validate method-specific options, and select submit/change/click default trigger.",
+        "Resolve ui-trigger only from supported DOM events; reject duplicate request and ui-on same-trigger binding on that element.",
+        "Create optional named read-only action cell in nearest lexical scope plus `$action` context for action element descendants. Initialize pending=false,status=idle,data=null,error=null.",
+        "Compile URL/query/headers/body once into AST plans; do not send anything during compilation. Register no listener if the action configuration is statically invalid.",
+        "Validate form encoding/defaults and lifecycle handlers before activation; delegate forms to T042\u2013T045.",
+        "HTML action options require fragments module/target/swap and cannot appear on a resource. JSON actions reject target/swap/enhance options."
+      ],
+      "stepCount": 6,
+      "acceptance": "`action.default-trigger`, `action.method-conflict`, `action.name-collision`, `action.unnamed-context`, `action.body-get`, `action.missing-module`, `action.invalid-native-fallback` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T037",
+      "title": "Implement action debounce and concurrency",
+      "dependsOn": [
+        "T030",
+        "T035",
+        "T036"
+      ],
+      "document": "03-data-and-forms.md",
+      "anchor": "t037-implement-action-debounce-and-concurrency",
+      "fileTargets": "`data/src/action/controller.ts`, `forms/src/pending.ts`.",
+      "implementationSteps": [
+        "Accept eligible triggers into the C09 preparation/debounce pipeline; cancel/restart trailing timers with newest captured input.",
+        "At operation start increment generation, establish epoch/signal, set pending/status, clear prior error, and apply pending affordances.",
+        "For drop, ignore triggers while pending without changing data or timer. Disable native form submit buttons with original-state+operation tokens; for nonnative custom trigger hosts use aria-disabled and event suppression.",
+        "For replace, cancel prior consumer/transport subscription at new operation start, permit old finally only while scope active, and forbid old completion from clearing the new pending flag or reenabling its controls.",
+        "On settlement restore only framework-owned disabled/aria-busy/aria-disabled values if their token still matches. Preserve controls already disabled by application state.",
+        "On dispose cancel timers, operations, and pending affordances without user lifecycle commands. Document that client abort cannot undo a server mutation."
+      ],
+      "stepCount": 6,
+      "acceptance": "`action.drop-double`, `action.replace-reversed`, `action.debounce-snapshot`, `action.debounce-dispose`, `action.disabled-original`, `action.old-completion-token`, `action.unknown-server-outcome` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T038",
+      "title": "Implement action settlement and lifecycle handlers",
+      "dependsOn": [
+        "T023",
+        "T032",
+        "T037"
+      ],
+      "document": "03-data-and-forms.md",
+      "anchor": "t038-implement-action-settlement-and-lifecycle-handlers",
+      "fileTargets": "`data/src/action/{settle,lifecycle,invalidation}.ts`.",
+      "implementationSteps": [
+        "Commit pending=false plus status/data/error in one state transaction before handlers. Preserve last successful same-action data on failure; expose latest normalized failure separately.",
+        "On successful non-GET mutation, resolve all ui-invalidate names lexically, collect distinct resource keys, advance each once, and schedule active automatic subscribers before success handlers.",
+        "Flush records/DOM/accessibility, then run success or error; protect finally so it executes even if the preceding handler throws/rejects.",
+        "Build lifecycle scope with result/error/action/event/canceled values. For cancellation, skip success/error and run finally only if owner remains active.",
+        "Keep accepted HTTP success successful when a command or invalidation resource fails; surface those failures through their own diagnostics/records.",
+        "For unnamed action, lifecycle context still uses its own record. One bad invalidate name diagnoses without rerunning an already successful mutation."
+      ],
+      "stepCount": 6,
+      "acceptance": "`lifecycle.order` logs `record,invalidation,DOM,success,finally`; `lifecycle.error-finally`, `lifecycle.command-failure`, `lifecycle.cancel-finally`, `lifecycle.disposed-none`, `invalidate.shared-key`, `invalidate.refresh-shared` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T039",
+      "title": "Implement text and numeric model controls",
+      "dependsOn": [
+        "T013",
+        "T018",
+        "T036"
+      ],
+      "document": "03-data-and-forms.md",
+      "anchor": "t039-implement-text-and-numeric-model-controls",
+      "fileTargets": "`forms/src/model/{compile,text,number,composition}.ts`.",
+      "implementationSteps": [
+        "Validate writable path, supported control type, and conflicting bind sinks. Reject file inputs and non-controls for ui-model.",
+        "Text/textarea controls use input; maintain per-control composition flag, suppress writes from compositionstart through intermediate input, and commit once at compositionend.",
+        "Number/range use valueAsNumber and raw empty detection; empty\u2192null, finite valid\u2192number, invalid text\u2192retain model and set a framework-owned validity message. Clearing/reentering valid text clears only that message.",
+        "Initial state writes to controls after persistence; later model updates change DOM only when normalized values differ. Preserve selection/caret and active IME text.",
+        "Do not dispatch synthetic input/change from programmatic updates. Register native listeners and validity cleanup with owner.",
+        "Type-changing bound input attributes must reselect the supported adapter safely; changes to/from file type are diagnosed and model binding disabled for that control."
+      ],
+      "stepCount": 6,
+      "acceptance": "`model.text-input`, `model.ime`, `model.number-empty`, `model.number-invalid`, `model.no-synthetic-events`, `model.caret`, `model.file-rejected` pass in actual browsers.",
+      "status": "pending"
+    },
+    {
+      "id": "T040",
+      "title": "Implement checkbox, radio, and select models",
+      "dependsOn": [
+        "T039"
+      ],
+      "document": "03-data-and-forms.md",
+      "anchor": "t040-implement-checkbox-radio-and-select-models",
+      "fileTargets": "`forms/src/model/{checkbox,radio,select}.ts`.",
+      "implementationSteps": [
+        "Checkbox model requires boolean and uses checked on change. Reject array-checkbox-model conventions; they are not in this RFC.",
+        "Radio groups bind strings and synchronize by name/form ownership plus bound path; only checked radio change writes value. Diagnose inconsistent paths within the same modeled group.",
+        "Single select binds the selected string; multiple select binds selected option strings in DOM order, including no selection as empty array.",
+        "Model updates check matching radio/options and never synthesize events. Unmatched radio string unchecks the group; unmatched single-select string sets selectedIndex=-1.",
+        "On dynamic option/control addition run normal binding synchronization; removal releases registrations. Preserve static labels and native disabled semantics.",
+        "Record form-owned model paths for T043 reset snapshots once controls have initial normalized values."
+      ],
+      "stepCount": 6,
+      "acceptance": "`model.checkbox-boolean`, `model.radio-string`, `model.radio-group-error`, `model.multiselect-order`, `model.no-selection`, `model.dynamic-options`, `model.cleanup-group` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T041",
+      "title": "Implement successful-control form serialization",
+      "dependsOn": [
+        "T008",
+        "T027",
+        "T039",
+        "T040"
+      ],
+      "document": "03-data-and-forms.md",
+      "anchor": "t041-implement-successful-control-form-serialization",
+      "fileTargets": "`forms/src/serialize/{successful-controls,json,urlencoded,multipart}.ts`.",
+      "implementationSteps": [
+        "Build a successful-control sequence using native form association, disabled fieldset semantics, checked/radio state, select options, and actual submitter. Include externally associated controls and preserve document order.",
+        "Feature-test FormData(form, submitter); compatibility path inserts submitter pairs at their native position, not blindly at end. Include image-submit coordinate fields from the captured click or zero coordinates for keyboard submission.",
+        "JSON mode groups repeated literal names into arrays, converting only number/range controls to finite numbers/null. One occurrence stays scalar; checkboxes serialize their value string, never model boolean.",
+        "Reject every File in JSON, including the placeholder File of unselected file input. For multipart omit only unselected placeholder files; preserve explicitly selected zero-byte files using filename/selection metadata.",
+        "Form encoding preserves native string values in URLSearchParams; multipart preserves FormData order/files and never manually sets boundary.",
+        "GET forms require form encoding and no files/body; merge their pairs into query with same-key replacement semantics. Explicit ui-body bypasses control serialization entirely and requires JSON encoding."
+      ],
+      "stepCount": 6,
+      "acceptance": "`form.submitter`, `form.external-control`, `form.disabled-fieldset`, `form.literal-dots`, `form.repeated`, `form.number-json`, `form.checkbox-value`, `form.empty-file-json-error`, `form.multipart-empty-vs-zero-byte`, `form.get-query` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T042",
+      "title": "Implement native form validation and submit interception",
+      "dependsOn": [
+        "T037",
+        "T041"
+      ],
+      "document": "03-data-and-forms.md",
+      "anchor": "t042-implement-native-form-validation-and-submit-interception",
+      "fileTargets": "`forms/src/{validation,submit}.ts`.",
+      "implementationSteps": [
+        "Observe the actual submit event and SubmitEvent.submitter; respect form novalidate and submitter formnovalidate. Use native validity checks/reportValidity where validation is required.",
+        "Invalid form: focus the first invalid control according to native form order, do not set pending, do not prepare an adapter, and do not fetch.",
+        "Valid enhanced form: synchronously capture submitter/model/control data, prevent native navigation, and hand snapshot to action scheduling. A later failure never invokes native submit.",
+        "A synchronous serialization/URL/security preparation error produces a local action error and no transmission, with preserved user values.",
+        "If static compilation rejected enhancement, leave native action/method behavior available. Prevent duplicate enhancement from both submit listener and submit-button click listener.",
+        "Test Enter-to-submit, requestSubmit, multiple submitters, and user edits during debounce. Direct form.submit() retains native bypass behavior and is documented as such."
+      ],
+      "stepCount": 6,
+      "acceptance": "`submit.required`, `submit.novalidate`, `submit.formnovalidate`, `submit.enter`, `submit.actual-button`, `submit.prepare-reject-no-replay`, `submit.native-invalid-config` pass using request counters and navigation observers.",
+      "status": "pending"
+    },
+    {
+      "id": "T043",
+      "title": "Implement explicit form reset snapshots",
+      "dependsOn": [
+        "T015",
+        "T040",
+        "T042"
+      ],
+      "document": "03-data-and-forms.md",
+      "anchor": "t043-implement-explicit-form-reset-snapshots",
+      "fileTargets": "`forms/src/reset.ts`.",
+      "implementationSteps": [
+        "After state/persistence/initial models resolve, capture immutable values for each distinct model path in the form. Deduplicate shared radio paths and overlapping parent/child paths deterministically by keeping the broadest captured path once.",
+        "Register snapshots by form owner/ref. Newly mounted modeled controls capture their path at their own initial mount if the form has no existing snapshot for it.",
+        "reset(ref) resolves a form lexically, invokes native reset, then batches restoration of captured paths and clears field errors/owned validity state.",
+        "Honor a canceled native reset event by not restoring models/errors. Observe ordinary reset buttons and programmatic form.reset() through the same handler without recursion.",
+        "Native file reset remains browser-owned. Do not refetch resources or reset unrelated state/action success data.",
+        "Dispose snapshots when the form owner is removed; remounted forms capture new defaults."
+      ],
+      "stepCount": 6,
+      "acceptance": "`reset.persisted-defaults`, `reset.only-bound-paths`, `reset.native-file`, `reset.canceled`, `reset.radio-once`, `reset.no-refetch`, `reset.remount` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T044",
+      "title": "Implement server field errors and accessibility associations",
+      "dependsOn": [
+        "T028",
+        "T038",
+        "T042",
+        "T043"
+      ],
+      "document": "03-data-and-forms.md",
+      "anchor": "t044-implement-server-field-errors-and-accessibility-associations",
+      "fileTargets": "`forms/src/errors/{index,presenter,aria}.ts`.",
+      "implementationSteps": [
+        "Associate ui-field-error with its nearest action form and literal name; outside-form placement fails. Index all matching successful or unsuccessful controls by name, including external form-associated controls.",
+        "On normalized failure render the first string in fields[name] through textContent; keep the full array in the error record.",
+        "Create stable document-unique presenter IDs when missing. Append their IDs to matching controls' aria-describedby while preserving existing tokens. Apply owned aria-invalid=true and remember prior values.",
+        "Editing a field clears only that field's server-error entry and associated presenter/owned ARIA; retain other fields and global error message. A new accepted submit clears the prior error record.",
+        "Cleanup restores only attributes/tokens still owned by the framework, preserving author changes made in the meantime.",
+        "Provide a form-summary pattern for unrecognized fields/global errors in docs/examples; no automatic popup or unsafe server markup."
+      ],
+      "stepCount": 6,
+      "acceptance": "`error.literal-name`, `error.first-message`, `error.aria-preserve`, `error.edit-one-field`, `error.new-submit-clear`, `error.unmatched-summary`, `error.cleanup-owned-only` pass plus axe checks.",
+      "status": "pending"
+    },
+    {
+      "id": "T045",
+      "title": "Integrate request accessibility state and form lifecycle",
+      "dependsOn": [
+        "T034",
+        "T038",
+        "T044"
+      ],
+      "document": "03-data-and-forms.md",
+      "anchor": "t045-integrate-request-accessibility-state-and-form-lifecycle",
+      "fileTargets": "`data/src/request/accessibility.ts`, `tests/browser/forms.spec.ts`.",
+      "implementationSteps": [
+        "Define busy region: an action element itself; for resource template its nearest parent element. Maintain a per-element count so one request completion cannot clear aria-busy while another is active.",
+        "Preserve preexisting aria-busy values and restore only framework-owned changes. Include preparation/transport pending, exclude trailing debounce wait.",
+        "Apply disabled token logic to form-associated submit buttons, including external controls; do not disable fields needed for accurate snapshots before serialization.",
+        "Verify failure preserves controls/file selection/models and success does not reset unless reset command is present.",
+        "Combine server field errors, ui-body nested model, invalidation, success reset, and finally cleanup in one browser workflow.",
+        "Confirm no implicit global completion/error notifications; announcements come from authored live markup or explicitly invoked UI helpers."
+      ],
+      "stepCount": 6,
+      "acceptance": "`a11y.busy-count`, `a11y.busy-restore`, `form.failure-preserves`, `form.success-no-reset`, `form.explicit-reset-order`, `form.external-submit-disabled` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T046",
+      "title": "Close data and form race conformance",
+      "dependsOn": [
+        "T035",
+        "T038",
+        "T045"
+      ],
+      "document": "03-data-and-forms.md",
+      "anchor": "t046-close-data-and-form-race-conformance",
+      "fileTargets": "`tests/integration/data-forms.spec.ts`, `evidence/milestones/M2.md`.",
+      "implementationSteps": [
+        "Generate seeded schedules of at least 500 cases combining dependency changes, response order, adapter delays, refresh, mutation invalidation, disposal, and session reset.",
+        "Assert every accepted commit has current owner/generation/key/epoch/invalidation tokens; expose test-only token events without exposing them as public APIs.",
+        "Include two subscribers with TTL 0/1000, two with timeout 100/1000, success=null, cache eviction during refresh, and invalidation during backoff.",
+        "Test drop/replace with server mutation recorded even after client abort; require UI reconciliation example to GET before retrying a nonidempotent action.",
+        "Run full native form/browser matrix and classic/ESM parity. Require zero active transport subscriptions, timers, and event listeners after root unmount.",
+        "Record fixture failures as blockers; do not substitute unit test coverage percentages for these cases."
+      ],
+      "stepCount": 6,
+      "acceptance": "complete M2 evidence with recorded seeds, request timelines, form browser outcomes, and zero-leak assertions.",
+      "status": "pending"
+    },
+    {
+      "id": "T047",
+      "title": "Discover and validate inline component definitions",
+      "dependsOn": [
+        "T016",
+        "T025"
+      ],
+      "document": "04-composition.md",
+      "anchor": "t047-discover-and-validate-inline-component-definitions",
+      "fileTargets": "`packages/components/src/{registry,definition,discover}.ts`.",
+      "implementationSteps": [
+        "Before instance activation, scan owned declaration positions for native template[ui-component], including declarations appearing after instances. Do not discover definitions inside uninstantiated route/loop/conditional bodies as new global registries.",
+        "Validate a lowercase hyphenated custom-element-compatible name, reject ui- prefix and existing customElements definitions, and reject duplicate root-local names.",
+        "Parse ui-props with safe JSON; validate schema keys/types/defaults/required conflicts exactly as C10 states. Compile definition ui-state as per-instance component state.",
+        "Capture immutable template source plus compiled reusable plan; do not mutate the original template while instantiating.",
+        "Validate duplicate slot placeholder names and static local ID duplicates within a definition. Record static local ID references for T051.",
+        "Freeze registry at mount activation. A definition failure prevents only affected instances; other valid definitions and ordinary DOM continue."
+      ],
+      "stepCount": 6,
+      "acceptance": "`component.forward-definition`, `component.duplicate`, `component.ui-prefix`, `component.custom-element-collision`, `component.bad-schema`, `component.immutable`, `component.other-root-same-name` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T048",
+      "title": "Implement explicit component import graph",
+      "dependsOn": [
+        "T007",
+        "T012",
+        "T029",
+        "T047"
+      ],
+      "document": "04-composition.md",
+      "anchor": "t048-implement-explicit-component-import-graph",
+      "fileTargets": "`components/src/imports/{resolve,load,parse,graph}.ts`.",
+      "implementationSteps": [
+        "Resolve top-level and nested import URLs using C10, enforce same origin and HTTP(S), remove URL hash, reject userinfo, and include canonical URL in root-local graph identity.",
+        "Fetch once per root with same-origin credentials, redirect:error, app timeout, root signal, and text/html content type requirement. Share a promise for duplicate imports.",
+        "Parse with the private inert template service proved in T007. Accept only definition templates, import templates, whitespace, and comments at top level. Reject scripts/styles at every depth, including inside definitions; do not execute/install them.",
+        "Traverse DFS with visiting/visited sets and report the full canonical pathname cycle without sensitive query values. A\u2192B\u2192A fails deterministically.",
+        "Resolve dependencies before registering dependent definitions; reject duplicate definitions across files. Record failed URLs so repeated instances do not refetch endlessly.",
+        "Bound each request by timeout and all work by root signal. Resolve app.ready after import graph settles, including localized failures; unrelated static bindings can render during loading."
+      ],
+      "stepCount": 6,
+      "acceptance": "`import.once-per-root`, `import.nested-relative`, `import.cycle`, `import.cross-origin`, `import.redirect`, `import.script-style`, `import.timeout-localized`, `import.unmount` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T049",
+      "title": "Implement literal and reactive props",
+      "dependsOn": [
+        "T013",
+        "T047",
+        "T048"
+      ],
+      "document": "04-composition.md",
+      "anchor": "t049-implement-literal-and-reactive-props",
+      "fileTargets": "`components/src/props/{compile,validate,connect}.ts`.",
+      "implementationSteps": [
+        "Match declared prop names exactly, retaining kebab case. String literals come from same-name attributes; ui-prop-* compiles caller-scope expressions. Supplying both fails.",
+        "Validate missing required, optional null, cloned defaults, explicit null, primitive type, finite number, array, and object values. Do not coerce strings to booleans/numbers.",
+        "Preserve allowed host attributes (class/style/id/role/slot/data/aria and recognized standard HTML host attributes); reject unknown nonstandard prop-like attributes. Do not interpret framework data-ui-* as arbitrary host data.",
+        "Create readonly props cells in component scope, with caller-side dependency subscriptions owned by the instance. Normalize/copy nested incoming values to prevent mutation escapes.",
+        "On valid reactive changes update props and bindings without reinitializing local state. On invalid reactive update preserve last valid prop value, diagnose PROP_TYPE, and do not remount.",
+        "Unsubscribe all prop expressions on disposal. Props cannot resolve caller-local variables except through their explicitly passed values."
+      ],
+      "stepCount": 6,
+      "acceptance": "`props.literal-string`, `props.typed-expression`, `props.both-forms`, `props.default-isolation`, `props.required`, `props.kebab`, `props.readonly-nested`, `props.invalid-update-preserves` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T050",
+      "title": "Implement slot projection with caller scopes",
+      "dependsOn": [
+        "T012",
+        "T049"
+      ],
+      "document": "04-composition.md",
+      "anchor": "t050-implement-slot-projection-with-caller-scopes",
+      "fileTargets": "`components/src/slots/{capture,assign,project}.ts`.",
+      "implementationSteps": [
+        "Capture host child nodes before clearing its render region; associate each with caller lexical scope and original declaration source.",
+        "Group element children by literal slot name and remaining nodes under default slot. Preserve source order; ignore formatting-only whitespace for unmatched-content validation.",
+        "Validate that each nonempty group has one matching placeholder. Multiple children may share a slot, while duplicate placeholders are invalid.",
+        "Replace slot placeholders with owned anchored ranges. Projected plans use caller scope; fallback plans use component scope. Dispose both through instance ownership.",
+        "Do not compile projected nodes twice when moving them into rendered light DOM. The transaction journal marks the movement.",
+        "When an instance is removed, release projected listeners/resources/refs even though lexical caller scope may remain alive. Never dispose the caller's unrelated state owner."
+      ],
+      "stepCount": 6,
+      "acceptance": "`slot.caller-vs-component`, `slot.named-order`, `slot.fallback`, `slot.unmatched`, `slot.duplicate-placeholder`, `slot.no-double-mount`, `slot.dispose-with-host` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T051",
+      "title": "Implement static ID and ARIA reference rewriting",
+      "dependsOn": [
+        "T047",
+        "T050"
+      ],
+      "document": "04-composition.md",
+      "anchor": "t051-implement-static-id-and-aria-reference-rewriting",
+      "fileTargets": "`components/src/ids.ts`.",
+      "implementationSteps": [
+        "Assign each root a document-wide serial and each instance a monotonic serial. Prefix literal definition IDs with `pui-r<root>-c<instance>-`.",
+        "Rewrite matching literal for, aria-labelledby, aria-describedby, and aria-controls tokens that refer to IDs declared inside that same definition.",
+        "Preserve tokens referencing external IDs and caller-projected markup. Dynamic ui-bind-id and dynamically bound ARIA strings are authored values and are not auto-rewritten.",
+        "Apply rewriting to each clone before activation. Never mutate the shared definition or prefix an already cloned instance twice.",
+        "Detect collisions of generated IDs with existing document IDs and advance the instance serial until its full generated set is unique.",
+        "Validate explicit cross-component IDs passed as props in an example; do not infer them by inspecting other component internals."
+      ],
+      "stepCount": 6,
+      "acceptance": "`ids.two-instances`, `ids.multitoken-aria`, `ids.external-retained`, `ids.projected-unchanged`, `ids.dynamic-explicit`, `ids.generated-collision` pass with label and accessible-name assertions.",
+      "status": "pending"
+    },
+    {
+      "id": "T052",
+      "title": "Implement instance lifecycle and custom events",
+      "dependsOn": [
+        "T017",
+        "T023",
+        "T049",
+        "T050",
+        "T051"
+      ],
+      "document": "04-composition.md",
+      "anchor": "t052-implement-instance-lifecycle-and-custom-events",
+      "fileTargets": "`components/src/instance.ts`, `components/src/events.ts`.",
+      "implementationSteps": [
+        "Preserve the custom host and create an instance owner/component scope. Initialize copied props/defaults/local state, then render cloned light DOM through the normal compiler.",
+        "Instantiate nested components recursively through registry lookup. Detect infinite direct/indirect static self-instantiation with a depth limit of 128 instance ancestors and COMPONENT_RECURSION diagnostic; a finite conditional recursion still must stay within the limit.",
+        "Bind host ui-on custom-event handlers in caller scope; internal emit dispatches from the component host with bubbling/composed detail.",
+        "Validate custom event names as lowercase `[a-z][a-z0-9-]*`, excluding native/lifecycle reserved names where ambiguous. No static event declaration syntax is added; a registered component host authorizes its nonreserved custom handlers.",
+        "On reactive props update preserve host/local state/slot ownership. On conditional/route/removal disposal release all nested resources, projected owners, ID/ref claims, and behaviors once.",
+        "On import/schema failure preserve authored host fallback content and emit local diagnostics; do not mark a failed instance as successfully mounted."
+      ],
+      "stepCount": 6,
+      "acceptance": "`instance.local-isolation`, `instance.preserved-host`, `instance.event-caller`, `instance.nested-cleanup`, `instance.recursion`, `instance.import-fallback` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T053",
+      "title": "Close component integration and import lifetime tests",
+      "dependsOn": [
+        "T046",
+        "T052"
+      ],
+      "document": "04-composition.md",
+      "anchor": "t053-close-component-integration-and-import-lifetime-tests",
+      "fileTargets": "`tests/integration/components.spec.ts`, `evidence/components.md`.",
+      "implementationSteps": [
+        "Build a product-card fixture with typed object props, stateful quantity, named/default slots, local resource, caller event, and linked form labels.",
+        "Render 100 keyed instances, reorder, replace an item with same key, remove half, and unmount root. Check state persistence by key and zero owner/request/listener leakage.",
+        "Delay nested imports while toggling the containing branch and resetting the session. No disposed instance can mount after imports resolve.",
+        "Run identical component files in two roots with differing stores and in both build distributions. No state/registry/cache data crosses roots.",
+        "Verify imported styles/scripts are never installed and strict CSP reports zero violations.",
+        "Record source-to-fixture coverage for every component directive and all public prop/slot/error rules."
+      ],
+      "stepCount": 6,
+      "acceptance": "all component scenarios pass and evidence contains measured lifecycle counts, not just DOM snapshots.",
+      "status": "pending"
+    },
+    {
+      "id": "T054",
+      "title": "Compile route patterns and destination values",
+      "dependsOn": [
+        "T004",
+        "T010",
+        "T053"
+      ],
+      "document": "04-composition.md",
+      "anchor": "t054-compile-route-patterns-and-destination-values",
+      "fileTargets": "`packages/router/src/{pattern,match,location}.ts`.",
+      "implementationSteps": [
+        "Parse route segments into literal/parameter/final-catchall records; require `/` prefix except special `*`; validate parameter identifiers and unique names.",
+        "Normalize trailing slash, keep root `/`, enforce final catchall, and reject malformed pattern escapes at compile time.",
+        "Build the left-to-right rank comparator and overlapping-pattern ambiguity validator. `/users/new` outranks `/users/:id`; `/a/:x/c` and `/a/b/:y` resolve by specificity at segment two.",
+        "Parse candidate location per history/hash mode; require same origin/basePath containment. Decode each path segment exactly once and reject malformed percent escapes.",
+        "Construct frozen route `{path,params,query,hash}`. Query duplicates become ordered arrays; path excludes basePath. Catchall decoded segments join with slash.",
+        "Select fallback `*` only when no ordinary route matches; require exactly one fallback and exactly one outlet in router root."
+      ],
+      "stepCount": 6,
+      "acceptance": "`route.literal-rank`, `route.segment-rank`, `route.ambiguous`, `route.encoded-slash`, `route.bad-encoding`, `route.catchall-empty`, `route.query-array`, `route.base-boundary`, `route.fallback` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T055",
+      "title": "Install router and intercept eligible navigation",
+      "dependsOn": [
+        "T017",
+        "T023",
+        "T054"
+      ],
+      "document": "04-composition.md",
+      "anchor": "t055-install-router-and-intercept-eligible-navigation",
+      "fileTargets": "`router/src/{module,links,native-navigation}.ts`.",
+      "implementationSteps": [
+        "Implement installRouter(app), claim document router ownership, register route directives/navigation service, and release claim on unmount or failed boot.",
+        "Validate root route/outlet declarations without compiling inactive route content. Preserve shared shell and store owners outside outlet.",
+        "Install delegated ui-link handling inside root. Accept only unmodified primary clicks on same-origin HTTP(S) anchors within basePath without download or external target.",
+        "Leave hash-only same-document anchors, mailto/tel, modified clicks, middle clicks, target=_blank, and ordinary unmarked anchors to browser semantics.",
+        "Implement navigate(url) using router only when eligible; otherwise same-origin document navigation. Reject cross-origin command navigation as policy failure; ordinary external anchors remain browser links.",
+        "Parse initial document location, select route, and mount after imports/definitions are available. Document deep-link fallback requirements for history mode."
+      ],
+      "stepCount": 6,
+      "acceptance": "`link.eligible`, `link.modified`, `link.external-target`, `link.hash-native`, `link.unmarked`, `router.second-root`, `navigate.native-fallback`, `router.initial-deep-link` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T056",
+      "title": "Implement guard preparation and cancellation",
+      "dependsOn": [
+        "T024",
+        "T055"
+      ],
+      "document": "04-composition.md",
+      "anchor": "t056-implement-guard-preparation-and-cancellation",
+      "fileTargets": "`router/src/navigation/{prepare,guards,transaction}.ts`.",
+      "implementationSteps": [
+        "Allocate navigation generation and abort previous pending navigation when a new eligible request arrives; snapshot current committed route as from.",
+        "Parse/validate destination before executing guards. Guards see frozen from/to plus signal and run sequentially in registration order.",
+        "Any explicit false, thrown exception, or rejected promise cancels without disposing the current route. Only failures emit GUARD_ERROR; false is ordinary cancellation.",
+        "Check generation/liveness after each await. Superseded guard results must not update URL, title, focus, outlet, or store.",
+        "On guard acceptance create a prepared navigation transaction containing matched plan/new route scope/history intent, then hand off to commit service.",
+        "Unregister guards idempotently. Unmount aborts pending guards and forbids post-await navigation commits."
+      ],
+      "stepCount": 6,
+      "acceptance": "`guard.sync-false`, `guard.async-false`, `guard.reject`, `guard.order`, `guard.latest-wins`, `guard.unmount`, `guard.no-dom-before-commit` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T057",
+      "title": "Implement history indexing and canceled traversal restoration",
+      "dependsOn": [
+        "T056"
+      ],
+      "document": "04-composition.md",
+      "anchor": "t057-implement-history-indexing-and-canceled-traversal-restoration",
+      "fileTargets": "`router/src/history/{state,index,traverse}.ts`.",
+      "implementationSteps": [
+        "Adopt initial entry with replaceState, merging `__plainui:{rootSession,index,routeKey,scroll}` into existing history.state. Preserve unrelated state fields.",
+        "For accepted programmatic/link navigation, save departure scroll and push exactly one indexed destination entry; same exact URL navigation is a no-op unless explicitly refreshed by resource commands.",
+        "Listen for popstate and hashchange as required, deduplicating the two events for one hash traversal. Set scrollRestoration=manual while router owns it and restore the previous value on unmount.",
+        "Run guards for traversal using the already-changed browser URL. On cancellation compute corrective delta to the last committed known index and call history.go once.",
+        "Suppress only the matching corrective traversal event; do not rerun guards or create entries. A newer navigation invalidates an older correction token safely.",
+        "For unknown/unowned history entries, perform normal document navigation without guessing index/delta. Document that the URL may temporarily reflect the attempted browser traversal while guards run, then is restored on cancellation."
+      ],
+      "stepCount": 6,
+      "acceptance": "`history.preserve-state`, `history.push-count`, `history.cancel-back`, `history.cancel-forward`, `history.no-guard-on-correction`, `history.rapid-traversal`, `history.unknown-entry`, `history.hash-dedup` pass in real browsers.",
+      "status": "pending"
+    },
+    {
+      "id": "T058",
+      "title": "Commit route scopes and outlet ownership",
+      "dependsOn": [
+        "T012",
+        "T053",
+        "T057"
+      ],
+      "document": "04-composition.md",
+      "anchor": "t058-commit-route-scopes-and-outlet-ownership",
+      "fileTargets": "`router/src/view.ts`, `router/src/navigation/commit.ts`.",
+      "implementationSteps": [
+        "Precompile the destination template plan before disposal when possible; malformed route declarations fail locally with fallback/error rendering rather than corrupting shell.",
+        "At commit recheck generation/root liveness, dispose the old route range, publish new readonly route cell, create a fresh route scope, and mount destination into the sole outlet.",
+        "Always create a fresh scope on parameter changes even for same route pattern. Keep root store and shared shell owners untouched.",
+        "Commit URL/history intent once and synchronize committed index/route identity. Failed guards never reach this stage.",
+        "Start new-route resources asynchronously after bindings; loading/error state does not delay committed route visibility.",
+        "Mark outlet replacement boundary so fragments cannot own/replace it. Route disposal releases component imports' pending instance claims, forms, behaviors, and resource subscriptions."
+      ],
+      "stepCount": 6,
+      "acceptance": "`route.same-pattern-new-scope`, `route.store-survives`, `route.shell-preserved`, `route.resource-not-blocking`, `route.old-request-disposed`, `route.outlet-exclusive` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T059",
+      "title": "Implement titles, focus, scroll, and hash anchors",
+      "dependsOn": [
+        "T014",
+        "T058"
+      ],
+      "document": "04-composition.md",
+      "anchor": "t059-implement-titles-focus-scroll-and-hash-anchors",
+      "fileTargets": "`router/src/{title,focus,scroll}.ts`.",
+      "implementationSteps": [
+        "Evaluate ui-title after publishing route context; require primitive/null output. Absent preserves prior title; null becomes empty string. Assign document.title as text.",
+        "After first route binding flush, focus first h1 inside new range; if it is not focusable temporarily add tabindex=-1. If none exists, focus outlet similarly.",
+        "For new navigation scroll to top; for known back/forward restore saved x/y. Hash target inside the new route takes precedence and receives scrollIntoView after mount.",
+        "Resolve decoded hash through getElementById scoped to current route/root without injecting a CSS selector. Do not poll indefinitely for async content; expose afterFlush in docs for app-owned delayed anchors.",
+        "Restore temporary tabindex when focus leaves or owner disposes. Never focus disconnected nodes or move focus because an unrelated resource refreshed.",
+        "Cancel pending focus/scroll postflush tasks when superseded by newer navigation. Keep shared-shell user focus stable during resource-only updates."
+      ],
+      "stepCount": 6,
+      "acceptance": "`route.title-expression`, `route.focus-h1`, `route.focus-outlet`, `route.scroll-top`, `route.traversal-scroll`, `route.hash-priority`, `route.no-refresh-focus`, `route.superseded-postflush` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T060",
+      "title": "Validate hash and history mode end-to-end behavior",
+      "dependsOn": [
+        "T059"
+      ],
+      "document": "04-composition.md",
+      "anchor": "t060-validate-hash-and-history-mode-end-to-end-behavior",
+      "fileTargets": "`tests/browser/router.spec.ts`, `examples/csp/router.html`, `docs/router-hosting.md`.",
+      "implementationSteps": [
+        "Run identical route fixtures in history and hash modes, including basePath `/app`, query arrays, inner hash anchors, fallback, Unicode, encoded slash, and malformed encoding.",
+        "Configure test server history fallback only for document navigations under basePath; API missing routes still return JSON 404 and asset missing routes remain 404.",
+        "Reload a nested route and verify selected page, title, params, and API fetches. Hash mode must work with a simple static server without history fallback.",
+        "Exercise unsaved form guard cancellation for link, navigate command, back, and forward; compare pre/post URL and DOM and exact history length.",
+        "Verify normal links with JavaScript disabled and explain that client fallback cannot manufacture a server HTTP 404 or SEO metadata.",
+        "Assert router listeners and modified scrollRestoration are restored on unmount."
+      ],
+      "stepCount": 6,
+      "acceptance": "both routing modes pass with actual navigation events and recorded host recipes; no document-global state leaks after root removal.",
+      "status": "pending"
+    },
+    {
+      "id": "T061",
+      "title": "Close composition milestone",
+      "dependsOn": [
+        "T053",
+        "T060"
+      ],
+      "document": "04-composition.md",
+      "anchor": "t061-close-composition-milestone",
+      "fileTargets": "`tests/integration/composition.spec.ts`, `evidence/milestones/M3.md`.",
+      "implementationSteps": [
+        "Compose imported components, caller-scoped slots, route parameters, guarded form, persisted store, and resource invalidation into a complete test shell.",
+        "Execute 100 transitions alternating two route patterns and changing parameters; delay responses and imports across transitions.",
+        "Track cleanup order, focus, history length, store survival, and owner/subscriber plateau; compare classic and ESM output.",
+        "Verify instance local IDs remain unique across route remounts and no retained slot references reach disposed scope state.",
+        "Run all component/router valid-invalid-lifecycle fixtures and strict-CSP import scenarios.",
+        "Store M3 evidence and carry only documented future fragment/UI work forward, not unresolved composition defects."
+      ],
+      "stepCount": 6,
+      "acceptance": "M3 has no failing component or navigation contract case and all lifetime counts return to baseline between routes.",
+      "status": "pending"
+    },
+    {
+      "id": "T062",
+      "title": "Implement the sanitizer adapter and exact allowlist",
+      "dependsOn": [
+        "T004",
+        "T007",
+        "T061"
+      ],
+      "document": "05-fragments-and-ui.md",
+      "anchor": "t062-implement-the-sanitizer-adapter-and-exact-allowlist",
+      "fileTargets": "`packages/fragments/src/{sanitize,policy,tags,attributes}.ts`.",
+      "implementationSteps": [
+        "Instantiate DOMPurify privately per document; do not mutate an application-owned global sanitizer. Register hooks once and remove instance references on final document release.",
+        "Configure exactly the RFC tag/attribute lists. Disable default SVG/MathML/custom tags and broad data/ARIA allowances unless routed through PlainUI's explicit attribute predicate.",
+        "Remove prohibited subtree tags completely; unwrap other unsupported tags retaining safe descendants. Remove inline style/on*/srcdoc/formaction/formtarget/base/metadata content according to policy.",
+        "Validate href/src/action with T026 URL service in the correct sink mode. Form action must be same-origin; target accepts _self/_blank and _blank forces noopener+noreferrer while preserving other safe rel tokens.",
+        "Default mode strips every ui-* and data-ui-* before considering ordinary data attributes. Enhanced mode uses the exact C12 directive list plus registered component tags and their validated prop attributes.",
+        "Sanitize into a DocumentFragment and return sanitation report counts without raw input. Never append the original response string or later serialize into an unsafe sink.",
+        "Re-run policy validation on the sanitized DOM and nested template content; malformed namespace/parser transformations cannot introduce an unreviewed element after sanitizer traversal."
+      ],
+      "stepCount": 7,
+      "acceptance": "`sanitize.tags-exact`, `sanitize.attrs-exact`, `sanitize.subtree-vs-unwrap`, `sanitize.data-ui-bypass`, `sanitize.urls-encoded`, `sanitize.blank-rel`, `sanitize.form-origin`, `sanitize.namespace` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T063",
+      "title": "Enforce Trusted Types and HTML sink isolation",
+      "dependsOn": [
+        "T048",
+        "T062"
+      ],
+      "document": "05-fragments-and-ui.md",
+      "anchor": "t063-enforce-trusted-types-and-html-sink-isolation",
+      "fileTargets": "`fragments/src/html-service.ts`, `core/src/html/template-service.ts`, `tests/security/trusted-types.spec.ts`.",
+      "implementationSteps": [
+        "Promote T007's proven parsing services into production with private policy handles. Cache a single policy per runtime/document to avoid duplicate-name failures across roots.",
+        "Keep component import parsing restricted to developer-owned explicit import content and full import grammar validation; keep untrusted parsing inside the sanitizer service.",
+        "Use DOMPurify DOM-fragment output and DOM node insertion. Reject caller-supplied TrustedHTML as an implicit bypass; it still follows PlainUI policy.",
+        "Audit source/build for innerHTML, outerHTML, insertAdjacentHTML, DOMParser, createContextualFragment, and Trusted Types policy creation; only reviewed service files may contain parsing sinks.",
+        "Serve enforced CSP with no inline executable script/no unsafe-eval and explicit policy names. Test core alone, imports, fragments, and full module composition.",
+        "A policy-creation/CSP failure reports local FRAGMENT_POLICY/import error and leaves old DOM intact. Do not weaken CSP automatically or install a permissive default policy."
+      ],
+      "stepCount": 6,
+      "acceptance": "`tt.core`, `tt.import`, `tt.fragment`, `tt.multiroot`, `tt.blocked-policy-preserves`, `tt.no-extra-sinks` pass; browsers without Trusted Types still sanitize identically.",
+      "status": "pending"
+    },
+    {
+      "id": "T064",
+      "title": "Compile fragment actions and arbitrate targets",
+      "dependsOn": [
+        "T036",
+        "T037",
+        "T062"
+      ],
+      "document": "05-fragments-and-ui.md",
+      "anchor": "t064-compile-fragment-actions-and-arbitrate-targets",
+      "fileTargets": "`fragments/src/{module,target,action-mode}.ts`.",
+      "implementationSteps": [
+        "Implement installFragments(app), register HTML action response mode, and reject resource HTML mode or missing target ref.",
+        "Resolve target in initiating lexical scope but enforce same root; reject missing/disconnected/ignored targets and prohibited ownership overlaps.",
+        "At accepted trigger allocate target generation before async preparation, attach it to action operation, and retain a target lifetime signal. Two different action elements targeting one owner share arbitration.",
+        "Validate swap enum/default and enhance boolean; ui-enhance=true without root authorization fails before fetch.",
+        "HTML transport uses Accept:text/html unless explicitly overridden, text/html success requirement, action pending/error state, and no JSON resource mutation.",
+        "A superseded operation may settle cancellation/finally for its own live action but cannot swap, update target ref, move focus, or revive a disposed target."
+      ],
+      "stepCount": 6,
+      "acceptance": "`fragment.required-target`, `fragment.cross-root`, `fragment.ignore`, `fragment.two-actions-latest`, `fragment.enhance-policy`, `fragment.resource-rejected`, `fragment.target-disposed` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T065",
+      "title": "Prepare detached fragment candidates",
+      "dependsOn": [
+        "T016",
+        "T052",
+        "T063",
+        "T064"
+      ],
+      "document": "05-fragments-and-ui.md",
+      "anchor": "t065-prepare-detached-fragment-candidates",
+      "fileTargets": "`fragments/src/candidate.ts`.",
+      "implementationSteps": [
+        "Sanitize response before touching live destination. Build a provisional owner/scope graph that can be discarded without DOM or registry side effects.",
+        "In untrusted mode perform no directive compilation; all inserted markup stays ordinary inert-to-PlainUI content except the internal transferred target ref for outer mode.",
+        "In enhanced mode compile allowed bindings/declarations/components against destination scope; reject root/store/route/import/definition/persistence/ui-toasts directives and unavailable modules before commit.",
+        "Validate ref/name conflicts against retained destination scope, excluding owners scheduled for replacement. Validate static ID conflicts with retained document nodes; duplicates within candidate fail.",
+        "For outer require one surviving top-level Element, ignoring whitespace/comments, and same explicit ref in enhanced mode or sidecar ref transfer in untrusted mode. Reject roots/outlets/component hosts/active loop ranges/action ancestors.",
+        "Do not start resource loads, behaviors, listeners, timers, persistence, or user commands while preparing. Release provisional allocations on any failure."
+      ],
+      "stepCount": 6,
+      "acceptance": "`candidate.no-side-effects`, `candidate.ref-conflict`, `candidate.id-conflict`, `candidate.outer-count`, `candidate.outer-untrusted-ref`, `candidate.forbidden-directive`, `candidate.failure-preserves` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T066",
+      "title": "Commit all six swap modes transactionally",
+      "dependsOn": [
+        "T012",
+        "T014",
+        "T065"
+      ],
+      "document": "05-fragments-and-ui.md",
+      "anchor": "t066-commit-all-six-swap-modes-transactionally",
+      "fileTargets": "`fragments/src/swap.ts`.",
+      "implementationSteps": [
+        "Recheck owner/action/target generations, epoch, destination connectivity, and ownership restrictions immediately before commit.",
+        "inner: dispose target child owners, remove children, insert candidate, retain target element/scope/ref/host behavior. outer: dispose target owner, insert one replacement at original position, and register retained target ref identity.",
+        "append/prepend: insert an owned anchored range at the appropriate child position. before/after: insert sibling range with parent ownership and destination lifetime link. Preserve ordering for sequential accepted insertions.",
+        "Use one framework DOM transaction so MutationObserver cannot independently mount inserted nodes. Attach candidate owners then activate bindings/listeners/behaviors/resources in normal phase order.",
+        "If precommit checks fail, discard candidate with old DOM untouched. If unexpected activation throws after disposal, display fixed safe local failure text, emit FRAGMENT_ACTIVATION, settle action error, and keep other root regions usable.",
+        "Treat completed swap as accepted action success; then run normal invalidation/lifecycle flow if configured for mutation. Never resurrect a disposed old subtree."
+      ],
+      "stepCount": 6,
+      "acceptance": "`swap.inner-owner-retained`, `swap.outer-ref`, `swap.before-after-lifetime`, `swap.append-prepend-order`, `swap.stale-candidate`, `swap.activation-failure-local`, `swap.observer-once` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T067",
+      "title": "Preserve focus and enforce fragment ownership boundaries",
+      "dependsOn": [
+        "T059",
+        "T066"
+      ],
+      "document": "05-fragments-and-ui.md",
+      "anchor": "t067-preserve-focus-and-enforce-fragment-ownership-boundaries",
+      "fileTargets": "`fragments/src/focus.ts`, `tests/integration/fragment-ownership.spec.ts`.",
+      "implementationSteps": [
+        "Capture active element before commit. If it survives connected and inside permitted ownership, preserve it without focus calls.",
+        "If removed, focus target/replacement using temporary tabindex=-1 after binding flush; for sibling insertion target remains the focus fallback. Restore temporary tabindex after blur/disposal.",
+        "Reject swaps into/around router-owned replaceable outlet ranges and component-rendered internals where target ownership would overlap. Explicit component-owned fragment targets are allowed only within its ordinary owned local region, not its host replacement.",
+        "Validate action-ancestor outer prohibition by owner/DOM ancestry, not selector strings.",
+        "Dispose destination-linked sibling insertions when destination or route owner is removed. A surviving old action completion cannot recreate them.",
+        "Show loading/error only through initiating action record; avoid adding unexplained global busy overlays."
+      ],
+      "stepCount": 6,
+      "acceptance": "`fragment.focus-survives`, `fragment.focus-replaced`, `fragment.router-overlap`, `fragment.action-ancestor`, `fragment.sibling-cleanup`, `fragment.no-late-focus` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T068",
+      "title": "Build the fragment security regression suite",
+      "dependsOn": [
+        "T067"
+      ],
+      "document": "05-fragments-and-ui.md",
+      "anchor": "t068-build-the-fragment-security-regression-suite",
+      "fileTargets": "`tests/security/fragments/`, `evidence/security/fragment-policy.json`.",
+      "implementationSteps": [
+        "Create table-driven positive/negative fixtures for every allowed tag/attribute and every forbidden category, including data-ui-* case/namespace variants.",
+        "Include encoded javascript URLs, mixed-case schemes, control characters, SVG/MathML namespace confusion, malformed nesting, table foster parenting, template nesting, DOM clobbering IDs/names, and mutation-XSS regression cases compatible with the pinned sanitizer.",
+        "Execute fixtures in real browsers under CSP with script execution/network beacons instrumented; forbidden payload execution or transmission fails the test even if final DOM looks safe.",
+        "Verify same-origin content is sanitized, failed HTTP HTML never swaps, and enhanced trust cannot be enabled by response markup itself.",
+        "Verify sanitized nodes after insertion still satisfy policy, including nested registered components and slot projections.",
+        "Save exact sanitizer version/integrity/policy hash, test corpus hashes, browsers, and outcomes. Rerun this suite on any dependency/policy change."
+      ],
+      "stepCount": 6,
+      "acceptance": "no forbidden executable effect, policy bypass, late-target commit, or preserved-DOM failure; all corpus cases named in evidence.",
+      "status": "pending"
+    },
+    {
+      "id": "T069",
+      "title": "Implement behavior factories and widget ownership",
+      "dependsOn": [
+        "T024",
+        "T052"
+      ],
+      "document": "05-fragments-and-ui.md",
+      "anchor": "t069-implement-behavior-factories-and-widget-ownership",
+      "fileTargets": "`core/src/behaviors/{compile,mount,context}.ts`.",
+      "implementationSteps": [
+        "Parse ui-use as ordered space-separated unique names; reject duplicate/unknown names. ui-options is a safe JSON object, not expression text.",
+        "Invoke factories in declaration order with element, frozen copied options, scoped API, and owner signal, after initial bindings and before eligible network starts.",
+        "Require optional cleanup function return; reject promises/nonfunction nonundefined returns. If a later factory fails, clean up already-started factories in reverse order and mark that behavior owner failed.",
+        "Provide afterFlush cancellation, scoped refs/emit/state/refresh, and lifecycle checks. Trusted factory code may retain non-JSON widget objects privately.",
+        "Enforce documented inner ui-ignore boundary for widgets owning descendants; PlainUI may remove the whole host but never traverse the widget subtree.",
+        "Cleanup runs once with host still connected, after scope is inactive. Leaked postdispose writes diagnose and are rejected."
+      ],
+      "stepCount": 6,
+      "acceptance": "`behavior.order`, `behavior.options-json`, `behavior.cleanup-on-failure`, `behavior.async-factory-invalid`, `behavior.ignore-widget`, `behavior.postdispose-write` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T070",
+      "title": "Implement accessible native dialog commands",
+      "dependsOn": [
+        "T023",
+        "T069"
+      ],
+      "document": "05-fragments-and-ui.md",
+      "anchor": "t070-implement-accessible-native-dialog-commands",
+      "fileTargets": "`packages/ui/src/{module,dialog}.ts`.",
+      "implementationSteps": [
+        "Implement installUI(app) and register built-in service for open/close/toast plus tabs behavior without replacing core command names.",
+        "open(ref) requires a connected native HTMLDialogElement in lexical root, usable showModal, and C13 accessible name; unknown/wrong targets fail locally.",
+        "Capture connected opener from activeElement, call showModal, rely on native focus containment/Escape semantics, and track open state per dialog.",
+        "close(ref) calls native close only when open and restores focus to connected focusable opener after close; a removed opener produces no focus attempt.",
+        "Handle native close/cancel events consistently. Respect author-canceled cancel events; do not forcibly close a prevented Escape action.",
+        "Disposal closes/releases controller listeners and focus references without running commands into dead scopes."
+      ],
+      "stepCount": 6,
+      "acceptance": "`dialog.name-required`, `dialog.modal`, `dialog.escape`, `dialog.prevented-cancel`, `dialog.focus-return`, `dialog.removed-opener`, `dialog.dispose-open` pass with keyboard tests.",
+      "status": "pending"
+    },
+    {
+      "id": "T071",
+      "title": "Implement text toasts and region lifetime",
+      "dependsOn": [
+        "T070"
+      ],
+      "document": "05-fragments-and-ui.md",
+      "anchor": "t071-implement-text-toasts-and-region-lifetime",
+      "fileTargets": "`ui/src/toast.ts`.",
+      "implementationSteps": [
+        "Find at most one root ui-toasts region; validate presence flag and C13 options. Otherwise create one root-owned polite live status region and visible list on first toast.",
+        "Render message with textContent, never HTML; reject object/array message values unless already formatted. Null/empty text does not enqueue.",
+        "Add unique toast owner, text, native labeled dismiss button, and 5000 ms default expiry; cap visible queue at five with FIFO cleanup.",
+        "Pause countdown on hover/focus-inside, resume remaining time on exit, and allow duration 0 for configured persistent region. Timers use owner registration.",
+        "Announce additions politely without reannouncing the whole queue; do not use an assertive global error mechanism.",
+        "On root unmount remove module-created region, preserve authored region element until normal root disposal, and clear every toast timer/listener."
+      ],
+      "stepCount": 6,
+      "acceptance": "`toast.text-only`, `toast.single-region`, `toast.queue-bound`, `toast.duration`, `toast.pause`, `toast.persistent-dismiss`, `toast.cleanup` pass, with screen-reader behavior reviewed in T092.",
+      "status": "pending"
+    },
+    {
+      "id": "T072",
+      "title": "Implement tabs validation and keyboard behavior",
+      "dependsOn": [
+        "T069",
+        "T070"
+      ],
+      "document": "05-fragments-and-ui.md",
+      "anchor": "t072-implement-tabs-validation-and-keyboard-behavior",
+      "fileTargets": "`ui/src/tabs.ts`.",
+      "implementationSteps": [
+        "Validate one descendant tablist, tab elements, corresponding unique tabpanel IDs, aria-controls/labelledby relationships, and no ownership crossing into nested tabs widgets.",
+        "Validate options; choose first enabled aria-selected=true tab or first enabled tab. Reject multiple initially selected tabs with a diagnostic and use the first in DOM order deterministically.",
+        "Apply roving tabindex (focused enabled tab=0, others=-1), aria-selected on active tab, and hidden on inactive panels without removing labels.",
+        "Handle horizontal Left/Right honoring RTL; vertical Up/Down; Home/End; Enter/Space activation in manual mode. Automatic option activates with focus. Prevent default only for handled keys.",
+        "Skip disabled/aria-disabled tabs. Click activates an eligible native tab control; never convert generic markup into unnamed interactive controls.",
+        "Observe owned tab additions/removal through lifecycle hooks; active removal uses C13 next/previous fallback. Cleanup restores framework-owned ARIA/tabindex/hidden values and removes listeners."
+      ],
+      "stepCount": 6,
+      "acceptance": "`tabs.manual`, `tabs.automatic`, `tabs.rtl`, `tabs.vertical`, `tabs.disabled`, `tabs.active-removal`, `tabs.relationship-errors`, `tabs.cleanup` pass using keyboard and focus assertions.",
+      "status": "pending"
+    },
+    {
+      "id": "T073",
+      "title": "Build optional CSS tokens and responsive primitives",
+      "dependsOn": [
+        "T003",
+        "T004"
+      ],
+      "document": "05-fragments-and-ui.md",
+      "anchor": "t073-build-optional-css-tokens-and-responsive-primitives",
+      "fileTargets": "`packages/styles/src/plainui.css`, `examples/style-gallery/`, `docs/styles.md`.",
+      "implementationSteps": [
+        "Define C13 token values on :root and use low-specificity :where selectors for native typography/buttons/controls. Keep global rules limited to documented baseline styling.",
+        "Provide ui-stack/ui-cluster/ui-grid/ui-container exactly as C13; document gap/width overrides through tokens and ordinary CSS.",
+        "Use logical properties for margins/padding/borders, wrapping text and flexible control widths. No fixed viewport heights that hide form content at zoom.",
+        "Style valid focus outlines, disabled states, field errors and native dialogs without changing semantics. Ensure hidden stays display:none regardless of layout utility rules.",
+        "Respect reduced motion; any optional transition becomes none under prefers-reduced-motion. No animation is necessary to understand state.",
+        "Build a gallery at 320/768/1440 CSS pixels, LTR/RTL, 200% zoom, CSS enabled/disabled, and overridden color/space tokens."
+      ],
+      "stepCount": 6,
+      "acceptance": "`styles.hidden`, `styles.narrow-no-overflow`, `styles.zoom`, `styles.rtl`, `styles.reduced-motion`, `styles.override`, `styles.runtime-without-css` pass with visual/manual evidence where appropriate.",
+      "status": "pending"
+    },
+    {
+      "id": "T074",
+      "title": "Build chart and editor extension examples",
+      "dependsOn": [
+        "T046",
+        "T061",
+        "T069",
+        "T073"
+      ],
+      "document": "05-fragments-and-ui.md",
+      "anchor": "t074-build-chart-and-editor-extension-examples",
+      "fileTargets": "`examples/extension-chart/`, `examples/extension-editor/`, `tests/integration/extensions.spec.ts`.",
+      "implementationSteps": [
+        "Integrate Chart.js 4.5.1 as a chart behavior and CodeMirror 6.0.2 with @codemirror/state 6.7.6 as an editor behavior, using C01's exact example-only pins. Exclude them from framework bundle budgets.",
+        "Give each widget an inner ui-ignore region and keep its library instance inside factory closure. Pass configuration through JSON options and data through public scope methods.",
+        "For the chart, render a dataset from resource success through an explicit custom command/afterFlush hook; do not reach into scheduler/controller internals.",
+        "For the editor, synchronize explicit document state through scoped get/set, avoid feedback loops by comparing strings, and preserve native accessible labels/fallback textarea.",
+        "Cleanup destroys widget instances, subscriptions, listeners, observers, and afterFlush callbacks before host removal. Simulate pending widget work resolving after route disposal.",
+        "Document required compatible PlainUI major version and show plain JavaScript registration before mount."
+      ],
+      "stepCount": 6,
+      "acceptance": "chart/editor mount-update-unmount 100 cycles return to baseline with no retained framework/widget listeners; ignored descendants are never compiled.",
+      "status": "pending"
+    },
+    {
+      "id": "T075",
+      "title": "Close hybrid rendering and UI milestone",
+      "dependsOn": [
+        "T068",
+        "T070",
+        "T071",
+        "T072",
+        "T073",
+        "T074"
+      ],
+      "document": "05-fragments-and-ui.md",
+      "anchor": "t075-close-hybrid-rendering-and-ui-milestone",
+      "fileTargets": "`tests/integration/hybrid-ui.spec.ts`, `evidence/milestones/M4.md`.",
+      "implementationSteps": [
+        "Compose a route containing resource product cards, checkout form, HTML order summary target, native dialog, tabs, toast region, and chart behavior.",
+        "Trigger competing HTML actions, form mutation/invalidation, rapid route changes, and dialog removal during pending work; assert ownership and generation isolation.",
+        "Run with optional CSS removed to prove behavior correctness is independent of styling. Run default untrusted fragments and explicitly enhanced developer templates separately.",
+        "Exercise keyboard-only workflow and automated accessibility scan; reserve manual assistive qualification for T092.",
+        "Measure current complete core and optional gzip bytes, including sanitizer, and compare with both budgets. Report misses immediately; do not remove required features.",
+        "Record security suite, lifecycle counts, UI keyboard outcomes, and size evidence as M4 gate."
+      ],
+      "stepCount": 6,
+      "acceptance": "all hybrid scenarios pass, zero leaks after unmount, and any budget miss has an explicit unresolved gate or accepted numerical specification revision.",
+      "status": "pending"
+    },
+    {
+      "id": "T076",
+      "title": "Build the static HTML validator",
+      "dependsOn": [
+        "T004",
+        "T009",
+        "T016",
+        "T047",
+        "T054",
+        "T068"
+      ],
+      "document": "06-delivery.md",
+      "anchor": "t076-build-the-static-html-validator",
+      "fileTargets": "`packages/tooling/src/{html-adapter,validate,scope-model}.ts`.",
+      "implementationSteps": [
+        "Parse UTF-8 HTML with parse5 and source locations; adapt nodes to the shared directive-schema validator without requiring a browser DOM.",
+        "Traverse native template contents using the same declaration/structural boundaries as runtime. Identify roots, components, imports, routes, scopes, aliases, refs, and form placement statically.",
+        "Reuse expression/command parsers, prop schemas, route pattern compiler, option validator, and exact allowed/conflicting directive rules. Do not duplicate semantics in independent regexes.",
+        "Report compile-provable errors for duplicate names/aliases, unknown directives, missing modules declared in CLI manifest, bad patterns, bad literals, unsafe literal URLs, missing props, and invalid ownership combinations.",
+        "Report warnings for unresolved dynamic values, unknown runtime registrations without a manifest, API response shapes, and adapter behavior. Do not classify uncertainty as a proven runtime error.",
+        "Resolve local explicit imports inside project root; prohibit implicit network fetch by validator. Map URL paths through supplied asset root, detect cycles, and preserve original file/line/column diagnostics.",
+        "Return structured diagnostics sorted by file, line, column, code; validation never rewrites input files."
+      ],
+      "stepCount": 7,
+      "acceptance": "`validate.runtime-parity`, `validate.template-content`, `validate.import-cycle`, `validate.dynamic-warning`, `validate.locations`, `validate.no-network`, `validate.no-mutation` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T077",
+      "title": "Expose deterministic CLI validate and build commands",
+      "dependsOn": [
+        "T003",
+        "T076"
+      ],
+      "document": "06-delivery.md",
+      "anchor": "t077-expose-deterministic-cli-validate-and-build-commands",
+      "fileTargets": "`tooling/src/{cli,build,diagnostics}.ts`, `docs/cli.md`.",
+      "implementationSteps": [
+        "Implement `plainui validate <paths...> --root <dir> --manifest <file> --format text|json --warnings-as-errors`. Defaults: root=current directory, format=text, warnings do not fail.",
+        "Implement directory recursion for `.html` and explicitly listed component files, sorted lexically. Do not read node_modules/dist/hidden directories unless explicitly passed.",
+        "Exit codes: 0=no errors, 1=validation findings, 2=usage/I/O/config failure. JSON output is one object `{schemaVersion,files,diagnostics,summary}` with no extra stdout noise.",
+        "Manifest schema: `modules` string array; `registrations` object containing command/formatter/behavior names and adapter name/version pairs; `assetRoot` project-relative directory; `assets` array of extra project-relative application files (including ESM bootstrap files). Missing fields default to empty collections and assetRoot='.'. Reject unknown manifest keys. Without a manifest, unresolved runtime registrations/modules produce warnings rather than invented certainty.",
+        "Implement `plainui build <entry.html> --out-dir <dir> --modules router,fragments,ui --minify`. Validate first; copy the entry, statically referenced local components/assets, and manifest-listed application assets preserving project-relative paths. Recognize PlainUI script/link references by exact distribution basenames from C02 and rewrite those references to `./assets/<version>/<basename>` in output. Leave other URLs unchanged; reject local asset references escaping project root. Do not transform arbitrary application JS or require compilation for normal usage.",
+        "Reject output equal to or containing source root; never recursively wipe an arbitrary output directory. Write a staging directory then atomically replace only files listed in previous build manifest, preserving unrelated files.",
+        "Provide `--help`, `--version`, and Windows path-with-spaces coverage. No create-app/scaffolding feature is required for 1.0."
+      ],
+      "stepCount": 7,
+      "acceptance": "`cli.exit-codes`, `cli.json-stable`, `cli.windows-path`, `cli.build-copy`, `cli.build-no-unrelated-delete`, `cli.invalid-no-output`, `cli.zero-build-independent` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T078",
+      "title": "Generate directive and API references",
+      "dependsOn": [
+        "T024",
+        "T075",
+        "T077"
+      ],
+      "document": "06-delivery.md",
+      "anchor": "t078-generate-directive-and-api-references",
+      "fileTargets": "`scripts/generate-reference.mjs`, `docs/reference/`.",
+      "implementationSteps": [
+        "Generate one directive entry per schema row with canonical/data spellings, kind, placement, default, companions, conflicts, module, valid example, and invalid example.",
+        "Generate config table with exact defaults and override hierarchy; include schema version and runtime version.",
+        "Publish manually explained public API pages backed by actual exported TS declarations and type tests; cover ready, diagnostics, inspector, module installation, abort behavior, readonly values, and App vs lexical resolution.",
+        "Document all stable diagnostic codes with safe example, cause, effect on current output, and concrete remedy. Explain errors versus warnings.",
+        "Document exact grammar/precedence/truthiness/limits, URL encoding, writable paths, formatter input/output, and command/lifecycle ordering.",
+        "Make generation idempotent; `check:generated` fails if committed outputs differ from regenerated files. Validate every embedded HTML code sample through T076 where possible."
+      ],
+      "stepCount": 6,
+      "acceptance": "all schema entries appear once, no orphan exports, valid snippets validate, deliberately invalid examples carry expected codes, and generation produces no diff.",
+      "status": "pending"
+    },
+    {
+      "id": "T079",
+      "title": "Finalize package exports and zero-build assets",
+      "dependsOn": [
+        "T075",
+        "T078"
+      ],
+      "document": "06-delivery.md",
+      "anchor": "t079-finalize-package-exports-and-zero-build-assets",
+      "fileTargets": "runtime/tooling manifests, `scripts/package.mjs`, `tests/integration/package.spec.ts`.",
+      "implementationSteps": [
+        "Export plainui root ESM/types, router/fragments/ui ESM installers, stylesheet, and schema. Keep internal workspace modules private and inaccessible through documented exports.",
+        "Emit all C02 classic/ESM filenames from the same versioned source. Use sourceMappingURL references pointing to shipped maps, and include notices for bundled dependencies.",
+        "Generate SHA-256 and SHA-384 SRI values for every shipped static file; record uncompressed/gzip bytes and toolchain versions in manifest.",
+        "Pack into local tarballs and install into a new temporary consumer project. Test package ESM imports, plain JS usage, type resolution, CLI executable, and local classic files.",
+        "Run zero-build HTML from a plain HTTP server with no node_modules/bundler/CDN access and verify optional modules loaded after core before DOM-ready boot.",
+        "Verify ESM import alone never mounts roots and loading classic+ESM on an already active root fails exactly once without double listeners."
+      ],
+      "stepCount": 6,
+      "acceptance": "`package.exports`, `package.tarball`, `package.integrity`, `package.classic-esm-parity`, `package.zero-build`, `package.no-network-dependency`, `package.types` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T080",
+      "title": "Implement development diagnostics inspection",
+      "dependsOn": [
+        "T006",
+        "T035",
+        "T061",
+        "T075"
+      ],
+      "document": "06-delivery.md",
+      "anchor": "t080-implement-development-diagnostics-inspection",
+      "fileTargets": "`core/src/diagnostics/inspector.ts`, `examples/diagnostics/`, `docs/diagnostics.md`.",
+      "implementationSteps": [
+        "Complete inspector snapshot fields: root lifecycle, owner counts by kind, live binding/subscriber/timer/listener counts, pending action count, cache entry count, and redacted resource record metadata.",
+        "Resource inspection exposes generated ID, status, loading/refreshing/stale flags, updatedAt, and error kind/code/status only. Exclude raw data, URLs with queries, headers, body, messages from backend, and persisted values.",
+        "Snapshot returns frozen detached data; inspection does not subscribe, trigger fetch, retain DOM, or invoke formatters.",
+        "Provide a minimal developer example that renders this data as text using public APIs. Do not build an IDE, browser extension, or telemetry service.",
+        "Verify production debug=false rejects inspection while ordinary diagnostics remain available with safe code/location.",
+        "Test counters under shared transports and destination-linked fragment ranges so shared objects are counted once and consumers separately."
+      ],
+      "stepCount": 6,
+      "acceptance": "`inspect.redacted`, `inspect.no-side-effect`, `inspect.frozen`, `inspect.production`, `inspect.shared-counts`, `inspect.zero-unmount` pass.",
+      "status": "pending"
+    },
+    {
+      "id": "T081",
+      "title": "Define independent backend and sample-data contracts",
+      "dependsOn": [
+        "T028",
+        "T046",
+        "T061"
+      ],
+      "document": "06-delivery.md",
+      "anchor": "t081-define-independent-backend-and-sample-data-contracts",
+      "fileTargets": "`examples/contracts/{api.json,seeds.json,errors.json}`, `tests/support/backend-contract.ts`.",
+      "implementationSteps": [
+        "Use the exact endpoint/data shapes in 08-test-vectors. Freeze them as JSON Schema-like fixture contracts without imposing these application envelopes on framework users.",
+        "Define deterministic seed IDs/prices/content, pagination/query filters, successful/empty responses, validation envelopes, delay/error switches available only to test servers, and request correlation IDs.",
+        "Define server-authoritative cart/checkout recomputation from product database values; ignore client-supplied prices/totals. Expose an order lookup endpoint for uncertain mutation reconciliation.",
+        "Provide identity-envelope and alternate-envelope response modes via the two backend implementations and register one explicit adapter for the alternate shape.",
+        "Keep frontend component sources byte-identical between backend runs; only app-level adapter/baseURL bootstrap configuration may change. Record component file hashes in compatibility tests.",
+        "Specify cookie-authenticated demo session endpoints and CSRF meta token injection; label demo credentials/data as sample-only and avoid production authentication claims."
+      ],
+      "stepCount": 6,
+      "acceptance": "contract fixture validator accepts all seeded successes/errors and rejects malformed shapes; example requirements map to endpoints with no undefined backend behavior.",
+      "status": "pending"
+    },
+    {
+      "id": "T082",
+      "title": "Implement Node and Python fixture servers",
+      "dependsOn": [
+        "T081"
+      ],
+      "document": "06-delivery.md",
+      "anchor": "t082-implement-node-and-python-fixture-servers",
+      "fileTargets": "`examples/backends/node/server.mjs`, `examples/backends/python/server.py`, backend READMEs.",
+      "implementationSteps": [
+        "Implement the contract independently using Node's built-in HTTP APIs and Python 3.13.7 standard-library http.server; no shared generated request implementation. Sharing immutable fixture data is allowed.",
+        "Node serves identity JSON bodies; Python serves the alternate envelope/errors mapped by its frontend adapter. Both enforce the same semantic field validation and authoritative prices.",
+        "Serve root HTML/assets, history fallback only for frontend route documents, JSON APIs, and at least one escaped server fragment endpoint. Correctly distinguish API/asset 404s from route fallback.",
+        "Implement multipart uploads with busboy 1.6.0 on Node and python-multipart 0.0.32 on Python. Use busboy field/file callbacks and Python parse_form callbacks to collect the ordered field/file metadata defined in 08-test-vectors. Enforce a 2 MiB total request limit, 1 MiB per file, four files, twenty fields, and 1 KiB field values before retaining data; reject limit violations with HTTP 413. See the [busboy API](https://github.com/mscdex/busboy) and [python-multipart API](https://multipart.fastapiexpert.com/api/). Never interpret uploaded filenames as disk paths; store bytes only in temporary test-owned storage.",
+        "Implement explicit test-only delay/error barriers, deterministic reset endpoint bound to loopback/test mode, and cookie/CSRF/session reset behavior.",
+        "Add startup flags host/port/data-dir, graceful shutdown, isolated temp storage, and no outbound services. Document one command per server and fixed test ports with collision detection."
+      ],
+      "stepCount": 6,
+      "acceptance": "identical API contract suite passes both servers; only intended envelope differences exist; fragments escape injected user values; servers start/stop cleanly on Windows/Linux.",
+      "status": "pending"
+    },
+    {
+      "id": "T083",
+      "title": "Build the public blog reference application",
+      "dependsOn": [
+        "T068",
+        "T079",
+        "T082"
+      ],
+      "document": "06-delivery.md",
+      "anchor": "t083-build-the-public-blog-reference-application",
+      "fileTargets": "`examples/blog/`, `tests/browser/examples/blog.spec.ts`.",
+      "implementationSteps": [
+        "Create server-readable article listing and article detail fallback HTML with ordinary links/forms and correct title/meta supplied by backend.",
+        "Enhance search using query state/resources with loading/error/empty/result views, manual retry, encoded query handling, and safe text rendering.",
+        "Add client article routes, required fallback, title expressions, and focus/scroll handling while documenting server metadata/HTTP status limitations.",
+        "Fetch article body through untrusted sanitized HTML fragments; demonstrate rejected inline script/style/directives. Keep article text available without JS in the backend-rendered variant.",
+        "Extract an imported article-card component with props/slot content. Use same component files with both backends.",
+        "Document a JSON-only alternative and explicitly state its article content depends on JS. Do not claim arbitrary hydration."
+      ],
+      "stepCount": 6,
+      "acceptance": "keyboard search/detail/back flow passes; JS-disabled article is readable; API failure/empty/fragment attack cases are visible/safe; both backends run unchanged component sources.",
+      "status": "pending"
+    },
+    {
+      "id": "T084",
+      "title": "Build the storefront reference application",
+      "dependsOn": [
+        "T071",
+        "T073",
+        "T079",
+        "T082"
+      ],
+      "document": "06-delivery.md",
+      "anchor": "t084-build-the-storefront-reference-application",
+      "fileTargets": "`examples/storefront/`, `tests/browser/examples/storefront.spec.ts`.",
+      "implementationSteps": [
+        "Implement product resource/filter/pagination views with imported product-card props and explicit loading/empty/error/stale UI.",
+        "Declare store.cart items with productId/quantity only, local persistence key/version, and derived display totals from current product data. Label displayed totals estimates until checkout response.",
+        "Implement add/remove/change quantity via a named custom command using get/set/batch, never mutating readonly snapshots or resource data. Use stable product IDs as list keys.",
+        "Build checkout native form with typed models, JSON ui-body, server field errors, explicit optional reset, drop concurrency, CSRF, pending state, and order confirmation dialog/toast.",
+        "Server recomputes prices/stock and returns authoritative total. Simulate client tampering and out-of-stock/error cases. An uncertain network result triggers explicit order-status GET reconciliation before another order attempt.",
+        "Add order-summary HTML fragment action with target race protection and accessible focus. Exercise same user flow without optional CSS and retain native fallback forms where supported."
+      ],
+      "stepCount": 6,
+      "acceptance": "cart survives reload; reorder preserves item controls; tampered prices are ignored by server; duplicate submit sends one mutation; error values persist; summary sanitization and latest-target-wins pass on both backends.",
+      "status": "pending"
+    },
+    {
+      "id": "T085",
+      "title": "Build the authenticated SaaS reference application",
+      "dependsOn": [
+        "T070",
+        "T072",
+        "T074",
+        "T079",
+        "T082"
+      ],
+      "document": "06-delivery.md",
+      "anchor": "t085-build-the-authenticated-saas-reference-application",
+      "fileTargets": "`examples/saas/`, `tests/browser/examples/saas.spec.ts`.",
+      "implementationSteps": [
+        "Create authenticated shared shell, project list/detail parameter routes, pagination query, and required not-found template.",
+        "Use separate project/detail/activity resources with explicit mutation invalidation names; prove an edit refreshes only declared keys while unrelated requests remain untouched.",
+        "Build edit form with mapped literal-name server errors, unsaved-change guard, pending/retry displays, and explicit reset. Preserve values on all failures.",
+        "Add dialog confirmation, manual tabs, and chart behavior using public APIs plus inner ui-ignore. Keep labels and headings meaningful.",
+        "Implement logout command in exact order: resetSession, clear user-specific store/persistence keys explicitly, call/logout server if necessary via separately authorized app flow, then navigate login view. Ensure old principal responses cannot commit.",
+        "Provide a visible uncertain mutation outcome and reconciliation GET path; do not automatically replay mutation after authentication/network failure."
+      ],
+      "stepCount": 6,
+      "acceptance": "login/detail/edit/paginate/guard/logout scenario passes; independent invalidation request counts match; old session delayed response is ignored; widget/dialog cleanup passes across routes for both backends.",
+      "status": "pending"
+    },
+    {
+      "id": "T086",
+      "title": "Run unchanged frontends against both backends",
+      "dependsOn": [
+        "T083",
+        "T084",
+        "T085"
+      ],
+      "document": "06-delivery.md",
+      "anchor": "t086-run-unchanged-frontends-against-both-backends",
+      "fileTargets": "`tests/integration/backend-parity.spec.ts`, `evidence/backend-compatibility.json`.",
+      "implementationSteps": [
+        "Build frontend examples once and hash HTML/component/JS assets. Run the same build against each server with only documented root config/adapter bootstrap selected.",
+        "Execute blog, storefront, and SaaS main/failure flows for both envelope variants. Assert semantic DOM/results and API contract behavior, not identical raw JSON envelopes.",
+        "Verify no server-language-specific directives, component branches, or generated templates are needed for frontend reuse.",
+        "Run one fragment implementation against the shared sanitization cases and one multipart upload fixture against the transport harness.",
+        "Capture exact server/runtime versions, frontend hashes, adapter names/versions, test outcomes, and known demo-only limitations.",
+        "Fail if component files are edited between runs or a backend requires a hidden global API envelope assumption."
+      ],
+      "stepCount": 6,
+      "acceptance": "complete backend matrix passes and evidence proves unchanged frontend/component artifacts.",
+      "status": "pending"
+    },
+    {
+      "id": "T087",
+      "title": "Close tooling packaging and examples milestone",
+      "dependsOn": [
+        "T078",
+        "T079",
+        "T080",
+        "T086"
+      ],
+      "document": "06-delivery.md",
+      "anchor": "t087-close-tooling-packaging-and-examples-milestone",
+      "fileTargets": "`evidence/milestones/M5.md`.",
+      "implementationSteps": [
+        "Validate every example and every imported component with CLI manifest registrations and modules.",
+        "Smoke-test local static-assets quick start from a fresh directory with network disabled except localhost.",
+        "Install packed CLI/runtime in a fresh consumer project and execute documented commands on Windows and Linux.",
+        "Run all three example walkthroughs using published public APIs only, plus chart/editor teardown.",
+        "Compare schema-generated docs and build artifacts to source; require no stale generated files.",
+        "Record remaining external qualification work explicitly; working examples do not imply browser/security/accessibility signoff."
+      ],
+      "stepCount": 6,
+      "acceptance": "M5 evidence links passing validator, package, zero-build, examples, and two-backend reports.",
+      "status": "pending"
+    },
+    {
+      "id": "T088",
+      "title": "Write complete user documentation and backend recipes",
+      "dependsOn": [
+        "T078",
+        "T087"
+      ],
+      "document": "06-delivery.md",
+      "anchor": "t088-write-complete-user-documentation-and-backend-recipes",
+      "fileTargets": "`README.md`, `docs/{quick-start,state,data,forms,components,routing,fragments,extensions,security,migration}.md`.",
+      "implementationSteps": [
+        "Start quick start with ordinary HTML, local classic script, a state counter, then JSON API resource/action; show all prerequisites for each snippet.",
+        "Document installation variants, module load order, app.ready, options precedence, scope ownership, expression limits, typed models, successful-control serialization, all lifecycle states, and disposal.",
+        "Provide complete blog/storefront/SaaS walkthroughs and Node/Python backend recipes with exact commands, request/response bodies, error adapters, and server route fallback configuration.",
+        "Explain security boundaries: backend authorization, no secrets in persistence, explicit resetSession, uncertain mutation outcomes, CSRF/CORS/redirects, strict CSP/Trusted Types, default untrusted fragments, and developer enhancement trust.",
+        "Document SEO/progressive enhancement limitations and no generic hydration. Explain why router fallback cannot set a served document's HTTP status.",
+        "Add draft-syntax consolidation guide for brainstorm forms, clearly labeled unreleased syntax rather than a migration from shipped versions. Add semver policy and security-fix migration process.",
+        "Run every runnable snippet and command in CI; tag intentionally incomplete excerpts and link a complete example."
+      ],
+      "stepCount": 7,
+      "acceptance": "docs cover every RFC area; complete examples run as written; no optional module or config dependency is omitted from snippets.",
+      "status": "pending"
+    },
+    {
+      "id": "T089",
+      "title": "Conduct developer usability verification",
+      "dependsOn": [
+        "T088"
+      ],
+      "document": "06-delivery.md",
+      "anchor": "t089-conduct-developer-usability-verification",
+      "fileTargets": "`docs/research/usability-script.md`, `evidence/usability/`.",
+      "implementationSteps": [
+        "Prepare three concrete tasks: add a filtered resource list, submit a form with backend errors, and create/import a reusable slotted component. Supply docs and a running fixture backend, not hidden assistance.",
+        "Ask at least three backend-oriented developers to attempt the tasks. Record actual participant availability; do not fabricate participant results if recruiting is unavailable.",
+        "Capture time-to-first-working-result, misconceptions, syntax corrections, custom JS needed, and docs consulted. Avoid claiming statistical significance from this sample.",
+        "Classify defects as documentation gaps, inconsistent diagnostics, missing ordinary capability, or explicit extension cases. Fix docs/diagnostics within existing contract.",
+        "If a required behavior needs a language/API change, record a specification revision and rerun affected conformance instead of quietly altering syntax late.",
+        "Publish anonymized findings and exact remaining blocking issues; missing human sessions remain pending evidence."
+      ],
+      "stepCount": 6,
+      "acceptance": "actual observations and resulting changes are recorded; all repeatable task-blocking defects are resolved or explicitly prevent release acceptance.",
+      "status": "pending"
+    },
+    {
+      "id": "T090",
+      "title": "Complete cross-cutting security qualification",
+      "dependsOn": [
+        "T068",
+        "T079",
+        "T086",
+        "T088"
+      ],
+      "document": "06-delivery.md",
+      "anchor": "t090-complete-cross-cutting-security-qualification",
+      "fileTargets": "`docs/security/threat-model.md`, `tests/security/`, `evidence/security/review.md`.",
+      "implementationSteps": [
+        "Document trust boundaries for application markup, JSON responses, developer imports, untrusted fragments, enhanced fragments, adapters/behaviors, storage, and cross-origin requests.",
+        "Run prototype-pollution tests through JSON parse, props, computed reads, writable paths, query/header maps, error fields, and persistent storage restore.",
+        "Test redirects, CSRF missing/rotated token, credentials modes, malicious adapter.prepare changes, query/header/body redaction, cache authorization separation, session epoch races, and no default telemetry.",
+        "Run all sanitizer/CSP/Trusted Types cases and byte-budget checks with the exact production minified builds and pinned dependencies.",
+        "Audit public extension APIs for postdisposal writes and ownership crossing; review all HTML/URL/attribute sinks and package dependencies using actual advisory data at qualification time.",
+        "Have a reviewer independent of the main implementation author examine the threat model, sink inventory, and exploit fixtures. Record identity/date/findings; absence of reviewer is pending, not automatic approval.",
+        "Close every reproducible high-impact issue and add regression fixtures before signoff. Document residual application responsibilities precisely."
+      ],
+      "stepCount": 7,
+      "acceptance": "recorded security review, dependency inventory, CSP evidence, and passing exploit suites; no unresolved release-blocking security defect.",
+      "status": "pending"
+    },
+    {
+      "id": "T091",
+      "title": "Run automated accessibility and keyboard tests",
+      "dependsOn": [
+        "T086",
+        "T088"
+      ],
+      "document": "06-delivery.md",
+      "anchor": "t091-run-automated-accessibility-and-keyboard-tests",
+      "fileTargets": "`tests/browser/accessibility.spec.ts`, `evidence/accessibility/automated.json`.",
+      "implementationSteps": [
+        "Scan every principal view/state of the three examples using axe, including loading, empty, error, server field errors, dialog open, tabs alternate panel, and fragment replacement.",
+        "Fail on violations attributable to framework/example markup; document any tool false positives with reproducible evidence rather than blanket exclusions.",
+        "Script keyboard-only main workflows with Tab/Shift+Tab/arrows/Home/End/Enter/Space/Escape and assert focus order/visibility.",
+        "Test 320px viewport, 200% browser zoom, RTL, reduced motion, no optional CSS, and browser high-contrast/forced-colors where available.",
+        "Verify native labels/ARIA links survive component prefixes, server errors, route changes, fragment swaps, and repeated mount/unmount.",
+        "Capture screenshots/traces for failing states and rerun only after fixes; automated pass does not complete manual gate."
+      ],
+      "stepCount": 6,
+      "acceptance": "automated scans and keyboard fixtures pass on all example states; report lists exact tool/build/browser versions.",
+      "status": "pending"
+    },
+    {
+      "id": "T092",
+      "title": "Complete manual assistive technology review",
+      "dependsOn": [
+        "T091"
+      ],
+      "document": "06-delivery.md",
+      "anchor": "t092-complete-manual-assistive-technology-review",
+      "fileTargets": "`docs/testing/manual-accessibility.md`, `evidence/accessibility/manual.md`.",
+      "implementationSteps": [
+        "Use actual NVDA with a supported Windows browser and VoiceOver with Safari/macOS or iOS. Record exact OS/browser/AT versions and tester; do not substitute an emulated accessibility tree for use of AT.",
+        "Follow scripted blog search/article, storefront cart/checkout/error, and SaaS edit/dialog/tab/logout flows from keyboard and screen reader.",
+        "Check announcements of loading/completion/errors, label names, descriptions, invalid fields, focus restoration, hidden panels, dialog name/modal context, and polite toast delivery.",
+        "Repeat at 200% zoom and narrow/mobile layout; ensure controls remain operable and meaningful content is not clipped.",
+        "Record pass/fail per step plus reproduction instructions and fixed commit. Recheck failed steps after fixes.",
+        "If hardware/AT/tester unavailable, leave gate pending with exact missing environment; do not invent evidence or call automated checks equivalent."
+      ],
+      "stepCount": 6,
+      "acceptance": "signed actual manual report covers all three apps and required UI helpers, with no unresolved blocking accessibility issue.",
+      "status": "pending"
+    },
+    {
+      "id": "T093",
+      "title": "Qualify actual release browsers",
+      "dependsOn": [
+        "T087",
+        "T090",
+        "T091"
+      ],
+      "document": "06-delivery.md",
+      "anchor": "t093-qualify-actual-release-browsers",
+      "fileTargets": "`evidence/browsers/manifest.json`, `docs/browser-support.md`.",
+      "implementationSteps": [
+        "At RC preparation, consult official vendor releases and record current and immediately previous stable desktop Chromium/Chrome, Firefox, and Safari; current iOS Safari and Android Chrome. Record exact version/build/OS/device and date.",
+        "Keep Playwright engine CI as fast regression coverage, but run qualification on the actual release browsers; patched Playwright Firefox/WebKit are not proof of branded Firefox/Safari support.",
+        "Use WebDriver/safaridriver or a pinned external browser lab for unsupported local combinations; record provider/session evidence. Real iOS/Android devices are required for mobile qualification.",
+        "Execute the complete high-risk browser scenarios: native forms/files/IME, history traversal correction, focus/scroll, dialogs, import parsing, fragment sanitizer, persistence, and module startup.",
+        "Record unsupported platform APIs and confirm feature behavior matches the RFC; no silently skipped mandatory test. A missing environment is pending.",
+        "Re-run affected matrix after browser-specific fixes, then freeze the manifest against the release candidate commit."
+      ],
+      "stepCount": 6,
+      "acceptance": "every required actual-browser cell has an evidence link and passes; version numbers are collected at release, not guessed from the planning date.",
+      "status": "pending"
+    },
+    {
+      "id": "T094",
+      "title": "Measure bundle size and performance budgets",
+      "dependsOn": [
+        "T079",
+        "T086"
+      ],
+      "document": "06-delivery.md",
+      "anchor": "t094-measure-bundle-size-and-performance-budgets",
+      "fileTargets": "`benchmarks/{manifest.json,keyed-list.html,cold-boot.html,imports.html}`, `scripts/bench.mjs`, `evidence/performance/`.",
+      "implementationSteps": [
+        "Select and reserve one physical reference machine before beta; record CPU/model/core count/RAM/OS/kernel/browser build, display, power mode, plugged-in state, background workload policy, tool versions, and commit. Do not report invented hardware values.",
+        "Measure production files with deterministic gzip level 9, mtime=0. Core budget is <=35840 bytes; sum core+router+fragments+UI compressed file sizes is <=71680 bytes, including sanitizer and runtime dependencies. Report ESM/classic independently and gate on the larger delivered variant.",
+        "Benchmark 1000 keyed list items with actual visible rows and ten existing items changed per update, keeping key/order stable. Force scheduler flush completion as timing endpoint; include JS plus DOM commit, report layout/paint separately from a browser trace.",
+        "Run 30 warmups, then 200 measured updates per run, at least five runs after page reload. Use nearest-rank percentile (sorted sample index ceil(.95*n)-1); each run's p95 must be <16ms. Report p50/p95 and raw samples, not best run only.",
+        "Also measure ten-key reorders as a diagnostic and cold boot of 1000 bindings, component import waterfalls, and 100 route transitions. Do not silently replace the fixed hard-gate fixture with an easier operation.",
+        "If gates fail, profile and fix without removing required functionality/security; otherwise revise RFC budget transparently and retain old/new measurements."
+      ],
+      "stepCount": 6,
+      "acceptance": "reproducible scripts, exact manifest, raw traces/samples, module sizes, and pass/fail calculations published before beta. Goals are not marked achieved until measured.",
+      "status": "pending"
+    },
+    {
+      "id": "T095",
+      "title": "Measure lifetime reliability and memory plateau",
+      "dependsOn": [
+        "T061",
+        "T075",
+        "T086",
+        "T094"
+      ],
+      "document": "06-delivery.md",
+      "anchor": "t095-measure-lifetime-reliability-and-memory-plateau",
+      "fileTargets": "`benchmarks/lifetime.html`, `tests/integration/leaks.spec.ts`, `evidence/performance/lifetime.json`.",
+      "implementationSteps": [
+        "Instrument owners/listeners/timers/observers/request subscribers/cache entries and run 100 route transitions with components, slots, forms, fragments, widgets, and active requests.",
+        "After each route disposal require route-local counts return to shared-shell baseline. After root unmount require all framework counts zero and cache<=maxEntries throughout.",
+        "Collect forced-GC heap samples using a documented browser test protocol every ten transitions after twenty warmups; never expose GC as application API.",
+        "Define plateau tolerance before measuring: final five post-GC samples may not show >5% or >1MiB growth (whichever is larger) over first five steady-state samples, and retained framework owner/node counts must not grow. This is a plan-selected diagnostic threshold to record in benchmark manifest, not a supplied measured result.",
+        "Distinguish library/application-retained nodes from framework retention via retainer paths. Fix framework leaks even if aggregate heap remains within tolerance.",
+        "Repeat full mount/unmount 100 times and test failure teardown (import timeout, sanitizer error, throwing behavior cleanup, interrupted guards) to catch error-path leaks."
+      ],
+      "stepCount": 6,
+      "acceptance": "zero lifecycle counters after unmount, bounded cache, stable retained ownership, documented heap plateau, and no untriaged framework retention.",
+      "status": "pending"
+    },
+    {
+      "id": "T096",
+      "title": "Close full conformance and beta gate",
+      "dependsOn": [
+        "T088",
+        "T089",
+        "T090",
+        "T091",
+        "T092",
+        "T093",
+        "T094",
+        "T095"
+      ],
+      "document": "06-delivery.md",
+      "anchor": "t096-close-full-conformance-and-beta-gate",
+      "fileTargets": "`scripts/check-release.mjs`, `evidence/milestones/M6.md`, `evidence/requirements.json`.",
+      "implementationSteps": [
+        "Reconcile every RFC/design clause and C01\u2013C14 decision against 07-coverage and executable fixture IDs. Every directive family requires valid, invalid, lifecycle, and alias cases.",
+        "Run all suites against minified classic and ESM production artifacts, not just source modules. Include parser property tests, seeded races, CLI parity, strict CSP, actual-browser matrix, and example compatibility.",
+        "Verify all release evidence references the same candidate commit and locked dependencies; stale reports are not accepted without a documented unaffected-scope justification.",
+        "Require contract clarifications accepted, no unresolved critical bugs, all required docs/examples delivered, measured budgets passed, and manual security/accessibility evidence present.",
+        "Build check-release to output a per-gate pass/fail/pending report and exit nonzero for either fail or pending. Do not implement force/ignore-required-gate switches.",
+        "Publish beta artifacts only after the beta readiness report is complete; optional modules remain mandatory release deliverables."
+      ],
+      "stepCount": 6,
+      "acceptance": "all traceability entries resolved, check-release passes with real evidence, and M6 explicitly distinguishes completed facts from prospective RC steps.",
+      "status": "pending"
+    },
+    {
+      "id": "T097",
+      "title": "Prepare release candidate and compatibility record",
+      "dependsOn": [
+        "T096"
+      ],
+      "document": "06-delivery.md",
+      "anchor": "t097-prepare-release-candidate-and-compatibility-record",
+      "fileTargets": "`CHANGELOG.md`, `docs/release/1.0.0.md`, `evidence/release-candidate.json`.",
+      "implementationSteps": [
+        "Assign a single `1.0.0-rc.1` version across public runtime/CLI/assets/module bridge metadata; rebuild and pack from a clean checkout using frozen lockfile.",
+        "Produce changelog describing complete scope, known nonblocking limitations, security properties, supported browsers, and performance reference hardware/results without universal claims.",
+        "Record accepted spec revision, task/requirement evidence hashes, dependency/license inventory, and exact artifact integrity hashes.",
+        "Install RC tarballs into fresh zero-build and module consumers and run full example smoke tests, strict CSP, and key browser checks.",
+        "Freeze behavioral changes after RC; any fix changes version to next RC and reruns affected verification plus release manifest integrity.",
+        "Document post-1.0 semver rules and vulnerability-reporting contact supplied by maintainer. Do not invent a contact address."
+      ],
+      "stepCount": 6,
+      "acceptance": "reproducible RC artifact set with all matching evidence and explicit limitation notes; no unresolved publishing identity/contact questions hidden in code.",
+      "status": "pending"
+    },
+    {
+      "id": "T098",
+      "title": "Verify publishing identity licenses and reproducibility",
+      "dependsOn": [
+        "T097"
+      ],
+      "document": "06-delivery.md",
+      "anchor": "t098-verify-publishing-identity-licenses-and-reproducibility",
+      "fileTargets": "`LICENSE`, `NOTICE`, `scripts/release.mjs`, `evidence/publish-readiness.md`.",
+      "implementationSteps": [
+        "Verify actual ownership/availability of planned package names and remote repository. Use maintainer-supplied publisher identity; do not register accounts or reserve names implicitly.",
+        "Use MIT as the proposed project license, subject to rights-holder confirmation, and preserve dependency license notices. Do not falsely assert copyright ownership on the user's behalf.",
+        "Configure CI release credentials through secret storage with least necessary publish scope; never commit tokens or expose them in artifact metadata.",
+        "Rebuild twice in clean isolated directories and compare all artifact hashes, excluding explicitly normalized provenance timestamps. Fix nondeterministic output before release.",
+        "Run dry-run pack/publish validation, file allowlist checks, source map integrity, exports install tests, and unwanted-file/secret scan.",
+        "Prepare a concrete release report listing package names/versions, files, hashes, license/identity confirmation, tag, and public destination before any publishing authorization step in the future implementation workflow."
+      ],
+      "stepCount": 6,
+      "acceptance": "publishing prerequisites are facts, not guesses; dry run passes; reproducibility verified; unavailable legal/account ownership remains an explicit external release blocker.",
+      "status": "pending"
+    },
+    {
+      "id": "T099",
+      "title": "Publish the complete 1.0 release",
+      "dependsOn": [
+        "T098"
+      ],
+      "document": "06-delivery.md",
+      "anchor": "t099-publish-the-complete-10-release",
+      "fileTargets": "final release manifest and evidence.",
+      "implementationSteps": [
+        "Re-run check-release on final 1.0.0 candidate and confirm accepted public contract, identity, and artifact report. This planning task does not itself authorize publishing future artifacts.",
+        "When the maintainer authorizes the concrete release, tag the exact tested commit and publish the already verified runtime/CLI packages and versioned static assets through the release job.",
+        "Upload docs, schema, licenses, integrity manifest, browser matrix, benchmark manifests/traces, and source maps with matching version identifiers.",
+        "Install from published package endpoints in a clean consumer and fetch versioned static files; compare integrity with prepared manifest and run smoke tests.",
+        "If postpublication verification fails, stop promotion and issue an explicit corrective patch/notice. Do not silently overwrite immutable published versions or claim complete success.",
+        "Record artifact URLs, registry versions, tag/commit, verification outcome, and publication timestamp from actual results."
+      ],
+      "stepCount": 6,
+      "acceptance": "all required artifacts published and verified, no module omitted, final evidence references the shipped bytes, and release announcement claims only proven gates.",
+      "status": "pending"
+    },
+    {
+      "id": "T100",
+      "title": "Establish maintenance and regression policy",
+      "dependsOn": [
+        "T099"
+      ],
+      "document": "06-delivery.md",
+      "anchor": "t100-establish-maintenance-and-regression-policy",
+      "fileTargets": "`CONTRIBUTING.md`, `SECURITY.md`, `docs/maintenance.md`, CI configuration.",
+      "implementationSteps": [
+        "Require schema/fixtures/docs updates for every directive/API/default/lifecycle change. Existing behavior changes are major unless correcting a documented security defect.",
+        "Define dependency update process: exact pin, lockfile, security corpus, browser conformance, size report, and migration note when needed.",
+        "Preserve regression fixtures for every production bug, minimized property-test failure, and sanitizer advisory fix.",
+        "Document how to rerun benchmarks on the recorded machine and update browser support evidence for later releases without retroactively changing 1.0 claims.",
+        "Create a post-1.0 backlog containing excluded features only as future proposals; do not describe them as supported 1.0 features.",
+        "Document security-report handling and patch publication with clear migration guidance; use confirmed project contacts only."
+      ],
+      "stepCount": 6,
+      "acceptance": "contributors can reproduce validation and release checks, policy matches semantic versioning rules, and 1.0 artifacts/evidence remain immutable and traceable.",
+      "status": "pending"
+    }
+  ]
+}
