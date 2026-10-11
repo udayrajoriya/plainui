@@ -1,0 +1,9 @@
+pnpm-lock.yaml text eol=lf
+pnpm-workspace.yaml text eol=lf
+package.json text eol=lf
+packages/**/package.json text eol=lf
+*.mjs text eol=lf
+*.ts text eol=lf
+*.json text eol=lf
+.node-version text eol=lf
+.npmrc text eol=lf

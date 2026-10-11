@@ -19,6 +19,8 @@ All file paths are repository-relative. All tasks include the common definition 
 
 ## T002 Initialize the workspace and pin tools
 
+**Status:** completed 11 October 2026. [Completion evidence](../../evidence/tasks/T002.md).
+
 **Depends on:** T001. **Files:** root `package.json`, `pnpm-workspace.yaml`, `pnpm-lock.yaml`, `.node-version`, `.npmrc`, `.editorconfig`, `.gitignore`, `tsconfig.base.json`, `evidence/dependencies/`.
 
 1. Initialize a Git repository only if one still does not exist; do not create a remote or publish anything. Ignore node_modules, dist, browser reports, local secrets, and transient coverage; retain evidence manifests and source fixtures.

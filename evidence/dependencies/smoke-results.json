@@ -1,0 +1,44 @@
+{
+  "task": "T002",
+  "verifiedDate": "2026-10-11",
+  "node": "24.21.0",
+  "pnpm": "12.10.1",
+  "typescript": "7.0.2",
+  "esbuild": "0.28.2",
+  "vitest": "5.0.3",
+  "vite": "7.3.7",
+  "playwright": "1.64.0",
+  "lockfileSha256": "0bb053a3e44eda410b3ff87ccd2eeae2fae5e655226ac532864f24ec0f212d2d",
+  "browserBuilds": {
+    "chromium": { "revision": "1248", "browserVersion": "156.0.8078.4" },
+    "firefox": { "revision": "1555", "browserVersion": "157.0" },
+    "webkit": { "revision": "2370", "browserVersion": "27.2" }
+  },
+  "windows": {
+    "platform": "Windows x64",
+    "emptyNodeModulesFrozenInstall": "passed",
+    "typecheck": "passed",
+    "unit": "1 passed",
+    "classicAndEsmBuild": "passed",
+    "browser": "3 passed: chromium, firefox, webkit"
+  },
+  "linux": {
+    "platform": "Ubuntu 26.04 x64 under WSL2",
+    "frozenInstall": "passed",
+    "typecheck": "passed",
+    "unit": "1 passed",
+    "classicAndEsmBuild": "passed",
+    "browser": "3 passed: chromium, firefox, webkit"
+  },
+  "lockMismatch": {
+    "manifestChange": "vitest 5.0.3 -> 5.0.2 in an isolated copy",
+    "command": "pnpm install --frozen-lockfile --lockfile-only",
+    "result": "rejected with ERR_PNPM_OUTDATED_LOCKFILE",
+    "defaultFrozenMode": "pnpm install --lockfile-only also rejected the mismatch using workspace frozenLockfile: true"
+  },
+  "engineMismatch": {
+    "node": "20.13.1",
+    "result": "rejected with ERR_PNPM_UNSUPPORTED_ENGINE"
+  },
+  "dependencyAdjustment": "Unbounded Vitest peer resolved Vite 8.3.4, whose Rolldown native binding was absent after the Windows pnpm install. Pinning Vite 7.3.7 allowed Vitest 5.0.3 to run on both platforms."
+}

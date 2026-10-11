@@ -1,6 +1,6 @@
 # PlainUI revision 0.2 proposed amendment set
 
-10 October 2026 · Status Proposed · Acceptance pending
+Drafted 10 October 2026; C01 peer pin amended 11 October 2026 · Status Proposed · Acceptance pending
 
 This is the complete proposed revision 0.2 amendment set for RFC 0001 and its companion Technical Design. The immutable revision 0.1 Markdown transcriptions remain the base text. The rules below supplement their identified clauses and replace any specifically conflicting wording only after explicit acceptance. Unaffected revision 0.1 wording remains unchanged.
 
@@ -31,15 +31,16 @@ This is the complete proposed revision 0.2 amendment set for RFC 0001 and its co
 
 Use TypeScript source, pnpm workspaces, esbuild for browser bundles, `tsc` for types, Vitest for pure unit tests, Playwright for browser conformance, fast-check for property tests, parse5 for CLI HTML parsing, DOMPurify for browser fragment sanitization, and axe-core through its Playwright integration for automated accessibility checks. No framework or DOM emulator is required by the browser runtime.
 
-Pin direct versions exactly, without `^`, `~`, or `latest`. The npm registry metadata read during planning returned the following versions. Commit the full dependency graph through `pnpm-lock.yaml`; an install/compatibility smoke test in T002 verifies this combination before other work starts. These are package selections, not a claim that their combination has already been tested.
+Pin direct versions exactly, without `^`, `~`, or `latest`. The initial versions came from npm registry metadata read during planning; T002 added the tested Vite peer pin. Commit the full dependency graph through `pnpm-lock.yaml`. T002 verifies the combination with an install and compatibility smoke test before other work starts.
 
-| Tool | Initial exact version |
+| Tool | Exact version |
 |---|---|
 | Node.js | 24.21.0 |
 | pnpm | 12.10.1 |
 | TypeScript | 7.0.2 |
 | esbuild | 0.28.2 |
 | Vitest | 5.0.3 |
+| Vite (Vitest runner peer) | 7.3.7 |
 | @playwright/test | 1.64.0 |
 | fast-check | 4.10.2 |
 | parse5 | 8.0.1 |
@@ -53,7 +54,7 @@ Pin direct versions exactly, without `^`, `~`, or `latest`. The npm registry met
 | Python (example server only) | 3.13.7 |
 | python-multipart (Python example server only) | 0.0.32 |
 
-Node 24 is selected as the LTS implementation environment, according to the [Node release schedule](https://github.com/nodejs/Release) and [Node releases](https://github.com/nodejs/node/releases). Package versions are recorded from their official npm registry `/<package>/latest` metadata on 10 October 2026. Archive that metadata in T002. Upgrade a pin only in a dedicated dependency change with lockfile, security review, conformance run, and size comparison. Do not let a later `latest` silently change this baseline.
+Node 24 is selected as the LTS implementation environment, according to the [Node release schedule](https://github.com/nodejs/Release) and [Node releases](https://github.com/nodejs/node/releases). Initial package versions were recorded from their official npm registry `/<package>/latest` metadata on 10 October 2026. T002 added an exact Vite 7.3.7 peer pin after the unbounded Vitest peer resolved to Vite 8.3.4 and its Rolldown native binding was absent from the pnpm 12.10.1 Windows install. The pinned Vite 7.3.7/Vitest 5.0.3 combination passed the T002 unit smoke test. Archive exact-version metadata in T002. Upgrade a pin only in a dedicated dependency change with lockfile, security review, conformance run, and size comparison. Do not let a later `latest` silently change this baseline.
 
 DOMPurify is the selected maintained sanitizer. Its [official documentation](https://github.com/cure53/DOMPurify) describes DOM-fragment output and Trusted Types integration. The PlainUI allowlist and trust policy remain narrower than the sanitizer defaults. Playwright's WebKit builds do not substitute for actual Safari release qualification; [Playwright documents this limitation](https://playwright.dev/docs/browsers).
 

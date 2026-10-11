@@ -44,7 +44,9 @@
       ],
       "stepCount": 6,
       "acceptance": "`workspace.clean-install` succeeds from empty node_modules; `workspace.lock` fails if package metadata diverges; `workspace.windows` and `workspace.linux` execute the same scripts; smoke results record actual tool versions.",
-      "status": "pending"
+      "status": "completed",
+      "completedDate": "2026-10-11",
+      "evidence": "../../evidence/tasks/T002.md"
     },
     {
       "id": "T003",

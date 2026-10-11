@@ -55,9 +55,17 @@
   ],
   "implementationContract": {
     "path": "specs/implementation/01-contract.md",
-    "sha256": "c21ef81730910dd18027a38131050f104fc6377b31f7810e0cec5a67b0db115c",
+    "sha256": "4b3a9fe559941e7fda2e5077311b9b6d7bf59a38ac85c40a46b809fb79435f42",
     "status": "proposed-plan-baseline",
-    "hashMode": "utf8-lf-normalized"
+    "hashMode": "utf8-lf-normalized",
+    "amendments": [
+      {
+        "task": "T002",
+        "date": "2026-10-11",
+        "originalSha256": "c21ef81730910dd18027a38131050f104fc6377b31f7810e0cec5a67b0db115c",
+        "reason": "Pin Vite 7.3.7 as a compatible Vitest peer after Vite 8.3.4 failed the Windows smoke test."
+      }
+    ]
   },
   "decisions": {
     "path": "docs/decisions/0001-baseline.md",
@@ -74,7 +82,7 @@
           "package.*"
         ],
         "classification": "engineering selection; CLI/runtime delivery requirements",
-        "selectedBehaviorSha256": "2f66cc2bdacfa87bfb9d7428db3b417ff49a1a28b92da05517a882282891a4ae"
+        "selectedBehaviorSha256": "37451efc144f379ff1d9fc4e1fa953cf06d0c113ea31cfd5408567053348e9ae"
       },
       {
         "id": "C02",
