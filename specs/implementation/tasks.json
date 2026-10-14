@@ -260,7 +260,9 @@
       ],
       "stepCount": 6,
       "acceptance": "`scope.shadow`, `scope.duplicate-cross-kind`, `scope.reserved`, `scope.ref-shadow`, `scope.app-only`, `registry.after-mount`, `registry.builtin`, and `scope.component-isolation` pass.",
-      "status": "pending"
+      "status": "completed",
+      "completedDate": "2026-10-14",
+      "evidence": "../../evidence/tasks/T011.md"
     },
     {
       "id": "T012",

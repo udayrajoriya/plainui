@@ -158,6 +158,8 @@ All file paths are repository-relative. All tasks include the common definition 
 
 ## T011 Implement scopes and extension registries
 
+**Status:** completed 14 October 2026. [Completion evidence](../../evidence/tasks/T011.md).
+
 **Depends on:** T008,T010. **Sources:** RFC §§4.2,14. **Files:** `scope/{scope,lookup,declarations,refs}.ts`, `registry.ts`, `public-api/types.ts`.
 
 1. Create scopes with explicit lexical parent and owner links. Register declarations before evaluating any dependent binding.
