@@ -3,5 +3,5 @@
   "compilerOptions": {
     "noEmit": true
   },
-  "include": ["tests/toolchain/**/*.ts"]
+  "include": ["packages/**/*.ts", "tests/toolchain/**/*.ts"]
 }

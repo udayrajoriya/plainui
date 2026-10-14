@@ -12,7 +12,6 @@ const deferred = {
   'test:security': 'T090',
   'validate:examples': 'T087',
   'check:generated': 'T004',
-  'check:boundaries': 'T003',
   'check:size': 'T094',
   bench: 'T094',
   'check:release': 'T097',
@@ -42,14 +41,21 @@ if (task in deferred) {
 } else if (task === 'typecheck') {
   runNode(packageBin('typescript', 'tsc'), ['--project', 'tsconfig.json']);
 } else if (task === 'test:unit') {
-  runNode(packageBin('vitest', 'vitest'), ['run', 'tests/unit/toolchain.test.ts']);
+  runNode(packageBin('vitest', 'vitest'), ['run', 'tests/unit']);
 } else if (task === 'test:browser') {
   runNode(join(root, 'scripts', 'smoke-build.mjs'));
   if (process.exitCode === 0) {
-    runNode(packageBin('@playwright/test', 'playwright'), ['test', 'tests/browser/toolchain.spec.ts']);
+    runNode(join(root, 'scripts', 'build.mjs'));
+  }
+  if (process.exitCode === 0) {
+    runNode(packageBin('@playwright/test', 'playwright'), ['test', 'tests/browser']);
   }
 } else if (task === 'build') {
-  runNode(join(root, 'scripts', 'smoke-build.mjs'));
+  runNode(join(root, 'scripts', 'check-boundaries.mjs'));
+  if (process.exitCode === 0) runNode(join(root, 'scripts', 'build.mjs'));
+  if (process.exitCode === 0) runNode(join(root, 'scripts', 'check-build.mjs'));
+} else if (task === 'check:boundaries') {
+  runNode(join(root, 'scripts', 'check-boundaries.mjs'));
 } else {
   console.error(`Unknown workspace task: ${task ?? '(missing)'}`);
   process.exitCode = 1;

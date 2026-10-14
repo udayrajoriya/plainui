@@ -34,6 +34,8 @@ All file paths are repository-relative. All tasks include the common definition 
 
 ## T003 Establish package boundaries and build entry points
 
+**Status:** completed 14 October 2026. [Completion evidence](../../evidence/tasks/T003.md).
+
 **Depends on:** T002. **Sources:** Design §2. **Files:** `scripts/build.mjs`, `scripts/check-boundaries.mjs`, each package `src/index.ts`, runtime entry files.
 
 1. Define allowed imports: core→schema; data/forms/components→core/schema and declared service interfaces; runtime→core/data/forms/components; each optional module→schema/core's official module bridge only. Forms may consume a data action-service interface; it must not import controller implementation.

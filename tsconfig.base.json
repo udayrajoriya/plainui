@@ -9,6 +9,9 @@
     "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "Bundler",
+    "paths": {
+      "@plainui/runtime-bridge": ["./packages/core/src/module-bridge.ts"]
+    },
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": [],
     "skipLibCheck": true,

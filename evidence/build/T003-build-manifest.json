@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 1,
+  "development": false,
+  "release": {
+    "plainui.js": {
+      "bytes": 1568,
+      "inputs": [
+        "packages/components/src/index.ts",
+        "packages/core/src/module-bridge.ts",
+        "packages/data/src/index.ts",
+        "packages/forms/src/index.ts",
+        "packages/runtime/src/classic.ts",
+        "packages/runtime/src/index.ts"
+      ],
+      "imports": []
+    },
+    "plainui.mjs": {
+      "bytes": 1494,
+      "inputs": [
+        "packages/components/src/index.ts",
+        "packages/core/src/module-bridge.ts",
+        "packages/data/src/index.ts",
+        "packages/forms/src/index.ts",
+        "packages/runtime/src/esm.ts",
+        "packages/runtime/src/index.ts"
+      ],
+      "imports": []
+    },
+    "plainui-router.js": {
+      "bytes": 220,
+      "inputs": [
+        "packages/router/src/entry-classic.ts",
+        "packages/router/src/index.ts"
+      ],
+      "imports": []
+    },
+    "plainui-router.mjs": {
+      "bytes": 197,
+      "inputs": [
+        "packages/router/src/entry-esm.ts",
+        "packages/router/src/index.ts"
+      ],
+      "imports": [
+        {
+          "path": "./plainui.mjs",
+          "external": true
+        }
+      ]
+    },
+    "plainui-fragments.js": {
+      "bytes": 226,
+      "inputs": [
+        "packages/fragments/src/entry-classic.ts",
+        "packages/fragments/src/index.ts"
+      ],
+      "imports": []
+    },
+    "plainui-fragments.mjs": {
+      "bytes": 203,
+      "inputs": [
+        "packages/fragments/src/entry-esm.ts",
+        "packages/fragments/src/index.ts"
+      ],
+      "imports": [
+        {
+          "path": "./plainui.mjs",
+          "external": true
+        }
+      ]
+    },
+    "plainui-ui.js": {
+      "bytes": 212,
+      "inputs": [
+        "packages/ui/src/entry-classic.ts",
+        "packages/ui/src/index.ts"
+      ],
+      "imports": []
+    },
+    "plainui-ui.mjs": {
+      "bytes": 189,
+      "inputs": [
+        "packages/ui/src/entry-esm.ts",
+        "packages/ui/src/index.ts"
+      ],
+      "imports": [
+        {
+          "path": "./plainui.mjs",
+          "external": true
+        }
+      ]
+    },
+    "plainui.css": {
+      "bytes": 0,
+      "inputs": [
+        "packages/styles/src/plainui.css"
+      ],
+      "imports": []
+    }
+  },
+  "dev": {
+    "plainui.js": {
+      "bytes": 3460,
+      "inputs": [
+        "packages/components/src/index.ts",
+        "packages/core/src/module-bridge.ts",
+        "packages/data/src/index.ts",
+        "packages/forms/src/index.ts",
+        "packages/runtime/src/classic.ts",
+        "packages/runtime/src/index.ts"
+      ],
+      "imports": []
+    },
+    "plainui.mjs": {
+      "bytes": 3118,
+      "inputs": [
+        "packages/components/src/index.ts",
+        "packages/core/src/module-bridge.ts",
+        "packages/data/src/index.ts",
+        "packages/forms/src/index.ts",
+        "packages/runtime/src/esm.ts",
+        "packages/runtime/src/index.ts"
+      ],
+      "imports": []
+    },
+    "plainui-router.js": {
+      "bytes": 376,
+      "inputs": [
+        "packages/router/src/entry-classic.ts",
+        "packages/router/src/index.ts"
+      ],
+      "imports": []
+    },
+    "plainui-router.mjs": {
+      "bytes": 439,
+      "inputs": [
+        "packages/router/src/entry-esm.ts",
+        "packages/router/src/index.ts"
+      ],
+      "imports": [
+        {
+          "path": "./plainui.mjs",
+          "external": true
+        }
+      ]
+    },
+    "plainui-fragments.js": {
+      "bytes": 394,
+      "inputs": [
+        "packages/fragments/src/entry-classic.ts",
+        "packages/fragments/src/index.ts"
+      ],
+      "imports": []
+    },
+    "plainui-fragments.mjs": {
+      "bytes": 469,
+      "inputs": [
+        "packages/fragments/src/entry-esm.ts",
+        "packages/fragments/src/index.ts"
+      ],
+      "imports": [
+        {
+          "path": "./plainui.mjs",
+          "external": true
+        }
+      ]
+    },
+    "plainui-ui.js": {
+      "bytes": 352,
+      "inputs": [
+        "packages/ui/src/entry-classic.ts",
+        "packages/ui/src/index.ts"
+      ],
+      "imports": []
+    },
+    "plainui-ui.mjs": {
+      "bytes": 399,
+      "inputs": [
+        "packages/ui/src/entry-esm.ts",
+        "packages/ui/src/index.ts"
+      ],
+      "imports": [
+        {
+          "path": "./plainui.mjs",
+          "external": true
+        }
+      ]
+    },
+    "plainui.css": {
+      "bytes": 38,
+      "inputs": [
+        "packages/styles/src/plainui.css"
+      ],
+      "imports": []
+    }
+  }
+}

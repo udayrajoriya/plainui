@@ -67,7 +67,9 @@
       ],
       "stepCount": 6,
       "acceptance": "`build.boundaries` deliberately illegal imports fail; `build.no-duplicate-core` optional artifacts exclude core implementation; `build.entries` all filenames exist; `build.no-eval` no eval/Function constructor appears in emitted browser code.",
-      "status": "pending"
+      "status": "completed",
+      "completedDate": "2026-10-14",
+      "evidence": "../../evidence/tasks/T003.md"
     },
     {
       "id": "T004",
