@@ -278,6 +278,8 @@ All file paths are repository-relative. All tasks include the common definition 
 
 ## T019 Implement conditional template chains
 
+**Status:** completed 14 October 2026. [Completion evidence](../../evidence/tasks/T019.md).
+
 **Depends on:** T012,T014,T016,T018. **Sources:** RFC §6; Design §7. **Files:** `structure/conditional.ts`.
 
 1. Group adjacent if/else-if/else templates while ignoring only whitespace text and comments. A non-whitespace sibling terminates a chain; orphan else/else-if is invalid.

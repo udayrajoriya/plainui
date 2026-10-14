@@ -18,6 +18,8 @@ import {ClassBinding} from './bindings/class.js';
 import {setShow} from './bindings/show.js';
 import type {StateObserver} from './state/store.js';
 import {parseDeveloperImport} from './html/inert.js';
+import {collectConditionalChains,ConditionalChain} from './structure/conditional.js';
+import type {Owner} from './ownership/owner.js';
 import {ExtensionRegistry} from './registry.js';
 import type {RuntimeServices} from './integration.js';
 
@@ -29,7 +31,7 @@ export class App {
   status:AppStatus='created';readonly ready:Promise<void>;private resolveReady!:()=>void;private rejectReady!:(reason:unknown)=>void;
   private root:Element|null=null;private name='';private registry:MountRegistry|null=null;private tree:OwnerTree|null=null;private scheduler:Scheduler|null=null;private scope:Scope|null=null;private state:StateStore|null=null;private bus:DiagnosticBus|null=null;private listeners=new Set<DiagnosticListener>();
   readonly imports=new Map<string,DocumentFragment>();
-  private readonly scopeFactory=new ScopeFactory();private readonly stores=new WeakMap<Scope,StateStore>();readonly planScopes=new WeakMap<Element,Scope>();readonly planOwners=new WeakMap<Element,import('./ownership/owner.js').Owner>();plans:readonly BindingPlan[]=[];
+  private readonly scopeFactory=new ScopeFactory();private readonly stores=new WeakMap<Scope,StateStore>();private readonly conditionalTemplates=new WeakSet<HTMLTemplateElement>();readonly planScopes=new WeakMap<Element,Scope>();readonly planOwners=new WeakMap<Element,Owner>();plans:readonly BindingPlan[]=[];
   readonly extensions=new ExtensionRegistry();options:ResolvedOptions|null=null;
   constructor(private readonly initialOptions:unknown={},private readonly moduleNames:()=>readonly string[]=()=>[],readonly services?:RuntimeServices){this.ready=new Promise<void>((resolve,reject)=>{this.resolveReady=resolve;this.rejectReady=reject;});}
   get installedModules():readonly string[]{return Object.freeze([...this.moduleNames()]);}
@@ -44,12 +46,12 @@ export class App {
     try {this.options=resolveConfiguration(root,this.initialOptions);this.bus=new DiagnosticBus(name,this.options.debug);for(const listener of this.listeners)this.bus.subscribe(listener);
       this.tree=new OwnerTree(root,error=>this.diagnose(error));this.scheduler=new Scheduler(error=>this.diagnose(error));this.scope=this.scopeFactory.create('app',this.tree.root);this.state=new StateStore(this.scope);this.stores.set(this.scope,this.state);
       this.extensions.freeze();const compiled=compileTree(root);if(compiled.fatal)throw new PlainUIError('ROOT_INVALID');this.reportIssues(compiled);
-      this.plans=compiled.plans;this.compileDeclarations(compiled);this.bindValues();const imports=this.loadImports(compiled);this.scheduler.afterFlush(this.tree.root,()=>{void imports.then(()=>{if(this.status!=='compiling')return;this.status='mounted';this.resolveReady();});});return this;
+      this.plans=compiled.plans;this.compileDeclarations(compiled);this.setupConditionals([root]);this.bindValues(compiled.plans);const imports=this.loadImports(compiled);this.scheduler.afterFlush(this.tree.root,()=>{void imports.then(()=>{if(this.status!=='compiling')return;this.status='mounted';this.resolveReady();});});return this;
     }catch(error){this.status='failed';this.release();this.rejectReady(error);throw error;}
   }
   private reportIssues(result:CompileResult):void {for(const issue of result.issues){const ownerId=this.tree?.ownerOf(issue.element)?.id;this.bus?.emit(issue.code,{directive:issue.name,...(ownerId===undefined?{}:{ownerId})});}}
-  private compileDeclarations(result:CompileResult):void {for(const plan of result.plans){const element=plan.element;if(element!==this.root&&!this.root!.contains(element))continue;let ancestor=element.parentElement;while(ancestor&&!this.planScopes.has(ancestor))ancestor=ancestor.parentElement;
-      const parentScope=ancestor?this.planScopes.get(ancestor)!:this.scope!;const parentOwner=ancestor?this.planOwners.get(ancestor)!:this.tree!.root;const owner=element===this.root?this.tree!.root:this.tree!.create(parentOwner,'element');
+  private compileDeclarations(result:CompileResult,baseOwner?:Owner,baseScope?:Scope):void {const included=new Set(result.plans.map(plan=>plan.element));for(const plan of result.plans){const element=plan.element;if(element!==this.root&&!this.root!.contains(element))continue;let ancestor=element.parentElement;while(ancestor&&!this.planScopes.has(ancestor))ancestor=ancestor.parentElement;
+      const inCurrent=ancestor!==null&&included.has(ancestor);const parentScope=baseScope&&!inCurrent?baseScope:ancestor?this.planScopes.get(ancestor)!:this.scope!;const parentOwner=baseOwner&&!inCurrent?baseOwner:ancestor?this.planOwners.get(ancestor)!:this.tree!.root;const owner=element===this.root?this.tree!.root:this.tree!.create(parentOwner,'element');
       if(element!==this.root)this.tree!.indexNode(owner,element);
       const hasState=plan.phase.declarations.some(item=>item.name==='ui-state');const scope=element===this.root?this.scope!:hasState?this.scopeFactory.create('local',owner,parentScope):parentScope;
       this.planOwners.set(element,owner);this.planScopes.set(element,scope);
@@ -58,7 +60,7 @@ export class App {
         for(const [name,item] of Object.entries(value))try{declareBinding(target,name,'state',item as never);}catch(error){this.diagnose(error);}
       }}
     }}
-  private bindValues():void {for(const plan of this.plans){const owner=this.planOwners.get(plan.element);const scope=this.planScopes.get(plan.element);if(!owner||!scope)continue;const element=plan.element;const store=this.stores.get(scope)??new StateStore(scope);this.stores.set(scope,store);
+  private bindValues(plans:readonly BindingPlan[]):void {for(const plan of plans){const owner=this.planOwners.get(plan.element);const scope=this.planScopes.get(plan.element);if(!owner||!scope)continue;const element=plan.element;const store=this.stores.get(scope)??new StateStore(scope);this.stores.set(scope,store);
       const directives=plan.phase.values.filter(item=>item.name==='ui-text'||item.name==='ui-src'||item.name==='ui-href'||item.name==='ui-class'||item.name==='ui-show'||item.name.startsWith('ui-bind-'));
       const clearCloak=()=>{element.removeAttribute('ui-cloak');element.removeAttribute('data-ui-cloak');};
       if(!directives.length){this.scheduler!.enqueue('bindings',{owner,run:clearCloak});continue;}
@@ -74,6 +76,14 @@ export class App {
         }};
         this.tree!.registerDisposer(owner,()=>store.untrack(observer));this.scheduler!.enqueue('bindings',job);
       }
+    }}
+  private setupConditionals(nodes:readonly Element[]):void {const parents=new Set<ParentNode>();for(const node of nodes){parents.add(node.parentNode??node);parents.add(node);for(const descendant of node.querySelectorAll('*'))parents.add(descendant);}
+    for(const parent of parents)for(const spec of collectConditionalChains(parent)){if(spec.issue){this.bus?.emit(spec.issue);continue;}const first=spec.branches[0]!.template;if(this.conditionalTemplates.has(first))continue;for(const branch of spec.branches)this.conditionalTemplates.add(branch.template);
+      const templateOwner=this.planOwners.get(first);const parentOwner=templateOwner?.parent??this.tree!.root;const scope=this.planScopes.get(first)??this.scope!;const store=this.stores.get(scope)??new StateStore(scope);this.stores.set(scope,store);let reads:string[]=[];let limit=false;
+      const chain=new ConditionalChain(this.tree!,parentOwner,spec,expression=>{let ast;try{ast=parseExpression(expression);}catch{return {ok:false,code:'EXPRESSION_TYPE'} as const;}const result=evaluate(ast,lexicalReader(scope),{locale:this.options!.locale,timeZone:this.options!.timeZone,formatters:this.extensions.formatterMap()});reads.push(...result.dependencies);if(!result.ok&&result.code==='EXPRESSION_LIMIT')limit=true;return result.ok?{ok:true,value:result.value} as const:{ok:false,code:result.code==='EXPRESSION_LIMIT'?'EXPRESSION_LIMIT':'EXPRESSION_TYPE'} as const;},(inserted,branchOwner)=>{for(const node of inserted){if(!(node instanceof Element))continue;const compiled=compileTree(node);this.reportIssues(compiled);this.compileDeclarations(compiled,branchOwner,scope);this.setupConditionals([node]);this.bindValues(compiled.plans);}},error=>this.diagnose(error));
+      const observer:StateObserver={owner:chain.owner,dependencies:new Set(),invalidate:()=>this.scheduler?.enqueue('structure',job)};
+      const job={owner:chain.owner,run:()=>{reads=[];limit=false;chain.update();if(!limit)store.replaceDependencies(observer,[...new Set(reads)].map(path=>({path})));}};
+      this.tree!.registerDisposer(chain.owner,()=>store.untrack(observer));job.run();
     }}
   private async loadImports(result:CompileResult):Promise<void> {const tasks=result.plans.flatMap(plan=>plan.phase.components.filter(item=>item.name==='ui-import').map(async directive=>{
       const controller=new AbortController();const signal=this.tree!.root.signal;const abort=()=>controller.abort();signal.addEventListener('abort',abort,{once:true});const timer=setTimeout(abort,5000);

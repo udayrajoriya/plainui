@@ -461,7 +461,9 @@
       ],
       "stepCount": 6,
       "acceptance": "`if.whitespace-chain`, `if.orphan`, `if.branch-order`, `if.cleanup-once`, `if.same-branch-state`, `if.no-match`, `if.limit-preserves` pass.",
-      "status": "pending"
+      "status": "completed",
+        "completedOn": "2026-10-14",
+        "evidence": "evidence/tasks/T019.md"
     },
     {
       "id": "T020",
