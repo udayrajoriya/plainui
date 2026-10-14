@@ -233,6 +233,8 @@ All file paths are repository-relative. All tasks include the common definition 
 
 ## T016 Implement directive normalization and compile validation
 
+**Status:** completed 14 October 2026. [Completion evidence](../../evidence/tasks/T016.md).
+
 **Depends on:** T004,T011,T012. **Sources:** RFC §§4,16; Design §4. **Files:** `compiler/{normalize,validate,plan,walk}.ts`.
 
 1. Walk DOM nodes and template content explicitly. Map data-ui-* to canonical names while retaining source name/location.

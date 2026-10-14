@@ -382,7 +382,9 @@
       ],
       "stepCount": 6,
       "acceptance": "`compile.data-alias`, `compile.empty-flags`, `compile.unknown`, `compile.ignore`, `compile.conflicts`, `compile.local-fallback`, `compile.declarations-first` pass, with CLI-compatible structured rule IDs.",
-      "status": "pending"
+      "status": "completed",
+        "completedOn": "2026-10-14",
+        "evidence": "evidence/tasks/T016.md"
     },
     {
       "id": "T017",
