@@ -435,7 +435,9 @@
       ],
       "stepCount": 6,
       "acceptance": "`bind.text-xss`, `bind.array-requires-json`, `bind.boolean-aria`, `bind.url-schemes`, `bind.static-class`, `bind.noop-write`, `bind.show-preserves-state` pass.",
-      "status": "pending"
+      "status": "completed",
+        "completedOn": "2026-10-14",
+        "evidence": "evidence/tasks/T018.md"
     },
     {
       "id": "T019",

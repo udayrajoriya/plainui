@@ -263,6 +263,8 @@ All file paths are repository-relative. All tasks include the common definition 
 
 ## T018 Implement text, property, and attribute sinks
 
+**Status:** completed 14 October 2026. [Completion evidence](../../evidence/tasks/T018.md).
+
 **Depends on:** T010,T014,T016,T017. **Sources:** RFC §§6,16.2. **Files:** `bindings/{text,attribute,class,show,url}.ts`.
 
 1. ui-text accepts primitive/null and uses textContent; reject array/object unless formatted. Do not interpolate ordinary text nodes.
