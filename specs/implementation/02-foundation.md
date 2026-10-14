@@ -113,6 +113,8 @@ All file paths are repository-relative. All tasks include the common definition 
 
 ## T008 Implement safe JSON and writable paths
 
+**Status:** completed 14 October 2026. [Completion evidence](../../evidence/tasks/T008.md).
+
 **Depends on:** T006. **Sources:** RFC §§4,5,14,15; C04,C05. **Files:** `packages/core/src/json/{normalize,clone,freeze}.ts`, `state/path.ts`.
 
 1. Normalize JSON with iterative traversal to avoid stack overflow on deeply nested input data. Track active ancestry for cycle detection, not a global seen set that rejects harmless repeated references.

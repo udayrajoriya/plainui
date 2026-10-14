@@ -190,7 +190,9 @@
       ],
       "stepCount": 6,
       "acceptance": "`json.pollution` tests nested/computed forbidden names; `json.getter` getter invocation count stays zero; `json.cycle`, `json.class`, `json.undefined`, `path.sibling-sharing`, `path.readonly`, `path.missing-container`, and snapshot mutation tests pass.",
-      "status": "pending"
+      "status": "completed",
+      "completedDate": "2026-10-14",
+      "evidence": "../../evidence/tasks/T008.md"
     },
     {
       "id": "T009",
