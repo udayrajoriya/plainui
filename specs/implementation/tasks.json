@@ -142,7 +142,9 @@
       ],
       "stepCount": 7,
       "acceptance": "`config.precedence`, `config.unknown-nested`, `config.bad-json`, `config.locale-zone`, `diagnostic.redaction`, `diagnostic.listener-throws`, `inspector.disabled`, and `inspector.zero` pass.",
-      "status": "pending"
+      "status": "completed",
+      "completedDate": "2026-10-14",
+      "evidence": "../../evidence/tasks/T006.md"
     },
     {
       "id": "T007",

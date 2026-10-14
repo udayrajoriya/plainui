@@ -81,6 +81,8 @@ All file paths are repository-relative. All tasks include the common definition 
 
 ## T006 Implement configuration and diagnostic infrastructure
 
+**Status:** completed 14 October 2026. [Completion evidence](../../evidence/tasks/T006.md).
+
 **Depends on:** T004,T005. **Sources:** RFC §§3,14,15. **Files:** `packages/core/src/config.ts`, `diagnostics/{codes,emit,redact,inspector}.ts`.
 
 1. Resolve ui-config by document ID; require exactly one script[type=application/json], parse as safe JSON, and report missing/duplicate/wrong-type elements.
