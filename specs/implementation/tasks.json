@@ -283,7 +283,9 @@
       ],
       "stepCount": 6,
       "acceptance": "`owner.child-before-parent`, `owner.cleanup-connected`, `owner.double-dispose`, `owner.throwing-cleanup`, `owner.abort-reentrancy`, `range.move-focus`, `range.broken-anchor`, `owner.zero-after-unmount` pass.",
-      "status": "pending"
+      "status": "completed",
+        "completedOn": "2026-10-14",
+        "evidence": "evidence/tasks/T012.md"
     },
     {
       "id": "T013",

@@ -173,6 +173,8 @@ All file paths are repository-relative. All tasks include the common definition 
 
 ## T012 Implement owners, ranges, and deterministic disposal
 
+**Status:** completed 14 October 2026. [Completion evidence](../../evidence/tasks/T012.md).
+
 **Depends on:** T011. **Sources:** Design §§3,7. **Files:** `ownership/{owner,index,range,transaction}.ts`.
 
 1. Implement C04 Owner/DomRange and a WeakMap from owned nodes to ownership records. IDs are monotonically increasing per root.
