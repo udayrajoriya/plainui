@@ -218,6 +218,8 @@ All file paths are repository-relative. All tasks include the common definition 
 
 ## T015 Implement browser persistence
 
+**Status:** completed 14 October 2026. [Completion evidence](../../evidence/tasks/T015.md).
+
 **Depends on:** T006,T013,T014. **Sources:** RFC §5; C07. **Files:** `state/persistence.ts`.
 
 1. Compile persistence only on an unambiguous state/store declaration with explicit nonempty key and valid session/local enum.

@@ -357,7 +357,9 @@
       ],
       "stepCount": 6,
       "acceptance": "`persist.local-session`, `persist.version`, `persist.corrupt`, `persist.quota`, `persist.coalesced`, `persist.key-collision`, `persist.reset-session` pass.",
-      "status": "pending"
+      "status": "completed",
+        "completedOn": "2026-10-14",
+        "evidence": "evidence/tasks/T015.md"
     },
     {
       "id": "T016",
