@@ -46,6 +46,9 @@ if (task in deferred) {
     runNode(join(root, 'scripts', 'build.mjs'));
   }
   if (process.exitCode === 0) {
+    runNode(join(root, 'scripts', 'build-sanitizer-spike.mjs'));
+  }
+  if (process.exitCode === 0) {
     runNode(packageBin('@playwright/test', 'playwright'), ['test', 'tests/browser']);
   }
 } else if (task === 'test:conformance') {
