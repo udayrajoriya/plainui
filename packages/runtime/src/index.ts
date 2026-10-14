@@ -41,11 +41,11 @@ export const bundledFoundationPackages = Object.freeze([
 
 export const PlainUI = Object.freeze({
   __foundationPackages: bundledFoundationPackages,
-  create(): AppScaffold {
-    return createScaffoldApp(scaffoldServices);
+  create(options:unknown={}): AppScaffold {
+    return createScaffoldApp(scaffoldServices,options);
   },
-  mount(_root: Element): never {
-    throw new Error('PlainUI mount is scheduled for T017');
+  mount(root: Element,options:unknown={}): AppScaffold {
+    return createScaffoldApp(scaffoldServices,options).mount(root);
   },
   __moduleBridge_v1: getModuleBridge(),
 });

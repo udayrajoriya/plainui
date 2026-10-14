@@ -409,7 +409,9 @@
       ],
       "stepCount": 6,
       "acceptance": "`boot.classic-auto`, `boot.esm-explicit`, `boot.nested`, `boot.duplicate-name`, `boot.double-distribution`, `boot.same-app-repeat`, `boot.ready`, `boot.unmount-during-import` pass.",
-      "status": "pending"
+      "status": "completed",
+        "completedOn": "2026-10-14",
+        "evidence": "evidence/tasks/T017.md"
     },
     {
       "id": "T018",

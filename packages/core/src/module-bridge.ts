@@ -1,7 +1,7 @@
 import type { RuntimeServices } from './integration.js';
+import {App} from './app.js';
 
 declare const __PLAINUI_DEBUG__: boolean;
-const DEBUG = typeof __PLAINUI_DEBUG__ !== 'undefined' && __PLAINUI_DEBUG__;
 
 export const MODULE_BRIDGE_VERSION = 1 as const;
 export type OfficialModuleName = 'router' | 'fragments' | 'ui';
@@ -11,11 +11,7 @@ export interface OfficialModuleDefinition {
   readonly bridgeVersion: typeof MODULE_BRIDGE_VERSION;
 }
 
-/** T003 scaffold. T017 replaces mount with the complete lifecycle. */
-export interface AppScaffold {
-  readonly installedModules: readonly OfficialModuleName[];
-  mount(root: Element): never;
-}
+export type AppScaffold=App;
 
 interface AppRecord {
   readonly modules: Map<OfficialModuleName, OfficialModuleDefinition>;
@@ -26,7 +22,7 @@ const apps = new WeakMap<AppScaffold, AppRecord>();
 const classicModules = new Map<OfficialModuleName, OfficialModuleDefinition>();
 
 function validateDefinition(definition: OfficialModuleDefinition): void {
-  if (DEBUG && !Object.isFrozen(definition)) {
+  if (typeof __PLAINUI_DEBUG__ !== 'undefined' && __PLAINUI_DEBUG__ && !Object.isFrozen(definition)) {
     throw new Error(`PlainUI debug assertion: module definition is mutable: ${definition.name}`);
   }
   if (definition.bridgeVersion !== MODULE_BRIDGE_VERSION) {
@@ -60,6 +56,7 @@ export const officialModuleBridge: OfficialModuleBridge = Object.freeze({
   install<T extends AppScaffold>(app: T, definition: OfficialModuleDefinition): T {
     const record = apps.get(app);
     if (!record) throw new Error('PlainUI module installation requires an App from this runtime');
+    if(app.status!=='created')throw new Error('PlainUI modules must be installed before mount');
     addModule(record.modules, definition);
     return app;
   },
@@ -68,19 +65,12 @@ export const officialModuleBridge: OfficialModuleBridge = Object.freeze({
   },
 });
 
-export function createScaffoldApp(services: RuntimeServices): AppScaffold {
+export function createScaffoldApp(services: RuntimeServices,options:unknown={}): AppScaffold {
   const record: AppRecord = {
     modules: new Map(classicModules),
     services,
   };
-  const app: AppScaffold = Object.freeze({
-    get installedModules(): readonly OfficialModuleName[] {
-      return Object.freeze([...record.modules.keys()]);
-    },
-    mount(_root: Element): never {
-      throw new Error('PlainUI mount is scheduled for T017');
-    },
-  });
+  const app=new App(options,()=>[...record.modules.keys()],services);
   apps.set(app, record);
   return app;
 }

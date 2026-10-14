@@ -1,0 +1,91 @@
+import {resolveConfiguration,type ResolvedOptions} from './config.js';
+import {compileTree,type CompileResult} from './compiler/walk.js';
+import type {BindingPlan} from './compiler/plan.js';
+import {PlainUIError} from './diagnostics/codes.js';
+import {DiagnosticBus,type DiagnosticListener} from './diagnostics/emit.js';
+import {OwnerTree} from './ownership/owner.js';
+import {Scheduler} from './scheduler/flush.js';
+import {ScopeFactory,type Scope} from './scope/scope.js';
+import {StateStore} from './state/store.js';
+import {declareBinding} from './scope/declarations.js';
+import {normalizeJson} from './json/normalize.js';
+import {parseExpression} from './expression/parse.js';
+import {evaluate} from './expression/evaluate.js';
+import {lexicalReader} from './scope/lookup.js';
+import {setText} from './bindings/text.js';
+import {setAttribute} from './bindings/attribute.js';
+import {ClassBinding} from './bindings/class.js';
+import {setShow} from './bindings/show.js';
+import type {StateObserver} from './state/store.js';
+import {parseDeveloperImport} from './html/inert.js';
+import {ExtensionRegistry} from './registry.js';
+import type {RuntimeServices} from './integration.js';
+
+export type AppStatus='created'|'compiling'|'mounted'|'unmounting'|'unmounted'|'failed';
+const mountSymbol=Symbol.for('plainui.document.mounts.v1');
+type MountRegistry={roots:Map<Element,App>;names:Map<string,App>;serial:number};
+function registry(document:Document):MountRegistry {const host=document as Document&{[mountSymbol]?:MountRegistry};return host[mountSymbol]??(host[mountSymbol]={roots:new Map(),names:new Map(),serial:0});}
+export class App {
+  status:AppStatus='created';readonly ready:Promise<void>;private resolveReady!:()=>void;private rejectReady!:(reason:unknown)=>void;
+  private root:Element|null=null;private name='';private registry:MountRegistry|null=null;private tree:OwnerTree|null=null;private scheduler:Scheduler|null=null;private scope:Scope|null=null;private state:StateStore|null=null;private bus:DiagnosticBus|null=null;private listeners=new Set<DiagnosticListener>();
+  readonly imports=new Map<string,DocumentFragment>();
+  private readonly scopeFactory=new ScopeFactory();private readonly stores=new WeakMap<Scope,StateStore>();readonly planScopes=new WeakMap<Element,Scope>();readonly planOwners=new WeakMap<Element,import('./ownership/owner.js').Owner>();plans:readonly BindingPlan[]=[];
+  readonly extensions=new ExtensionRegistry();options:ResolvedOptions|null=null;
+  constructor(private readonly initialOptions:unknown={},private readonly moduleNames:()=>readonly string[]=()=>[],readonly services?:RuntimeServices){this.ready=new Promise<void>((resolve,reject)=>{this.resolveReady=resolve;this.rejectReady=reject;});}
+  get installedModules():readonly string[]{return Object.freeze([...this.moduleNames()]);}
+  get rootElement():Element|null{return this.root;}
+  onDiagnostic(listener:DiagnosticListener):()=>void {this.listeners.add(listener);const release=this.bus?.subscribe(listener);let active=true;return()=>{if(!active)return;active=false;this.listeners.delete(listener);release?.();};}
+  mount(root:Element):this {
+    if((this.status==='compiling'||this.status==='mounted')&&this.root===root)return this;if(this.status!=='created')throw new PlainUIError('ROOT_ALREADY_MOUNTED');
+    if(!(root instanceof Element)||!root.isConnected)throw new PlainUIError('ROOT_INVALID');
+    const document=root.ownerDocument;const registrations=registry(document);const raw=root.getAttribute('ui-app')??root.getAttribute('data-ui-app');const name=raw===null?`app-${++registrations.serial}`:raw.trim();
+    if(!name||root.hasAttribute('ui-app')&&root.hasAttribute('data-ui-app')||registrations.roots.has(root)||registrations.names.has(name)||root.querySelector('[ui-app],[data-ui-app]')||root.parentElement?.closest('[ui-app],[data-ui-app]')||[...registrations.roots.keys()].some(mounted=>mounted.contains(root)||root.contains(mounted)))throw new PlainUIError('ROOT_INVALID');
+    this.status='compiling';this.root=root;this.registry=registrations;this.name=name;registrations.roots.set(root,this);registrations.names.set(name,this);
+    try {this.options=resolveConfiguration(root,this.initialOptions);this.bus=new DiagnosticBus(name,this.options.debug);for(const listener of this.listeners)this.bus.subscribe(listener);
+      this.tree=new OwnerTree(root,error=>this.diagnose(error));this.scheduler=new Scheduler(error=>this.diagnose(error));this.scope=this.scopeFactory.create('app',this.tree.root);this.state=new StateStore(this.scope);this.stores.set(this.scope,this.state);
+      this.extensions.freeze();const compiled=compileTree(root);if(compiled.fatal)throw new PlainUIError('ROOT_INVALID');this.reportIssues(compiled);
+      this.plans=compiled.plans;this.compileDeclarations(compiled);this.bindValues();const imports=this.loadImports(compiled);this.scheduler.afterFlush(this.tree.root,()=>{void imports.then(()=>{if(this.status!=='compiling')return;this.status='mounted';this.resolveReady();});});return this;
+    }catch(error){this.status='failed';this.release();this.rejectReady(error);throw error;}
+  }
+  private reportIssues(result:CompileResult):void {for(const issue of result.issues){const ownerId=this.tree?.ownerOf(issue.element)?.id;this.bus?.emit(issue.code,{directive:issue.name,...(ownerId===undefined?{}:{ownerId})});}}
+  private compileDeclarations(result:CompileResult):void {for(const plan of result.plans){const element=plan.element;if(element!==this.root&&!this.root!.contains(element))continue;let ancestor=element.parentElement;while(ancestor&&!this.planScopes.has(ancestor))ancestor=ancestor.parentElement;
+      const parentScope=ancestor?this.planScopes.get(ancestor)!:this.scope!;const parentOwner=ancestor?this.planOwners.get(ancestor)!:this.tree!.root;const owner=element===this.root?this.tree!.root:this.tree!.create(parentOwner,'element');
+      if(element!==this.root)this.tree!.indexNode(owner,element);
+      const hasState=plan.phase.declarations.some(item=>item.name==='ui-state');const scope=element===this.root?this.scope!:hasState?this.scopeFactory.create('local',owner,parentScope):parentScope;
+      this.planOwners.set(element,owner);this.planScopes.set(element,scope);
+      for(const directive of plan.phase.declarations){if(directive.name==='ui-state'||directive.name==='ui-store'){const target=directive.name==='ui-store'?this.scope!:scope;let value:Record<string,unknown>;try{value=JSON.parse(directive.value) as Record<string,unknown>;}catch{this.bus?.emit('JSON_INVALID',{directive:directive.name});continue;}
+        if(directive.name==='ui-store'){target.bindings.set('store',{value:normalizeJson(value),version:0,writable:true,source:'store'});continue;}
+        for(const [name,item] of Object.entries(value))try{declareBinding(target,name,'state',item as never);}catch(error){this.diagnose(error);}
+      }}
+    }}
+  private bindValues():void {for(const plan of this.plans){const owner=this.planOwners.get(plan.element);const scope=this.planScopes.get(plan.element);if(!owner||!scope)continue;const element=plan.element;const store=this.stores.get(scope)??new StateStore(scope);this.stores.set(scope,store);
+      const directives=plan.phase.values.filter(item=>item.name==='ui-text'||item.name==='ui-src'||item.name==='ui-href'||item.name==='ui-class'||item.name==='ui-show'||item.name.startsWith('ui-bind-'));
+      const clearCloak=()=>{element.removeAttribute('ui-cloak');element.removeAttribute('data-ui-cloak');};
+      if(!directives.length){this.scheduler!.enqueue('bindings',{owner,run:clearCloak});continue;}
+      let pending=directives.length;const errors=new Set<string>();
+      for(const directive of directives){let ast;try{ast=parseExpression(directive.value);}catch{this.bus?.emit('EXPRESSION_PARSE',{directive:directive.name,ownerId:owner.id});errors.add(directive.name);pending--;continue;}
+        const classes=directive.name==='ui-class'?new ClassBinding(element):null;
+        const observer:StateObserver={owner,dependencies:new Set(),invalidate:()=>this.scheduler?.enqueue('bindings',job)};
+        const job={owner,run:()=>{const result=evaluate(ast,lexicalReader(scope),{locale:this.options!.locale,timeZone:this.options!.timeZone,formatters:this.extensions.formatterMap()});
+          if(!result.ok){this.bus?.emit(result.code,{directive:directive.name,ownerId:owner.id});errors.add(directive.name);pending=Math.max(0,pending-1);return;}
+          try{if(directive.name==='ui-text')setText(element,result.value);else if(directive.name==='ui-class')classes!.update(result.value);else if(directive.name==='ui-show')setShow(element,result.value);else {const sink=directive.name==='ui-src'?'src':directive.name==='ui-href'?'href':directive.name.slice(8);setAttribute(element,sink,result.value);}
+            store.replaceDependencies(observer,result.dependencies.map(path=>({path})));errors.delete(directive.name);if(pending>0)pending--;if(errors.size===0&&pending===0)clearCloak();
+          }catch(error){this.diagnose(error);errors.add(directive.name);pending=Math.max(0,pending-1);}
+        }};
+        this.tree!.registerDisposer(owner,()=>store.untrack(observer));this.scheduler!.enqueue('bindings',job);
+      }
+    }}
+  private async loadImports(result:CompileResult):Promise<void> {const tasks=result.plans.flatMap(plan=>plan.phase.components.filter(item=>item.name==='ui-import').map(async directive=>{
+      const controller=new AbortController();const signal=this.tree!.root.signal;const abort=()=>controller.abort();signal.addEventListener('abort',abort,{once:true});const timer=setTimeout(abort,5000);
+      try{const url=new URL(directive.value,plan.element.ownerDocument.baseURI);if(!['http:','https:'].includes(url.protocol)||url.origin!==new URL(plan.element.ownerDocument.baseURI).origin)throw new PlainUIError('COMPONENT_IMPORT');
+        const response=await fetch(url.href,{signal:controller.signal});if(!response.ok)throw new PlainUIError('COMPONENT_IMPORT');const markup=await response.text();if(!signal.aborted)this.imports.set(url.href,parseDeveloperImport(markup,plan.element.ownerDocument));
+      }catch{if(!signal.aborted)this.bus?.emit('COMPONENT_IMPORT',{directive:'ui-import'});}finally{clearTimeout(timer);signal.removeEventListener('abort',abort);}
+    }));await Promise.all(tasks);}
+  private diagnose(error:unknown):void {this.bus?.emit(error instanceof PlainUIError?error.code:'COMMAND_ERROR');}
+  unmount():void {if(this.status==='unmounted'||this.status==='unmounting')return;if(this.status==='compiling')this.rejectReady(new PlainUIError('OWNER_DISPOSED'));this.status='unmounting';this.release();this.status='unmounted';}
+  private release():void {this.scheduler?.dispose();this.tree?.dispose(this.tree.root);if(this.root)this.registry?.roots.delete(this.root);if(this.name)this.registry?.names.delete(this.name);this.bus?.clear();}
+  get(path:string){if(!this.state)throw new PlainUIError('OWNER_DISPOSED');return this.state.read(path);}
+  set(path:string,value:unknown):void {if(!this.state)throw new PlainUIError('OWNER_DISPOSED');this.state.write(path,value);}
+  batch<T>(callback:()=>T):T {if(!this.state)throw new PlainUIError('OWNER_DISPOSED');return this.state.batch(callback);}
+  afterFlush(callback:()=>void):()=>void {if(!this.scheduler||!this.tree)throw new PlainUIError('OWNER_DISPOSED');return this.scheduler.afterFlush(this.tree.root,callback);}
+}

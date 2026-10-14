@@ -2,7 +2,7 @@ import {validateAttributeSet,type DirectiveIssue} from '../../../schema/src/dire
 import type {NormalizedDirective} from './normalize.js';
 export function validateElement(element:Element,directives:readonly NormalizedDirective[]):DirectiveIssue[] {
   const values=new Map(directives.map(item=>[item.name,item.value]));const attributes=new Map(directives.map(item=>[item.sourceName,item.value]));
-  const issues=validateAttributeSet(attributes,{tagName:element.localName,hasOwnedChildren:element.hasChildNodes()&&element.localName!=='template'});
+  const issues=validateAttributeSet(attributes,{tagName:element.localName,hasOwnedChildren:element.children.length>0&&element.localName!=='template'});
   if(values.has('ui-persist')&&values.has('ui-state')&&values.has('ui-store'))issues.push({code:'DIRECTIVE_CONFLICT',name:'ui-persist'});
   if(values.has('ui-text')&&values.has('ui-component'))issues.push({code:'DIRECTIVE_CONFLICT',name:'ui-text'});
   if(values.has('ui-show')&&values.has('ui-bind-hidden'))issues.push({code:'DIRECTIVE_CONFLICT',name:'ui-show'});

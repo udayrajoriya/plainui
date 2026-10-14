@@ -248,6 +248,8 @@ All file paths are repository-relative. All tasks include the common definition 
 
 ## T017 Implement root startup and distribution semantics
 
+**Status:** completed 14 October 2026. [Completion evidence](../../evidence/tasks/T017.md).
+
 **Depends on:** T006,T011,T012,T014,T016. **Sources:** RFC §3; C03. **Files:** `core/src/app.ts`, `runtime/src/{classic,esm,module-bridge}.ts`.
 
 1. Discover document ui-app roots only in classic boot after DOM readiness; require unique nonempty names and reject nested roots before any mount.
