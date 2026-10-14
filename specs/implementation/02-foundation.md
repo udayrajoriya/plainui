@@ -188,6 +188,8 @@ All file paths are repository-relative. All tasks include the common definition 
 
 ## T013 Implement state cells and dependency tracking
 
+**Status:** completed 14 October 2026. [Completion evidence](../../evidence/tasks/T013.md).
+
 **Depends on:** T011,T012. **Sources:** RFC §5; Design §6. **Files:** `state/{cell,dependencies,store,api}.ts`.
 
 1. Instantiate local/store defaults through safe deep copies. State cell source and writability are immutable metadata.

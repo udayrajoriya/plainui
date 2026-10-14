@@ -1,7 +1,7 @@
 import {PlainUIError} from '../diagnostics/codes.js';
-import {assertRange,type DomRange} from './range.js';
+export type OwnerRange={start:Comment;end:Comment;owner:Owner};
 export type OwnerKind='root'|'element'|'state'|'conditional'|'loop'|'loop-item'|'component'|'slot'|'route'|'fragment'|'behavior';
-export interface Owner {readonly id:number;readonly kind:OwnerKind;readonly parent:Owner|null;active:boolean;readonly children:Set<Owner>;readonly controller:AbortController;readonly signal:AbortSignal;readonly disposers:Array<()=>void>;range?:DomRange;readonly nodes:Set<Node>;readonly lifetimeDependents:Set<Owner>}
+export interface Owner {readonly id:number;readonly kind:OwnerKind;readonly parent:Owner|null;active:boolean;readonly children:Set<Owner>;readonly controller:AbortController;readonly signal:AbortSignal;readonly disposers:Array<()=>void>;range?:OwnerRange;readonly nodes:Set<Node>;readonly lifetimeDependents:Set<Owner>}
 export class OwnerTree {
   private nextId=1;private all=new Set<Owner>();
   readonly root:Owner;
@@ -38,7 +38,7 @@ export class OwnerTree {
       for(const dependent of [...item.lifetimeDependents])if(seen.has(dependent)&&dependent.parent!==item)cleanup(dependent);
       for(let i=item.disposers.length-1;i>=0;i--)try{item.disposers[i]!();}catch(error){this.onCleanupError?.(error);}
       item.disposers.length=0;
-      if(item.range){try{for(const node of assertRange(item.range))node.parentNode?.removeChild(node);}catch(error){this.onCleanupError?.(error);item.range.start.remove();item.range.end.remove();}}
+      if(item.range){try{const {start,end}=item.range;if(!start.parentNode||start.parentNode!==end.parentNode)throw new PlainUIError('OWNER_RANGE');let node:Node|null=start;const nodes:Node[]=[];while(node){nodes.push(node);if(node===end)break;node=node.nextSibling;}if(node!==end)throw new PlainUIError('OWNER_RANGE');for(const owned of nodes)owned.parentNode?.removeChild(owned);}catch(error){this.onCleanupError?.(error);item.range.start.remove();item.range.end.remove();}}
       for(const node of item.nodes)this.nodeOwners.delete(node);item.nodes.clear();item.parent?.children.delete(item);this.all.delete(item);item.lifetimeDependents.clear();
     };cleanup(owner);
   }

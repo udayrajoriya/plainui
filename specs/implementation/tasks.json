@@ -307,7 +307,9 @@
       ],
       "stepCount": 6,
       "acceptance": "`state.immediate-read`, `state.batch-once`, `state.parent-child-invalidation`, `state.sibling-noop`, `state.branch-dependencies`, `state.async-batch`, `state.disposed-write` pass.",
-      "status": "pending"
+      "status": "completed",
+        "completedOn": "2026-10-14",
+        "evidence": "evidence/tasks/T013.md"
     },
     {
       "id": "T014",
