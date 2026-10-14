@@ -128,6 +128,8 @@ All file paths are repository-relative. All tasks include the common definition 
 
 ## T009 Implement tokenizer and Pratt expression parser
 
+**Status:** completed 14 October 2026. [Completion evidence](../../evidence/tasks/T009.md).
+
 **Depends on:** T008. **Sources:** RFC §4.1; C05. **Files:** `packages/core/src/expression/{tokens,tokenize,ast,parse,precedence}.ts`.
 
 1. Tokenize exact literals/operators/punctuation, tracking UTF-16 source offsets and total UTF-8 input bytes. Check 16 KiB before tokenization.

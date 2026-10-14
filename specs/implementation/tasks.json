@@ -213,7 +213,9 @@
       ],
       "stepCount": 6,
       "acceptance": "`parse.precedence` exhaustive operator-pair matrix; `parse.nullish-mix`, `parse.unicode-bytes`, `parse.depth-128-129`, `parse.strings`, `parse.no-executable-syntax`; fast-check arbitrary text terminates with AST or bounded error.",
-      "status": "pending"
+      "status": "completed",
+      "completedDate": "2026-10-14",
+      "evidence": "../../evidence/tasks/T009.md"
     },
     {
       "id": "T010",
