@@ -1,0 +1,1226 @@
+{
+  "schemaVersion": 1,
+  "grammarVersion": 1,
+  "rows": [
+    {
+      "name": "ui-app",
+      "tasks": "T017",
+      "spellings": [
+        "ui-app",
+        "data-ui-app"
+      ],
+      "coverage": {
+        "ui-app": {
+          "valid": "schema.valid.ui-app",
+          "invalid": "schema.invalid.ui-app",
+          "lifecycle": "lifecycle.ui-app"
+        },
+        "data-ui-app": {
+          "valid": "schema.valid.data-ui-app",
+          "invalid": "schema.invalid.data-ui-app",
+          "lifecycle": "lifecycle.data-ui-app"
+        }
+      }
+    },
+    {
+      "name": "ui-config",
+      "tasks": "T006",
+      "spellings": [
+        "ui-config",
+        "data-ui-config"
+      ],
+      "coverage": {
+        "ui-config": {
+          "valid": "schema.valid.ui-config",
+          "invalid": "schema.invalid.ui-config",
+          "lifecycle": "lifecycle.ui-config"
+        },
+        "data-ui-config": {
+          "valid": "schema.valid.data-ui-config",
+          "invalid": "schema.invalid.data-ui-config",
+          "lifecycle": "lifecycle.data-ui-config"
+        }
+      }
+    },
+    {
+      "name": "ui-state",
+      "tasks": "T008,T013,T016,T052",
+      "spellings": [
+        "ui-state",
+        "data-ui-state"
+      ],
+      "coverage": {
+        "ui-state": {
+          "valid": "schema.valid.ui-state",
+          "invalid": "schema.invalid.ui-state",
+          "lifecycle": "lifecycle.ui-state"
+        },
+        "data-ui-state": {
+          "valid": "schema.valid.data-ui-state",
+          "invalid": "schema.invalid.data-ui-state",
+          "lifecycle": "lifecycle.data-ui-state"
+        }
+      }
+    },
+    {
+      "name": "ui-store",
+      "tasks": "T013,T017",
+      "spellings": [
+        "ui-store",
+        "data-ui-store"
+      ],
+      "coverage": {
+        "ui-store": {
+          "valid": "schema.valid.ui-store",
+          "invalid": "schema.invalid.ui-store",
+          "lifecycle": "lifecycle.ui-store"
+        },
+        "data-ui-store": {
+          "valid": "schema.valid.data-ui-store",
+          "invalid": "schema.invalid.data-ui-store",
+          "lifecycle": "lifecycle.data-ui-store"
+        }
+      }
+    },
+    {
+      "name": "ui-derived",
+      "tasks": "T014,T016",
+      "spellings": [
+        "ui-derived",
+        "data-ui-derived"
+      ],
+      "coverage": {
+        "ui-derived": {
+          "valid": "schema.valid.ui-derived",
+          "invalid": "schema.invalid.ui-derived",
+          "lifecycle": "lifecycle.ui-derived"
+        },
+        "data-ui-derived": {
+          "valid": "schema.valid.data-ui-derived",
+          "invalid": "schema.invalid.data-ui-derived",
+          "lifecycle": "lifecycle.data-ui-derived"
+        }
+      }
+    },
+    {
+      "name": "ui-value",
+      "tasks": "T010,T014",
+      "spellings": [
+        "ui-value",
+        "data-ui-value"
+      ],
+      "coverage": {
+        "ui-value": {
+          "valid": "schema.valid.ui-value",
+          "invalid": "schema.invalid.ui-value",
+          "lifecycle": "lifecycle.ui-value"
+        },
+        "data-ui-value": {
+          "valid": "schema.valid.data-ui-value",
+          "invalid": "schema.invalid.data-ui-value",
+          "lifecycle": "lifecycle.data-ui-value"
+        }
+      }
+    },
+    {
+      "name": "ui-persist",
+      "tasks": "T015",
+      "spellings": [
+        "ui-persist",
+        "data-ui-persist"
+      ],
+      "coverage": {
+        "ui-persist": {
+          "valid": "schema.valid.ui-persist",
+          "invalid": "schema.invalid.ui-persist",
+          "lifecycle": "lifecycle.ui-persist"
+        },
+        "data-ui-persist": {
+          "valid": "schema.valid.data-ui-persist",
+          "invalid": "schema.invalid.data-ui-persist",
+          "lifecycle": "lifecycle.data-ui-persist"
+        }
+      }
+    },
+    {
+      "name": "ui-persist-key",
+      "tasks": "T015",
+      "spellings": [
+        "ui-persist-key",
+        "data-ui-persist-key"
+      ],
+      "coverage": {
+        "ui-persist-key": {
+          "valid": "schema.valid.ui-persist-key",
+          "invalid": "schema.invalid.ui-persist-key",
+          "lifecycle": "lifecycle.ui-persist-key"
+        },
+        "data-ui-persist-key": {
+          "valid": "schema.valid.data-ui-persist-key",
+          "invalid": "schema.invalid.data-ui-persist-key",
+          "lifecycle": "lifecycle.data-ui-persist-key"
+        }
+      }
+    },
+    {
+      "name": "ui-cloak",
+      "tasks": "T017",
+      "spellings": [
+        "ui-cloak",
+        "data-ui-cloak"
+      ],
+      "coverage": {
+        "ui-cloak": {
+          "valid": "schema.valid.ui-cloak",
+          "invalid": "schema.invalid.ui-cloak",
+          "lifecycle": "lifecycle.ui-cloak"
+        },
+        "data-ui-cloak": {
+          "valid": "schema.valid.data-ui-cloak",
+          "invalid": "schema.invalid.data-ui-cloak",
+          "lifecycle": "lifecycle.data-ui-cloak"
+        }
+      }
+    },
+    {
+      "name": "ui-ref",
+      "tasks": "T011,T012",
+      "spellings": [
+        "ui-ref",
+        "data-ui-ref"
+      ],
+      "coverage": {
+        "ui-ref": {
+          "valid": "schema.valid.ui-ref",
+          "invalid": "schema.invalid.ui-ref",
+          "lifecycle": "lifecycle.ui-ref"
+        },
+        "data-ui-ref": {
+          "valid": "schema.valid.data-ui-ref",
+          "invalid": "schema.invalid.data-ui-ref",
+          "lifecycle": "lifecycle.data-ui-ref"
+        }
+      }
+    },
+    {
+      "name": "ui-ignore",
+      "tasks": "T016,T021,T069",
+      "spellings": [
+        "ui-ignore",
+        "data-ui-ignore"
+      ],
+      "coverage": {
+        "ui-ignore": {
+          "valid": "schema.valid.ui-ignore",
+          "invalid": "schema.invalid.ui-ignore",
+          "lifecycle": "lifecycle.ui-ignore"
+        },
+        "data-ui-ignore": {
+          "valid": "schema.valid.data-ui-ignore",
+          "invalid": "schema.invalid.data-ui-ignore",
+          "lifecycle": "lifecycle.data-ui-ignore"
+        }
+      }
+    },
+    {
+      "name": "ui-text",
+      "tasks": "T018",
+      "spellings": [
+        "ui-text",
+        "data-ui-text"
+      ],
+      "coverage": {
+        "ui-text": {
+          "valid": "schema.valid.ui-text",
+          "invalid": "schema.invalid.ui-text",
+          "lifecycle": "lifecycle.ui-text"
+        },
+        "data-ui-text": {
+          "valid": "schema.valid.data-ui-text",
+          "invalid": "schema.invalid.data-ui-text",
+          "lifecycle": "lifecycle.data-ui-text"
+        }
+      }
+    },
+    {
+      "name": "ui-bind-*",
+      "tasks": "T018",
+      "spellings": [
+        "ui-bind-*",
+        "data-ui-bind-*"
+      ],
+      "coverage": {
+        "ui-bind-*": {
+          "valid": "schema.valid.ui-bind-*",
+          "invalid": "schema.invalid.ui-bind-*",
+          "lifecycle": "lifecycle.ui-bind-*"
+        },
+        "data-ui-bind-*": {
+          "valid": "schema.valid.data-ui-bind-*",
+          "invalid": "schema.invalid.data-ui-bind-*",
+          "lifecycle": "lifecycle.data-ui-bind-*"
+        }
+      }
+    },
+    {
+      "name": "ui-src",
+      "tasks": "T018,T026",
+      "spellings": [
+        "ui-src",
+        "data-ui-src"
+      ],
+      "coverage": {
+        "ui-src": {
+          "valid": "schema.valid.ui-src",
+          "invalid": "schema.invalid.ui-src",
+          "lifecycle": "lifecycle.ui-src"
+        },
+        "data-ui-src": {
+          "valid": "schema.valid.data-ui-src",
+          "invalid": "schema.invalid.data-ui-src",
+          "lifecycle": "lifecycle.data-ui-src"
+        }
+      }
+    },
+    {
+      "name": "ui-href",
+      "tasks": "T018,T026",
+      "spellings": [
+        "ui-href",
+        "data-ui-href"
+      ],
+      "coverage": {
+        "ui-href": {
+          "valid": "schema.valid.ui-href",
+          "invalid": "schema.invalid.ui-href",
+          "lifecycle": "lifecycle.ui-href"
+        },
+        "data-ui-href": {
+          "valid": "schema.valid.data-ui-href",
+          "invalid": "schema.invalid.data-ui-href",
+          "lifecycle": "lifecycle.data-ui-href"
+        }
+      }
+    },
+    {
+      "name": "ui-class",
+      "tasks": "T018",
+      "spellings": [
+        "ui-class",
+        "data-ui-class"
+      ],
+      "coverage": {
+        "ui-class": {
+          "valid": "schema.valid.ui-class",
+          "invalid": "schema.invalid.ui-class",
+          "lifecycle": "lifecycle.ui-class"
+        },
+        "data-ui-class": {
+          "valid": "schema.valid.data-ui-class",
+          "invalid": "schema.invalid.data-ui-class",
+          "lifecycle": "lifecycle.data-ui-class"
+        }
+      }
+    },
+    {
+      "name": "ui-show",
+      "tasks": "T018",
+      "spellings": [
+        "ui-show",
+        "data-ui-show"
+      ],
+      "coverage": {
+        "ui-show": {
+          "valid": "schema.valid.ui-show",
+          "invalid": "schema.invalid.ui-show",
+          "lifecycle": "lifecycle.ui-show"
+        },
+        "data-ui-show": {
+          "valid": "schema.valid.data-ui-show",
+          "invalid": "schema.invalid.data-ui-show",
+          "lifecycle": "lifecycle.data-ui-show"
+        }
+      }
+    },
+    {
+      "name": "ui-model",
+      "tasks": "T039,T040",
+      "spellings": [
+        "ui-model",
+        "data-ui-model"
+      ],
+      "coverage": {
+        "ui-model": {
+          "valid": "schema.valid.ui-model",
+          "invalid": "schema.invalid.ui-model",
+          "lifecycle": "lifecycle.ui-model"
+        },
+        "data-ui-model": {
+          "valid": "schema.valid.data-ui-model",
+          "invalid": "schema.invalid.data-ui-model",
+          "lifecycle": "lifecycle.data-ui-model"
+        }
+      }
+    },
+    {
+      "name": "ui-if",
+      "tasks": "T019",
+      "spellings": [
+        "ui-if",
+        "data-ui-if"
+      ],
+      "coverage": {
+        "ui-if": {
+          "valid": "schema.valid.ui-if",
+          "invalid": "schema.invalid.ui-if",
+          "lifecycle": "lifecycle.ui-if"
+        },
+        "data-ui-if": {
+          "valid": "schema.valid.data-ui-if",
+          "invalid": "schema.invalid.data-ui-if",
+          "lifecycle": "lifecycle.data-ui-if"
+        }
+      }
+    },
+    {
+      "name": "ui-else-if",
+      "tasks": "T019",
+      "spellings": [
+        "ui-else-if",
+        "data-ui-else-if"
+      ],
+      "coverage": {
+        "ui-else-if": {
+          "valid": "schema.valid.ui-else-if",
+          "invalid": "schema.invalid.ui-else-if",
+          "lifecycle": "lifecycle.ui-else-if"
+        },
+        "data-ui-else-if": {
+          "valid": "schema.valid.data-ui-else-if",
+          "invalid": "schema.invalid.data-ui-else-if",
+          "lifecycle": "lifecycle.data-ui-else-if"
+        }
+      }
+    },
+    {
+      "name": "ui-else",
+      "tasks": "T019",
+      "spellings": [
+        "ui-else",
+        "data-ui-else"
+      ],
+      "coverage": {
+        "ui-else": {
+          "valid": "schema.valid.ui-else",
+          "invalid": "schema.invalid.ui-else",
+          "lifecycle": "lifecycle.ui-else"
+        },
+        "data-ui-else": {
+          "valid": "schema.valid.data-ui-else",
+          "invalid": "schema.invalid.data-ui-else",
+          "lifecycle": "lifecycle.data-ui-else"
+        }
+      }
+    },
+    {
+      "name": "ui-for",
+      "tasks": "T020",
+      "spellings": [
+        "ui-for",
+        "data-ui-for"
+      ],
+      "coverage": {
+        "ui-for": {
+          "valid": "schema.valid.ui-for",
+          "invalid": "schema.invalid.ui-for",
+          "lifecycle": "lifecycle.ui-for"
+        },
+        "data-ui-for": {
+          "valid": "schema.valid.data-ui-for",
+          "invalid": "schema.invalid.data-ui-for",
+          "lifecycle": "lifecycle.data-ui-for"
+        }
+      }
+    },
+    {
+      "name": "ui-key",
+      "tasks": "T020",
+      "spellings": [
+        "ui-key",
+        "data-ui-key"
+      ],
+      "coverage": {
+        "ui-key": {
+          "valid": "schema.valid.ui-key",
+          "invalid": "schema.invalid.ui-key",
+          "lifecycle": "lifecycle.ui-key"
+        },
+        "data-ui-key": {
+          "valid": "schema.valid.data-ui-key",
+          "invalid": "schema.invalid.data-ui-key",
+          "lifecycle": "lifecycle.data-ui-key"
+        }
+      }
+    },
+    {
+      "name": "ui-data",
+      "tasks": "T033,T034",
+      "spellings": [
+        "ui-data",
+        "data-ui-data"
+      ],
+      "coverage": {
+        "ui-data": {
+          "valid": "schema.valid.ui-data",
+          "invalid": "schema.invalid.ui-data",
+          "lifecycle": "lifecycle.ui-data"
+        },
+        "data-ui-data": {
+          "valid": "schema.valid.data-ui-data",
+          "invalid": "schema.invalid.data-ui-data",
+          "lifecycle": "lifecycle.data-ui-data"
+        }
+      }
+    },
+    {
+      "name": "ui-get",
+      "tasks": "T026–T038",
+      "spellings": [
+        "ui-get",
+        "data-ui-get"
+      ],
+      "coverage": {
+        "ui-get": {
+          "valid": "schema.valid.ui-get",
+          "invalid": "schema.invalid.ui-get",
+          "lifecycle": "lifecycle.ui-get"
+        },
+        "data-ui-get": {
+          "valid": "schema.valid.data-ui-get",
+          "invalid": "schema.invalid.data-ui-get",
+          "lifecycle": "lifecycle.data-ui-get"
+        }
+      }
+    },
+    {
+      "name": "ui-post",
+      "tasks": "T026–T038",
+      "spellings": [
+        "ui-post",
+        "data-ui-post"
+      ],
+      "coverage": {
+        "ui-post": {
+          "valid": "schema.valid.ui-post",
+          "invalid": "schema.invalid.ui-post",
+          "lifecycle": "lifecycle.ui-post"
+        },
+        "data-ui-post": {
+          "valid": "schema.valid.data-ui-post",
+          "invalid": "schema.invalid.data-ui-post",
+          "lifecycle": "lifecycle.data-ui-post"
+        }
+      }
+    },
+    {
+      "name": "ui-put",
+      "tasks": "T026–T038",
+      "spellings": [
+        "ui-put",
+        "data-ui-put"
+      ],
+      "coverage": {
+        "ui-put": {
+          "valid": "schema.valid.ui-put",
+          "invalid": "schema.invalid.ui-put",
+          "lifecycle": "lifecycle.ui-put"
+        },
+        "data-ui-put": {
+          "valid": "schema.valid.data-ui-put",
+          "invalid": "schema.invalid.data-ui-put",
+          "lifecycle": "lifecycle.data-ui-put"
+        }
+      }
+    },
+    {
+      "name": "ui-patch",
+      "tasks": "T026–T038",
+      "spellings": [
+        "ui-patch",
+        "data-ui-patch"
+      ],
+      "coverage": {
+        "ui-patch": {
+          "valid": "schema.valid.ui-patch",
+          "invalid": "schema.invalid.ui-patch",
+          "lifecycle": "lifecycle.ui-patch"
+        },
+        "data-ui-patch": {
+          "valid": "schema.valid.data-ui-patch",
+          "invalid": "schema.invalid.data-ui-patch",
+          "lifecycle": "lifecycle.data-ui-patch"
+        }
+      }
+    },
+    {
+      "name": "ui-delete",
+      "tasks": "T026–T038",
+      "spellings": [
+        "ui-delete",
+        "data-ui-delete"
+      ],
+      "coverage": {
+        "ui-delete": {
+          "valid": "schema.valid.ui-delete",
+          "invalid": "schema.invalid.ui-delete",
+          "lifecycle": "lifecycle.ui-delete"
+        },
+        "data-ui-delete": {
+          "valid": "schema.valid.data-ui-delete",
+          "invalid": "schema.invalid.data-ui-delete",
+          "lifecycle": "lifecycle.data-ui-delete"
+        }
+      }
+    },
+    {
+      "name": "ui-load",
+      "tasks": "T034",
+      "spellings": [
+        "ui-load",
+        "data-ui-load"
+      ],
+      "coverage": {
+        "ui-load": {
+          "valid": "schema.valid.ui-load",
+          "invalid": "schema.invalid.ui-load",
+          "lifecycle": "lifecycle.ui-load"
+        },
+        "data-ui-load": {
+          "valid": "schema.valid.data-ui-load",
+          "invalid": "schema.invalid.data-ui-load",
+          "lifecycle": "lifecycle.data-ui-load"
+        }
+      }
+    },
+    {
+      "name": "ui-query",
+      "tasks": "T026",
+      "spellings": [
+        "ui-query",
+        "data-ui-query"
+      ],
+      "coverage": {
+        "ui-query": {
+          "valid": "schema.valid.ui-query",
+          "invalid": "schema.invalid.ui-query",
+          "lifecycle": "lifecycle.ui-query"
+        },
+        "data-ui-query": {
+          "valid": "schema.valid.data-ui-query",
+          "invalid": "schema.invalid.data-ui-query",
+          "lifecycle": "lifecycle.data-ui-query"
+        }
+      }
+    },
+    {
+      "name": "ui-headers",
+      "tasks": "T027,T031",
+      "spellings": [
+        "ui-headers",
+        "data-ui-headers"
+      ],
+      "coverage": {
+        "ui-headers": {
+          "valid": "schema.valid.ui-headers",
+          "invalid": "schema.invalid.ui-headers",
+          "lifecycle": "lifecycle.ui-headers"
+        },
+        "data-ui-headers": {
+          "valid": "schema.valid.data-ui-headers",
+          "invalid": "schema.invalid.data-ui-headers",
+          "lifecycle": "lifecycle.data-ui-headers"
+        }
+      }
+    },
+    {
+      "name": "ui-body",
+      "tasks": "T027,T036,T041",
+      "spellings": [
+        "ui-body",
+        "data-ui-body"
+      ],
+      "coverage": {
+        "ui-body": {
+          "valid": "schema.valid.ui-body",
+          "invalid": "schema.invalid.ui-body",
+          "lifecycle": "lifecycle.ui-body"
+        },
+        "data-ui-body": {
+          "valid": "schema.valid.data-ui-body",
+          "invalid": "schema.invalid.data-ui-body",
+          "lifecycle": "lifecycle.data-ui-body"
+        }
+      }
+    },
+    {
+      "name": "ui-adapter",
+      "tasks": "T028",
+      "spellings": [
+        "ui-adapter",
+        "data-ui-adapter"
+      ],
+      "coverage": {
+        "ui-adapter": {
+          "valid": "schema.valid.ui-adapter",
+          "invalid": "schema.invalid.ui-adapter",
+          "lifecycle": "lifecycle.ui-adapter"
+        },
+        "data-ui-adapter": {
+          "valid": "schema.valid.data-ui-adapter",
+          "invalid": "schema.invalid.data-ui-adapter",
+          "lifecycle": "lifecycle.data-ui-adapter"
+        }
+      }
+    },
+    {
+      "name": "ui-credentials",
+      "tasks": "T027",
+      "spellings": [
+        "ui-credentials",
+        "data-ui-credentials"
+      ],
+      "coverage": {
+        "ui-credentials": {
+          "valid": "schema.valid.ui-credentials",
+          "invalid": "schema.invalid.ui-credentials",
+          "lifecycle": "lifecycle.ui-credentials"
+        },
+        "data-ui-credentials": {
+          "valid": "schema.valid.data-ui-credentials",
+          "invalid": "schema.invalid.data-ui-credentials",
+          "lifecycle": "lifecycle.data-ui-credentials"
+        }
+      }
+    },
+    {
+      "name": "ui-timeout",
+      "tasks": "T029,T030",
+      "spellings": [
+        "ui-timeout",
+        "data-ui-timeout"
+      ],
+      "coverage": {
+        "ui-timeout": {
+          "valid": "schema.valid.ui-timeout",
+          "invalid": "schema.invalid.ui-timeout",
+          "lifecycle": "lifecycle.ui-timeout"
+        },
+        "data-ui-timeout": {
+          "valid": "schema.valid.data-ui-timeout",
+          "invalid": "schema.invalid.data-ui-timeout",
+          "lifecycle": "lifecycle.data-ui-timeout"
+        }
+      }
+    },
+    {
+      "name": "ui-cache",
+      "tasks": "T032",
+      "spellings": [
+        "ui-cache",
+        "data-ui-cache"
+      ],
+      "coverage": {
+        "ui-cache": {
+          "valid": "schema.valid.ui-cache",
+          "invalid": "schema.invalid.ui-cache",
+          "lifecycle": "lifecycle.ui-cache"
+        },
+        "data-ui-cache": {
+          "valid": "schema.valid.data-ui-cache",
+          "invalid": "schema.invalid.data-ui-cache",
+          "lifecycle": "lifecycle.data-ui-cache"
+        }
+      }
+    },
+    {
+      "name": "ui-retry",
+      "tasks": "T030",
+      "spellings": [
+        "ui-retry",
+        "data-ui-retry"
+      ],
+      "coverage": {
+        "ui-retry": {
+          "valid": "schema.valid.ui-retry",
+          "invalid": "schema.invalid.ui-retry",
+          "lifecycle": "lifecycle.ui-retry"
+        },
+        "data-ui-retry": {
+          "valid": "schema.valid.data-ui-retry",
+          "invalid": "schema.invalid.data-ui-retry",
+          "lifecycle": "lifecycle.data-ui-retry"
+        }
+      }
+    },
+    {
+      "name": "ui-action",
+      "tasks": "T036",
+      "spellings": [
+        "ui-action",
+        "data-ui-action"
+      ],
+      "coverage": {
+        "ui-action": {
+          "valid": "schema.valid.ui-action",
+          "invalid": "schema.invalid.ui-action",
+          "lifecycle": "lifecycle.ui-action"
+        },
+        "data-ui-action": {
+          "valid": "schema.valid.data-ui-action",
+          "invalid": "schema.invalid.data-ui-action",
+          "lifecycle": "lifecycle.data-ui-action"
+        }
+      }
+    },
+    {
+      "name": "ui-trigger",
+      "tasks": "T036",
+      "spellings": [
+        "ui-trigger",
+        "data-ui-trigger"
+      ],
+      "coverage": {
+        "ui-trigger": {
+          "valid": "schema.valid.ui-trigger",
+          "invalid": "schema.invalid.ui-trigger",
+          "lifecycle": "lifecycle.ui-trigger"
+        },
+        "data-ui-trigger": {
+          "valid": "schema.valid.data-ui-trigger",
+          "invalid": "schema.invalid.data-ui-trigger",
+          "lifecycle": "lifecycle.data-ui-trigger"
+        }
+      }
+    },
+    {
+      "name": "ui-concurrency",
+      "tasks": "T037",
+      "spellings": [
+        "ui-concurrency",
+        "data-ui-concurrency"
+      ],
+      "coverage": {
+        "ui-concurrency": {
+          "valid": "schema.valid.ui-concurrency",
+          "invalid": "schema.invalid.ui-concurrency",
+          "lifecycle": "lifecycle.ui-concurrency"
+        },
+        "data-ui-concurrency": {
+          "valid": "schema.valid.data-ui-concurrency",
+          "invalid": "schema.invalid.data-ui-concurrency",
+          "lifecycle": "lifecycle.data-ui-concurrency"
+        }
+      }
+    },
+    {
+      "name": "ui-debounce",
+      "tasks": "T037",
+      "spellings": [
+        "ui-debounce",
+        "data-ui-debounce"
+      ],
+      "coverage": {
+        "ui-debounce": {
+          "valid": "schema.valid.ui-debounce",
+          "invalid": "schema.invalid.ui-debounce",
+          "lifecycle": "lifecycle.ui-debounce"
+        },
+        "data-ui-debounce": {
+          "valid": "schema.valid.data-ui-debounce",
+          "invalid": "schema.invalid.data-ui-debounce",
+          "lifecycle": "lifecycle.data-ui-debounce"
+        }
+      }
+    },
+    {
+      "name": "ui-invalidate",
+      "tasks": "T038",
+      "spellings": [
+        "ui-invalidate",
+        "data-ui-invalidate"
+      ],
+      "coverage": {
+        "ui-invalidate": {
+          "valid": "schema.valid.ui-invalidate",
+          "invalid": "schema.invalid.ui-invalidate",
+          "lifecycle": "lifecycle.ui-invalidate"
+        },
+        "data-ui-invalidate": {
+          "valid": "schema.valid.data-ui-invalidate",
+          "invalid": "schema.invalid.data-ui-invalidate",
+          "lifecycle": "lifecycle.data-ui-invalidate"
+        }
+      }
+    },
+    {
+      "name": "ui-on:*",
+      "tasks": "T022,T023,T038,T052",
+      "spellings": [
+        "ui-on:*",
+        "data-ui-on:*"
+      ],
+      "coverage": {
+        "ui-on:*": {
+          "valid": "schema.valid.ui-on:*",
+          "invalid": "schema.invalid.ui-on:*",
+          "lifecycle": "lifecycle.ui-on:*"
+        },
+        "data-ui-on:*": {
+          "valid": "schema.valid.data-ui-on:*",
+          "invalid": "schema.invalid.data-ui-on:*",
+          "lifecycle": "lifecycle.data-ui-on:*"
+        }
+      }
+    },
+    {
+      "name": "ui-encoding",
+      "tasks": "T041,T042",
+      "spellings": [
+        "ui-encoding",
+        "data-ui-encoding"
+      ],
+      "coverage": {
+        "ui-encoding": {
+          "valid": "schema.valid.ui-encoding",
+          "invalid": "schema.invalid.ui-encoding",
+          "lifecycle": "lifecycle.ui-encoding"
+        },
+        "data-ui-encoding": {
+          "valid": "schema.valid.data-ui-encoding",
+          "invalid": "schema.invalid.data-ui-encoding",
+          "lifecycle": "lifecycle.data-ui-encoding"
+        }
+      }
+    },
+    {
+      "name": "ui-field-error",
+      "tasks": "T044",
+      "spellings": [
+        "ui-field-error",
+        "data-ui-field-error"
+      ],
+      "coverage": {
+        "ui-field-error": {
+          "valid": "schema.valid.ui-field-error",
+          "invalid": "schema.invalid.ui-field-error",
+          "lifecycle": "lifecycle.ui-field-error"
+        },
+        "data-ui-field-error": {
+          "valid": "schema.valid.data-ui-field-error",
+          "invalid": "schema.invalid.data-ui-field-error",
+          "lifecycle": "lifecycle.data-ui-field-error"
+        }
+      }
+    },
+    {
+      "name": "ui-route",
+      "tasks": "T054,T058",
+      "spellings": [
+        "ui-route",
+        "data-ui-route"
+      ],
+      "coverage": {
+        "ui-route": {
+          "valid": "schema.valid.ui-route",
+          "invalid": "schema.invalid.ui-route",
+          "lifecycle": "lifecycle.ui-route"
+        },
+        "data-ui-route": {
+          "valid": "schema.valid.data-ui-route",
+          "invalid": "schema.invalid.data-ui-route",
+          "lifecycle": "lifecycle.data-ui-route"
+        }
+      }
+    },
+    {
+      "name": "ui-outlet",
+      "tasks": "T055,T058",
+      "spellings": [
+        "ui-outlet",
+        "data-ui-outlet"
+      ],
+      "coverage": {
+        "ui-outlet": {
+          "valid": "schema.valid.ui-outlet",
+          "invalid": "schema.invalid.ui-outlet",
+          "lifecycle": "lifecycle.ui-outlet"
+        },
+        "data-ui-outlet": {
+          "valid": "schema.valid.data-ui-outlet",
+          "invalid": "schema.invalid.data-ui-outlet",
+          "lifecycle": "lifecycle.data-ui-outlet"
+        }
+      }
+    },
+    {
+      "name": "ui-link",
+      "tasks": "T055",
+      "spellings": [
+        "ui-link",
+        "data-ui-link"
+      ],
+      "coverage": {
+        "ui-link": {
+          "valid": "schema.valid.ui-link",
+          "invalid": "schema.invalid.ui-link",
+          "lifecycle": "lifecycle.ui-link"
+        },
+        "data-ui-link": {
+          "valid": "schema.valid.data-ui-link",
+          "invalid": "schema.invalid.data-ui-link",
+          "lifecycle": "lifecycle.data-ui-link"
+        }
+      }
+    },
+    {
+      "name": "ui-title",
+      "tasks": "T059",
+      "spellings": [
+        "ui-title",
+        "data-ui-title"
+      ],
+      "coverage": {
+        "ui-title": {
+          "valid": "schema.valid.ui-title",
+          "invalid": "schema.invalid.ui-title",
+          "lifecycle": "lifecycle.ui-title"
+        },
+        "data-ui-title": {
+          "valid": "schema.valid.data-ui-title",
+          "invalid": "schema.invalid.data-ui-title",
+          "lifecycle": "lifecycle.data-ui-title"
+        }
+      }
+    },
+    {
+      "name": "ui-component",
+      "tasks": "T047,T052",
+      "spellings": [
+        "ui-component",
+        "data-ui-component"
+      ],
+      "coverage": {
+        "ui-component": {
+          "valid": "schema.valid.ui-component",
+          "invalid": "schema.invalid.ui-component",
+          "lifecycle": "lifecycle.ui-component"
+        },
+        "data-ui-component": {
+          "valid": "schema.valid.data-ui-component",
+          "invalid": "schema.invalid.data-ui-component",
+          "lifecycle": "lifecycle.data-ui-component"
+        }
+      }
+    },
+    {
+      "name": "ui-props",
+      "tasks": "T047,T049",
+      "spellings": [
+        "ui-props",
+        "data-ui-props"
+      ],
+      "coverage": {
+        "ui-props": {
+          "valid": "schema.valid.ui-props",
+          "invalid": "schema.invalid.ui-props",
+          "lifecycle": "lifecycle.ui-props"
+        },
+        "data-ui-props": {
+          "valid": "schema.valid.data-ui-props",
+          "invalid": "schema.invalid.data-ui-props",
+          "lifecycle": "lifecycle.data-ui-props"
+        }
+      }
+    },
+    {
+      "name": "ui-prop-*",
+      "tasks": "T049",
+      "spellings": [
+        "ui-prop-*",
+        "data-ui-prop-*"
+      ],
+      "coverage": {
+        "ui-prop-*": {
+          "valid": "schema.valid.ui-prop-*",
+          "invalid": "schema.invalid.ui-prop-*",
+          "lifecycle": "lifecycle.ui-prop-*"
+        },
+        "data-ui-prop-*": {
+          "valid": "schema.valid.data-ui-prop-*",
+          "invalid": "schema.invalid.data-ui-prop-*",
+          "lifecycle": "lifecycle.data-ui-prop-*"
+        }
+      }
+    },
+    {
+      "name": "ui-import",
+      "tasks": "T048",
+      "spellings": [
+        "ui-import",
+        "data-ui-import"
+      ],
+      "coverage": {
+        "ui-import": {
+          "valid": "schema.valid.ui-import",
+          "invalid": "schema.invalid.ui-import",
+          "lifecycle": "lifecycle.ui-import"
+        },
+        "data-ui-import": {
+          "valid": "schema.valid.data-ui-import",
+          "invalid": "schema.invalid.data-ui-import",
+          "lifecycle": "lifecycle.data-ui-import"
+        }
+      }
+    },
+    {
+      "name": "ui-response",
+      "tasks": "T036,T064",
+      "spellings": [
+        "ui-response",
+        "data-ui-response"
+      ],
+      "coverage": {
+        "ui-response": {
+          "valid": "schema.valid.ui-response",
+          "invalid": "schema.invalid.ui-response",
+          "lifecycle": "lifecycle.ui-response"
+        },
+        "data-ui-response": {
+          "valid": "schema.valid.data-ui-response",
+          "invalid": "schema.invalid.data-ui-response",
+          "lifecycle": "lifecycle.data-ui-response"
+        }
+      }
+    },
+    {
+      "name": "ui-target",
+      "tasks": "T064,T065",
+      "spellings": [
+        "ui-target",
+        "data-ui-target"
+      ],
+      "coverage": {
+        "ui-target": {
+          "valid": "schema.valid.ui-target",
+          "invalid": "schema.invalid.ui-target",
+          "lifecycle": "lifecycle.ui-target"
+        },
+        "data-ui-target": {
+          "valid": "schema.valid.data-ui-target",
+          "invalid": "schema.invalid.data-ui-target",
+          "lifecycle": "lifecycle.data-ui-target"
+        }
+      }
+    },
+    {
+      "name": "ui-swap",
+      "tasks": "T065,T066",
+      "spellings": [
+        "ui-swap",
+        "data-ui-swap"
+      ],
+      "coverage": {
+        "ui-swap": {
+          "valid": "schema.valid.ui-swap",
+          "invalid": "schema.invalid.ui-swap",
+          "lifecycle": "lifecycle.ui-swap"
+        },
+        "data-ui-swap": {
+          "valid": "schema.valid.data-ui-swap",
+          "invalid": "schema.invalid.data-ui-swap",
+          "lifecycle": "lifecycle.data-ui-swap"
+        }
+      }
+    },
+    {
+      "name": "ui-enhance",
+      "tasks": "T062,T064,T065",
+      "spellings": [
+        "ui-enhance",
+        "data-ui-enhance"
+      ],
+      "coverage": {
+        "ui-enhance": {
+          "valid": "schema.valid.ui-enhance",
+          "invalid": "schema.invalid.ui-enhance",
+          "lifecycle": "lifecycle.ui-enhance"
+        },
+        "data-ui-enhance": {
+          "valid": "schema.valid.data-ui-enhance",
+          "invalid": "schema.invalid.data-ui-enhance",
+          "lifecycle": "lifecycle.data-ui-enhance"
+        }
+      }
+    },
+    {
+      "name": "ui-use",
+      "tasks": "T069,T072",
+      "spellings": [
+        "ui-use",
+        "data-ui-use"
+      ],
+      "coverage": {
+        "ui-use": {
+          "valid": "schema.valid.ui-use",
+          "invalid": "schema.invalid.ui-use",
+          "lifecycle": "lifecycle.ui-use"
+        },
+        "data-ui-use": {
+          "valid": "schema.valid.data-ui-use",
+          "invalid": "schema.invalid.data-ui-use",
+          "lifecycle": "lifecycle.data-ui-use"
+        }
+      }
+    },
+    {
+      "name": "ui-options",
+      "tasks": "T069,T071,T072",
+      "spellings": [
+        "ui-options",
+        "data-ui-options"
+      ],
+      "coverage": {
+        "ui-options": {
+          "valid": "schema.valid.ui-options",
+          "invalid": "schema.invalid.ui-options",
+          "lifecycle": "lifecycle.ui-options"
+        },
+        "data-ui-options": {
+          "valid": "schema.valid.data-ui-options",
+          "invalid": "schema.invalid.data-ui-options",
+          "lifecycle": "lifecycle.data-ui-options"
+        }
+      }
+    },
+    {
+      "name": "ui-toasts",
+      "tasks": "T071",
+      "spellings": [
+        "ui-toasts",
+        "data-ui-toasts"
+      ],
+      "coverage": {
+        "ui-toasts": {
+          "valid": "schema.valid.ui-toasts",
+          "invalid": "schema.invalid.ui-toasts",
+          "lifecycle": "lifecycle.ui-toasts"
+        },
+        "data-ui-toasts": {
+          "valid": "schema.valid.data-ui-toasts",
+          "invalid": "schema.invalid.data-ui-toasts",
+          "lifecycle": "lifecycle.data-ui-toasts"
+        }
+      }
+    }
+  ]
+}

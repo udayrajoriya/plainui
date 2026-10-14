@@ -8,7 +8,6 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const require = createRequire(import.meta.url);
 const task = process.argv[2];
 const deferred = {
-  'test:conformance': 'T005',
   'test:security': 'T090',
   'validate:examples': 'T087',
   'check:size': 'T094',
@@ -49,6 +48,9 @@ if (task in deferred) {
   if (process.exitCode === 0) {
     runNode(packageBin('@playwright/test', 'playwright'), ['test', 'tests/browser']);
   }
+} else if (task === 'test:conformance') {
+  runNode(join(root, 'scripts', 'build.mjs'));
+  if (process.exitCode === 0) runNode(packageBin('@playwright/test', 'playwright'), ['test', 'tests/browser/conformance.spec.ts']);
 } else if (task === 'build') {
   runNode(join(root, 'scripts', 'check-boundaries.mjs'));
   if (process.exitCode === 0) runNode(join(root, 'scripts', 'build.mjs'));

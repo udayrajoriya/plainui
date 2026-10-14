@@ -117,7 +117,9 @@
       ],
       "stepCount": 7,
       "acceptance": "`harness.parity` same fixture yields same result in both builds; `harness.race` barriers reverse completion order; `harness.leak` intentional leaked listener is detected; `harness.timeout` missing completion gives a useful bounded failure.",
-      "status": "pending"
+      "status": "completed",
+      "completedDate": "2026-10-14",
+      "evidence": "../../evidence/tasks/T005.md"
     },
     {
       "id": "T006",

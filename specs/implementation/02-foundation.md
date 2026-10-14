@@ -65,6 +65,8 @@ All file paths are repository-relative. All tasks include the common definition 
 
 ## T005 Build the shared conformance fixture runner
 
+**Status:** completed 14 October 2026. [Completion evidence](../../evidence/tasks/T005.md).
+
 **Depends on:** T003,T004. **Sources:** Design §15. **Files:** `tests/support/{fixture,runner,clock,server,assertions}.ts`, `tests/fixtures/schema.json`.
 
 1. Define fixture fields: id, RFC references, HTML, config, module list, registrations, storage seed, HTTP script, steps, expected state/DOM/events/diagnostics, teardown expectations, browser requirements.

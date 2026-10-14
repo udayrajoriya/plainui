@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 import { DIRECTIVES, resolveDirective, validateAttributeSet, validateDirectiveValue, validateSchema, CONFIG_SCHEMA, validatePropsSchema, validateBehaviorOptions, DIAGNOSTICS } from '../../packages/schema/src/index.js';
-import coverage from '../fixtures/schema.json';
+import coverage from '../fixtures/directive-coverage.json';
 
 test('schema.aliases: every canonical/data spelling resolves to one definition', () => {
   expect(DIRECTIVES).toHaveLength(61);

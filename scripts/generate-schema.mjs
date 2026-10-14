@@ -16,7 +16,7 @@ const tasksFor = (name) => {
 };
 const coverage = {schemaVersion:schema.SCHEMA_FORMAT_VERSION,grammarVersion:schema.GRAMMAR_VERSION,rows:rows.map(row => ({name:row.name,tasks:tasksFor(row.name),spellings:[row.name,row.alias],coverage:Object.fromEntries([row.name,row.alias].map(spelling => [spelling,{valid:`schema.valid.${spelling}`,invalid:`schema.invalid.${spelling}`,lifecycle:`lifecycle.${spelling}`}]))}))};
 const reference = ['# Directive reference','','Generated from `packages/schema/src`. Do not edit directly.','','| Directive | Alias | Value | Placement | Module | Default |','|---|---|---|---|---|---|',...rows.map(row => `| \`${row.name}\` | \`${row.alias}\` | ${row.kind} | ${row.placement} | ${row.module} | ${row.default === undefined ? '—' : `\`${JSON.stringify(row.default)}\``} |`),''].join('\n');
-const outputs = [[join(root,'packages/schema/generated/schema.json'),JSON.stringify(metadata,null,2)+'\n'],[join(root,'tests/fixtures/schema.json'),JSON.stringify(coverage,null,2)+'\n'],[join(root,'docs/generated/directives-reference.md'),reference]];
+const outputs = [[join(root,'packages/schema/generated/schema.json'),JSON.stringify(metadata,null,2)+'\n'],[join(root,'tests/fixtures/directive-coverage.json'),JSON.stringify(coverage,null,2)+'\n'],[join(root,'docs/generated/directives-reference.md'),reference]];
 const check = process.argv.includes('--check');
 for (const [path,content] of outputs) {
   if (check) { const existing = await readFile(path,'utf8').catch(() => ''); if (existing !== content) throw new Error(`Generated file differs: ${path}`); }
