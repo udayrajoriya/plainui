@@ -92,7 +92,9 @@
       ],
       "stepCount": 7,
       "acceptance": "`schema.aliases` canonical/data aliases match; `schema.collisions` duplicates fail; `schema.complete` all source rows map to tasks; generated files reproduce byte-for-byte.",
-      "status": "pending"
+      "status": "completed",
+      "completedDate": "2026-10-14",
+      "evidence": "../../evidence/tasks/T004.md"
     },
     {
       "id": "T005",

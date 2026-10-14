@@ -11,7 +11,6 @@ const deferred = {
   'test:conformance': 'T005',
   'test:security': 'T090',
   'validate:examples': 'T087',
-  'check:generated': 'T004',
   'check:size': 'T094',
   bench: 'T094',
   'check:release': 'T097',
@@ -56,6 +55,8 @@ if (task in deferred) {
   if (process.exitCode === 0) runNode(join(root, 'scripts', 'check-build.mjs'));
 } else if (task === 'check:boundaries') {
   runNode(join(root, 'scripts', 'check-boundaries.mjs'));
+} else if (task === 'check:generated') {
+  runNode(join(root, 'scripts', 'generate-schema.mjs'), ['--check']);
 } else {
   console.error(`Unknown workspace task: ${task ?? '(missing)'}`);
   process.exitCode = 1;

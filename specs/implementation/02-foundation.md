@@ -49,6 +49,8 @@ All file paths are repository-relative. All tasks include the common definition 
 
 ## T004 Create the directive and option schema
 
+**Status:** completed 14 October 2026. [Completion evidence](../../evidence/tasks/T004.md).
+
 **Depends on:** T001,T003. **Sources:** RFC §§3,16. **Files:** `packages/schema/src/{directives,options,diagnostics,allowlists}.ts`, `scripts/generate-schema.mjs`.
 
 1. Enter every registry row, dynamic family, alias, enum, default, value kind, placement, companion requirement, conflict, and optional module from 07-coverage.

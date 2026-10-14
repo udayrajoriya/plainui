@@ -1,0 +1,67 @@
+# Directive reference
+
+Generated from `packages/schema/src`. Do not edit directly.
+
+| Directive | Alias | Value | Placement | Module | Default |
+|---|---|---|---|---|---|
+| `ui-app` | `data-ui-app` | literal | root | core | — |
+| `ui-config` | `data-ui-config` | literal | root | core | — |
+| `ui-state` | `data-ui-state` | json-object | element | core | — |
+| `ui-store` | `data-ui-store` | json-object | root | core | `{}` |
+| `ui-derived` | `data-ui-derived` | identifier | derived | core | — |
+| `ui-value` | `data-ui-value` | expression | derived | core | — |
+| `ui-persist` | `data-ui-persist` | enum | element | core | — |
+| `ui-persist-key` | `data-ui-persist-key` | literal | element | core | — |
+| `ui-cloak` | `data-ui-cloak` | presence | element | core | — |
+| `ui-ref` | `data-ui-ref` | identifier | element | core | — |
+| `ui-ignore` | `data-ui-ignore` | presence | element | core | — |
+| `ui-text` | `data-ui-text` | expression | element | core | — |
+| `ui-bind-*` | `data-ui-bind-*` | expression | element | core | — |
+| `ui-src` | `data-ui-src` | expression | element | core | — |
+| `ui-href` | `data-ui-href` | expression | element | core | — |
+| `ui-class` | `data-ui-class` | expression | element | core | — |
+| `ui-show` | `data-ui-show` | expression | element | core | — |
+| `ui-model` | `data-ui-model` | path | element | forms | — |
+| `ui-if` | `data-ui-if` | expression | template | core | — |
+| `ui-else-if` | `data-ui-else-if` | expression | template | core | — |
+| `ui-else` | `data-ui-else` | presence | template | core | — |
+| `ui-for` | `data-ui-for` | loop | template | core | — |
+| `ui-key` | `data-ui-key` | expression | template | core | — |
+| `ui-data` | `data-ui-data` | identifier | resource | data | — |
+| `ui-get` | `data-ui-get` | url-template | request | data | — |
+| `ui-post` | `data-ui-post` | url-template | request | data | — |
+| `ui-put` | `data-ui-put` | url-template | request | data | — |
+| `ui-patch` | `data-ui-patch` | url-template | request | data | — |
+| `ui-delete` | `data-ui-delete` | url-template | request | data | — |
+| `ui-load` | `data-ui-load` | enum | resource | data | `"auto"` |
+| `ui-query` | `data-ui-query` | expression | request | data | — |
+| `ui-headers` | `data-ui-headers` | expression | request | data | — |
+| `ui-body` | `data-ui-body` | expression | request | data | — |
+| `ui-adapter` | `data-ui-adapter` | identifier | request | data | `"identity"` |
+| `ui-credentials` | `data-ui-credentials` | enum | request | data | `"same-origin"` |
+| `ui-timeout` | `data-ui-timeout` | integer | request | data | `30000` |
+| `ui-cache` | `data-ui-cache` | integer | resource | data | `0` |
+| `ui-retry` | `data-ui-retry` | integer | request | data | `0` |
+| `ui-action` | `data-ui-action` | identifier | action | data | — |
+| `ui-trigger` | `data-ui-trigger` | literal | action | data | — |
+| `ui-concurrency` | `data-ui-concurrency` | enum | action | data | `"drop"` |
+| `ui-debounce` | `data-ui-debounce` | integer | action | data | `0` |
+| `ui-invalidate` | `data-ui-invalidate` | names | action | data | — |
+| `ui-on:*` | `data-ui-on:*` | command-list | element | core | — |
+| `ui-encoding` | `data-ui-encoding` | enum | form | forms | `"json"` |
+| `ui-field-error` | `data-ui-field-error` | literal | form | forms | — |
+| `ui-route` | `data-ui-route` | literal | route | router | — |
+| `ui-outlet` | `data-ui-outlet` | presence | element | router | — |
+| `ui-link` | `data-ui-link` | presence | element | router | — |
+| `ui-title` | `data-ui-title` | expression | route | router | — |
+| `ui-component` | `data-ui-component` | literal | component-definition | components | — |
+| `ui-props` | `data-ui-props` | json-schema | component-definition | components | `{}` |
+| `ui-prop-*` | `data-ui-prop-*` | expression | component-instance | components | — |
+| `ui-import` | `data-ui-import` | literal | import | components | — |
+| `ui-response` | `data-ui-response` | enum | action | fragments | `"json"` |
+| `ui-target` | `data-ui-target` | literal | action | fragments | — |
+| `ui-swap` | `data-ui-swap` | enum | action | fragments | `"inner"` |
+| `ui-enhance` | `data-ui-enhance` | enum | action | fragments | `"false"` |
+| `ui-use` | `data-ui-use` | names | behavior | ui | — |
+| `ui-options` | `data-ui-options` | json-object | behavior | ui | — |
+| `ui-toasts` | `data-ui-toasts` | presence | toasts | ui | — |
