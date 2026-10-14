@@ -236,7 +236,9 @@
       ],
       "stepCount": 6,
       "acceptance": "`eval.null-missing`, `eval.identity`, `eval.no-coercion`, `eval.short-circuit`, `eval.step-limit`, `format.leap-day`, `format.date-zone`, `format.bad-currency`, `format.async-rejected`, and CSP no-eval tests pass.",
-      "status": "pending"
+      "status": "completed",
+      "completedDate": "2026-10-14",
+      "evidence": "../../evidence/tasks/T010.md"
     },
     {
       "id": "T011",

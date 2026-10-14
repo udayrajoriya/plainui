@@ -143,6 +143,8 @@ All file paths are repository-relative. All tasks include the common definition 
 
 ## T010 Implement evaluator and built-in formatters
 
+**Status:** completed 14 October 2026. [Completion evidence](../../evidence/tasks/T010.md).
+
 **Depends on:** T009. **Sources:** RFC §4; Design §5. **Files:** `expression/evaluate.ts`, `expression/builtins.ts`, `expression/intl-cache.ts`.
 
 1. Evaluate against an injected lexical read interface; return EvalResult plus tracked dependencies and nonfatal missing-value state. Never evaluate generated JS.
