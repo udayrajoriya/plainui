@@ -1,0 +1,9 @@
+# Sanitizer feasibility gate
+
+The strict-CSP experiment passed in Playwright Chromium, Firefox, and WebKit on 14 October 2026 with Node 24.21.0 and DOMPurify 3.4.16. The fixture serves a native component import and both ordinary and enhanced fragments on the same page. External scripts are allowed from the page origin; inline scripts and eval are unavailable. Chromium enforces Trusted Types for script HTML sinks with only `plainui-template` and `dompurify` policies. Firefox and WebKit ran the same page but do not supply equivalent Trusted Types enforcement in this test environment.
+
+`packages/core/src/html/inert.ts` validates developer import templates without DOMPurify. Its cached private policy permits inert parsing, and unsupported top-level nodes or script-bearing definitions fail before insertion. `experiments/sanitizer/sanitize.ts` uses DOMPurify's DOM-fragment output and the exact source allowlists. The ordinary fragment loses framework directives and executable content; enhanced markup preserves allowed declaration directives and an inert template but removes `ui-app`. No script executed and no CSP violation event was recorded.
+
+The experiment found that creating `plainui-template` repeatedly violates strict policy-name enforcement; the private parser now caches it per window. The sanitizer instance is likewise reused. The tests use no inline event attributes on the strict-CSP page because merely parsing them can generate a CSP violation before removal. T062 must test hostile attributes separately and complete production URL, trust, and transactional policy hardening.
+
+`size-baseline.json` uses deterministic gzip level 9 and mtime 0. The 16,379-byte combined gzip scaffold is below 71,680 bytes with 55,301 bytes remaining; the 689-byte core scaffold is below 35,840 bytes with 35,151 bytes remaining. This is a feasibility signal, not final size conformance.

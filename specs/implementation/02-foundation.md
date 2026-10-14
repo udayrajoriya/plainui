@@ -97,6 +97,8 @@ All file paths are repository-relative. All tasks include the common definition 
 
 ## T007 Prove sanitizer size and strict CSP feasibility early
 
+**Status:** completed 14 October 2026. [Completion evidence](../../evidence/tasks/T007.md).
+
 **Depends on:** T003,T005. **Sources:** Design §§12,16. **Files:** `experiments/sanitizer/`, `evidence/sanitizer-feasibility.md`, `evidence/size-baseline.json`.
 
 1. Build a minimal fragment-only bundle importing the pinned DOMPurify. Configure explicit RFC tag/attribute sets and DOM-fragment output.

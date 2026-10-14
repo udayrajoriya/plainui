@@ -1,0 +1,43 @@
+{
+  "node": "v24.21.0",
+  "compressor": "node:zlib gzipSync level=9 mtime=0",
+  "scaffoldCore": {
+    "raw": 1568,
+    "gzip": 689
+  },
+  "optionalSanitizer": {
+    "raw": 38677,
+    "gzip": 14492
+  },
+  "combinedFiles": {
+    "dist/plainui.js": {
+      "raw": 1568,
+      "gzip": 689
+    },
+    "dist/plainui-router.js": {
+      "raw": 220,
+      "gzip": 199
+    },
+    "dist/plainui-ui.js": {
+      "raw": 212,
+      "gzip": 194
+    },
+    "experiments/sanitizer/dist/sanitizer.js": {
+      "raw": 38677,
+      "gzip": 14492
+    },
+    "experiments/sanitizer/dist/template.js": {
+      "raw": 1510,
+      "gzip": 805
+    }
+  },
+  "combined": {
+    "raw": 42187,
+    "gzip": 16379
+  },
+  "coreBudgetGzip": 35840,
+  "combinedBudgetGzip": 71680,
+  "remainingCoreGzip": 35151,
+  "remainingCombinedGzip": 55301,
+  "qualification": "feasibility scaffold only; not final release size"
+}

@@ -167,7 +167,9 @@
       ],
       "stepCount": 7,
       "acceptance": "`spike.csp-template`, `spike.csp-fragment`, `spike.no-script-execution`, `spike.allowlist`, and recorded size evidence exist. This is a feasibility gate; T062 still supplies production hardening.",
-      "status": "pending"
+      "status": "completed",
+      "completedDate": "2026-10-14",
+      "evidence": "../../evidence/tasks/T007.md"
     },
     {
       "id": "T008",
