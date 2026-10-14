@@ -203,6 +203,8 @@ All file paths are repository-relative. All tasks include the common definition 
 
 ## T014 Implement derived values and flush scheduling
 
+**Status:** completed 14 October 2026. [Completion evidence](../../evidence/tasks/T014.md).
+
 **Depends on:** T010,T012,T013. **Sources:** RFC §§5,15; C06. **Files:** `scheduler/{queues,flush,after-flush}.ts`, `state/derived.ts`.
 
 1. Create per-root deduplicated queues, schedule the first microtask on transition from clean to dirty, and enforce phase order from C06.

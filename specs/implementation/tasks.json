@@ -332,7 +332,9 @@
       ],
       "stepCount": 6,
       "acceptance": "`scheduler.phase-order`, `scheduler.sync-batch`, `derived.multi-hop`, `derived.cycle-partial`, `scheduler.disposal-mid-flush`, `scheduler.limit-100`, `scheduler.other-root`, `afterflush.cancel` pass.",
-      "status": "pending"
+      "status": "completed",
+        "completedOn": "2026-10-14",
+        "evidence": "evidence/tasks/T014.md"
     },
     {
       "id": "T015",
