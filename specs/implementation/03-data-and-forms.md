@@ -4,6 +4,8 @@ Use the C08/C09 state machines and generation rules. No HTTP operation may commi
 
 ## T026 Compile and resolve URL templates
 
+**Status:** completed 15 October 2026. [Completion evidence](../../evidence/tasks/T026.md).
+
 **Depends on:** T010,T016,T025. **Sources:** RFC §4.3. **Files:** `packages/data/src/request/{url-template,query}.ts`.
 
 1. Tokenize literal segments and balanced `{expression}` regions using expression string/delimiter rules; do not split braces inside strings/objects. Literal raw unmatched braces fail; `%7B/%7D` stay literal URL content.

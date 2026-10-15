@@ -639,7 +639,7 @@
       ],
       "stepCount": 6,
       "acceptance": "`url.encoded-slash` id=`a/b` becomes `a%2Fb`; `url.null` suspends; `url.query-replace` `/x?q=old&q=older` plus `{q:['a','b']}` yields two new values; `url.authority`, `url.credentials`, `url.protocol`, and `url.relative-base` pass.",
-      "status": "pending"
+        "status": "complete"
     },
     {
       "id": "T027",
