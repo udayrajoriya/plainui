@@ -993,7 +993,8 @@
       ],
       "stepCount": 6,
       "acceptance": "`form.submitter`, `form.external-control`, `form.disabled-fieldset`, `form.literal-dots`, `form.repeated`, `form.number-json`, `form.checkbox-value`, `form.empty-file-json-error`, `form.multipart-empty-vs-zero-byte`, `form.get-query` pass.",
-      "status": "pending"
+      "status": "completed",
+      "evidence": "../../evidence/tasks/T041.md"
     },
     {
       "id": "T042",

@@ -229,6 +229,8 @@ Use the C08/C09 state machines and generation rules. No HTTP operation may commi
 
 ## T041 Implement successful-control form serialization
 
+**Status:** completed 15 October 2026. [Completion evidence](../../evidence/tasks/T041.md).
+
 **Depends on:** T008,T027,T039,T040. **Sources:** RFC §9. **Files:** `forms/src/serialize/{successful-controls,json,urlencoded,multipart}.ts`.
 
 1. Build a successful-control sequence using native form association, disabled fieldset semantics, checked/radio state, select options, and actual submitter. Include externally associated controls and preserve document order.
