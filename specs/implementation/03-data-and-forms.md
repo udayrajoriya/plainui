@@ -19,6 +19,8 @@ Use the C08/C09 state machines and generation rules. No HTTP operation may commi
 
 ## T027 Build immutable request drafts and final policy validation
 
+**Status:** completed 15 October 2026. [Completion evidence](../../evidence/tasks/T027.md).
+
 **Depends on:** T006,T008,T026. **Sources:** RFC §§3,7,8,15. **Files:** `data/src/{request/draft,policy/headers,policy/origin,policy/csrf}.ts`.
 
 1. Define draft fields method, URL, headers, credentials, body, responseMode, timeoutMs, retry, adapter identity, epoch, owner signal, and consumer generation. Body is absent, JSON bytes, URLSearchParams, or FormData.

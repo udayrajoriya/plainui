@@ -662,7 +662,7 @@
       ],
       "stepCount": 6,
       "acceptance": "`request.header-case`, `request.header-null`, `request.forbidden-header`, `request.prepare-origin`, `request.csrf-late-read`, `request.csrf-missing-no-fetch`, `request.cross-origin-no-token`, `request.multipart-boundary` pass.",
-      "status": "pending"
+        "status": "complete"
     },
     {
       "id": "T028",
