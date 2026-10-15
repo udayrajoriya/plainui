@@ -141,6 +141,8 @@ Use the C08/C09 state machines and generation rules. No HTTP operation may commi
 
 ## T035 Implement session reset and public resource refresh
 
+**Status:** completed 15 October 2026. [Completion evidence](../../evidence/tasks/T035.md).
+
 **Depends on:** T024,T034. **Sources:** RFC §7.2; Design §8.2; C08. **Files:** `data/src/session.ts`, `data/src/resource/public.ts`.
 
 1. app.resetSession increments epoch before touching controllers; abort resource/action/import-related authenticated operations where applicable, clear flights/cache, reset resource/action records to idle.
