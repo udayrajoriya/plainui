@@ -1,5 +1,5 @@
 import {PlainUIError} from '../diagnostics/codes.js';
-import type {JsonValue} from '../json/normalize.js';
+import {normalizeJson,type JsonValue} from '../json/normalize.js';
 import {parsePath,readPath,replaceWritablePath,type ParsedPath} from './path.js';
 import {lookupBinding} from '../scope/lookup.js';
 import type {Scope,ScopeCell} from '../scope/scope.js';
@@ -30,6 +30,8 @@ export class StateStore {
     for(const observer of StateStore.observers)if((observer.owner?.active??true)&&[...observer.dependencies].some(dep=>affects(dep,cell,written)))this.pending.add(observer);
     if(!this.depth)this.deliver();
   }
+  /** Internal alias/context publication; public writes still pass through write(). */
+  publish(name:string,input:unknown):void {if(!this.scope.owner.active)throw new PlainUIError('OWNER_DISPOSED');const path=parsePath(name,{writable:false});if(path.segments.length)throw new PlainUIError('PATH_INVALID');const cell=this.resolve(path);const value=normalizeJson(input);if(Object.is(cell.value,value))return;publishCell(cell,value);const written=pathKey(path);for(const observer of StateStore.observers)if((observer.owner?.active??true)&&[...observer.dependencies].some(dep=>affects(dep,cell,written)))this.pending.add(observer);if(!this.depth)this.deliver();}
   private deliver():void {const pending=[...this.pending];this.pending.clear();for(const observer of pending)if(observer.owner?.active??true)observer.invalidate();}
   batch<T>(callback:()=>T):T {this.depth++;try{const result=callback();if(result!==null&&(typeof result==='object'||typeof result==='function')&&typeof (result as {then?:unknown}).then==='function')throw new PlainUIError('BATCH_ASYNC');return result;}finally{this.depth--;if(!this.depth)this.deliver();}}
 }

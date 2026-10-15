@@ -293,6 +293,8 @@ All file paths are repository-relative. All tasks include the common definition 
 
 ## T020 Implement keyed list reconciliation
 
+**Status:** completed 15 October 2026. [Completion evidence](../../evidence/tasks/T020.md).
+
 **Depends on:** T012,T013,T014,T016,T018. **Sources:** RFC §6; Design §7. **Files:** `structure/{for-parser,keyed-list}.ts`.
 
 1. Parse `item[, index] in expression` without splitting inside expression tokens. Validate alias names, collisions, and mandatory ui-key.

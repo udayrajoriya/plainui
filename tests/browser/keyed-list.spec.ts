@@ -1,0 +1,10 @@
+import {expect,test} from '@playwright/test';
+import {build} from 'esbuild';
+test('keyed rows reorder with focus and preserve identity; duplicate keys leave DOM intact',async({page})=>{
+  const code=(await build({entryPoints:['packages/runtime/src/esm.ts'],bundle:true,write:false,format:'iife',globalName:'Runtime',platform:'browser'})).outputFiles[0]!.text;
+  await page.setContent('<base href="https://example.test/"><main ui-app="list" ui-state="{&quot;items&quot;:[{&quot;id&quot;:1,&quot;label&quot;:&quot;A&quot;},{&quot;id&quot;:2,&quot;label&quot;:&quot;B&quot;}]}"><template ui-for="item, index in items" ui-key="item.id"><button ui-text="item.label"></button></template></main>');await page.addScriptTag({content:code});
+  const result=await page.evaluate(async()=>{const app=(window as any).Runtime.PlainUI.mount(document.querySelector('main'));const errors:string[]=[];app.onDiagnostic((d:any)=>errors.push(d.code));await app.ready;const original=[...document.querySelectorAll('button')];original[1]!.focus();app.set('items',[{id:2,label:'B2'},{id:1,label:'A2'}]);await new Promise(resolve=>setTimeout(resolve,0));const reordered=[...document.querySelectorAll('button')];const focus=document.activeElement===original[1];const identity=reordered[0]===original[1]&&reordered[1]===original[0];const labels=reordered.map(button=>button.textContent);app.set('items',[{id:2,label:'X'},{id:2,label:'Y'}]);await new Promise(resolve=>setTimeout(resolve,0));const after=[...document.querySelectorAll('button')].map(button=>button.textContent);const focusBeforeEmpty=document.activeElement===original[1];app.set('items',[]);await new Promise(resolve=>setTimeout(resolve,0));return {focus,identity,labels,after,duplicate:errors.includes('DUPLICATE_KEY'),focusBeforeEmpty,empty:document.querySelectorAll('button').length===0,focusFallback:document.activeElement===document.querySelector('main'),activeTag:document.activeElement?.tagName};});
+  expect(result).toEqual({focus:true,identity:true,labels:['B2','A2'],after:['B2','A2'],duplicate:true,focusBeforeEmpty:true,empty:true,focusFallback:true,activeTag:'MAIN'});
+});
+
+
