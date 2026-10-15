@@ -338,6 +338,8 @@ All file paths are repository-relative. All tasks include the common definition 
 
 ## T023 Implement core command execution
 
+**Status:** completed 15 October 2026. [Completion evidence](../../evidence/tasks/T023.md).
+
 **Depends on:** T013,T014,T022. **Sources:** RFC §8.1; C04,C09. **Files:** `commands/{execute,builtins,context}.ts`.
 
 1. Implement set and toggle as immediate state writes; wrong boolean/path or expression failure stops the handler before further effects.

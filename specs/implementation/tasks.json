@@ -566,7 +566,7 @@
       ],
       "stepCount": 6,
       "acceptance": "`command.sequential`, `command.reads-prior-write`, `command.stop-on-failure`, `command.module-missing`, `command.focus-after-flush`, `command.async-disposal`, `command.emit-detail` pass.",
-      "status": "pending"
+        "status": "complete"
     },
     {
       "id": "T024",
