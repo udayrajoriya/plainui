@@ -750,7 +750,9 @@
       ],
       "stepCount": 6,
       "acceptance": "`flight.shared-count` two resources\u2192one fetch; `flight.partial-cancel` first dispose leaves fetch alive; `flight.last-cancel` aborts; `flight.secret-header-distinct`, `flight.retry-policy-distinct`, `flight.old-generation`, `flight.callback-throws` pass.",
-      "status": "pending"
+      "status": "completed",
+      "completedDate": "2026-10-15",
+      "evidence": "../../evidence/tasks/T031.md"
     },
     {
       "id": "T032",

@@ -80,6 +80,8 @@ Use the C08/C09 state machines and generation rules. No HTTP operation may commi
 
 ## T031 Implement request keys and shared in-flight GETs
 
+**Status:** completed 15 October 2026. [Completion evidence](../../evidence/tasks/T031.md).
+
 **Depends on:** T028,T030. **Sources:** RFC §7.2; Design §8.1; C08. **Files:** `data/src/coordinator/{key,flight,subscriber}.ts`.
 
 1. Encode cache key fields with length-prefixed canonical segments to prevent delimiter collisions. Digest effective header sequence with the shared SHA-256 service; never use a redacted header list as actual identity.

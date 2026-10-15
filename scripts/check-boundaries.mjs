@@ -58,6 +58,7 @@ function inspectImport(source, specifier, files, edges, issues) {
   const target = resolveSource(source, specifier, files);
   if (target === null) {
     const externalAllowed = (sourcePackage === 'fragments' && specifier === 'dompurify')
+      || (sourcePackage === 'data' && specifier === '@noble/hashes/sha2.js')
       || (sourcePackage === 'tooling' && (specifier === 'parse5' || specifier.startsWith('node:')));
     if (!externalAllowed) issues.push(`BOUNDARY_EXTERNAL ${location}: ${specifier}`);
     return;
