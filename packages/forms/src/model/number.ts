@@ -1,0 +1,5 @@
+import {PlainUIError,type JsonValue} from '../../../core/src/index.js';
+import type {ModelMount} from '../../../core/src/integration.js';
+
+const MESSAGE='Enter a valid number.';
+export function bindNumber(mount:ModelMount,element:HTMLInputElement,signal:AbortSignal):{update:()=>void;dispose:()=>void} {let ownsValidity=false;const clear=()=>{if(ownsValidity&&element.validationMessage===MESSAGE)element.setCustomValidity('');ownsValidity=false;};const invalid=()=>{if(ownsValidity||!element.validity.customError){element.setCustomValidity(MESSAGE);ownsValidity=true;}};const commit=()=>{if(element.validity.badInput){invalid();return;}if(element.value===''){clear();mount.write(null);return;}const value=element.valueAsNumber;if(Number.isFinite(value)){clear();mount.write(value);return;}invalid();};element.addEventListener('input',commit,{signal});const update=()=>{const value:JsonValue=mount.read();if(value!==null&&(typeof value!=='number'||!Number.isFinite(value)))throw new PlainUIError('FORM_INVALID');const text=value===null?'':String(value);if(element.value===text)return;element.value=text;clear();};update();return {update,dispose:clear};}

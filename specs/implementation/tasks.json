@@ -946,7 +946,8 @@
       ],
       "stepCount": 6,
       "acceptance": "`model.text-input`, `model.ime`, `model.number-empty`, `model.number-invalid`, `model.no-synthetic-events`, `model.caret`, `model.file-rejected` pass in actual browsers.",
-      "status": "pending"
+      "status": "completed",
+      "evidence": "../../evidence/tasks/T039.md"
     },
     {
       "id": "T040",
@@ -2340,3 +2341,4 @@
     }
   ]
 }
+

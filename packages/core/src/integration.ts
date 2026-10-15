@@ -8,6 +8,9 @@ export interface MountedResource extends ResourceHandle {activate():void;current
 export interface ResourceRoot {register(mount:ResourceMount):MountedResource;invalidate(keys:readonly string[]):void;dispose():void;resetSession():void;readonly cacheEntries:number}
 export interface ActionMount {readonly plan:unknown;readonly element:Element;readonly owner:{readonly active:boolean;readonly signal:AbortSignal};readonly options:ResolvedOptions;readonly getEpoch:()=>number;readonly read:(name:string)=>{found:boolean;value:JsonValue};readonly publish:(value:JsonValue)=>void;readonly afterFlush:(callback:()=>void)=>void;readonly lifecycle:(name:'success'|'error'|'finally',detail:JsonValue)=>Promise<void>;readonly resolveResourceName:(name:string)=>string|null;readonly invalidateKeys:(keys:readonly string[])=>void;readonly diagnose:(error:unknown)=>void;readonly adapter:(name:string)=>unknown}
 export interface MountedAction {dispose():void;resetSession():void}
+export interface ModelMount {readonly element:Element;readonly path:string;readonly owner:{readonly active:boolean;readonly signal:AbortSignal};readonly read:()=>JsonValue;readonly write:(value:JsonValue)=>void;readonly watch:(notify:()=>void)=>()=>void;readonly diagnose:(error:unknown)=>void}
+export interface MountedModel {update():void;dispose():void}
+export interface ModelService {bind(mount:ModelMount):MountedModel}
 export interface ResourceService {createRoot(id:string,options:ResolvedOptions):ResourceRoot}
 export interface RequestService {
   send(request: Request, signal: AbortSignal): Promise<Response>;
@@ -26,6 +29,7 @@ export interface ActionService {
 export interface RuntimeServices {
   readonly request: RequestService;
   readonly resources?:ResourceService;
+  readonly models?:ModelService;
   readonly dom: DomService;
   readonly actions: ActionService;
   readonly navigation?: {beforeNavigate(guard:(url:string)=>boolean|Promise<boolean>):()=>void};

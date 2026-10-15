@@ -302,3 +302,4 @@ Use the C08/C09 state machines and generation rules. No HTTP operation may commi
 6. Record fixture failures as blockers; do not substitute unit test coverage percentages for these cases.
 
 **Acceptance:** complete M2 evidence with recorded seeds, request timelines, form browser outcomes, and zero-leak assertions.
+
