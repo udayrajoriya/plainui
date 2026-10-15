@@ -728,7 +728,7 @@
       ],
       "stepCount": 6,
       "acceptance": "`retry.timeline` fourth attempt starts after cumulative delays 3500 ms excluding attempt durations; `retry.no-400-500-parse`, `retry.cancel-backoff`, `retry.per-attempt-timeout`, `retry.mutation-once` pass.",
-      "status": "pending"
+        "status": "complete"
     },
     {
       "id": "T031",

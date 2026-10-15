@@ -65,6 +65,8 @@ Use the C08/C09 state machines and generation rules. No HTTP operation may commi
 
 ## T030 Implement attempt retries and cancellation
 
+**Status:** completed 15 October 2026. [Completion evidence](../../evidence/tasks/T030.md).
+
 **Depends on:** T029. **Sources:** RFC §7.2; C08. **Files:** `data/src/transport/retry.ts`.
 
 1. Accept retry count 0–3 for GET; reject retry on mutation directives at validation. Attempts total `1 + retry`.
