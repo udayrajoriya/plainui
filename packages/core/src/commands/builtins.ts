@@ -5,7 +5,7 @@ import type {Scheduler} from '../scheduler/flush.js';
 import type {ScopeApi} from '../public-api/types.js';
 import type {CompiledCommand} from './parse.js';
 
-export interface BuiltinEnvironment {owner:Owner;host:Element;scheduler:Scheduler;scopeApi:ScopeApi;services:{refresh?:(name:string)=>Promise<JsonValue>;reset?:()=>void|Promise<void>;navigate?:(url:string)=>void|Promise<void>;open?:(name:string)=>void|Promise<void>;close?:(name:string)=>void|Promise<void>;toast?:(message:string)=>void|Promise<void>}}
+export interface BuiltinEnvironment {owner:Owner;host:Element;scheduler:Scheduler;scopeApi:ScopeApi;services:{refresh?:(name:string)=>Promise<JsonValue>;reset?:(name:string)=>void|Promise<void>;navigate?:(url:string)=>void|Promise<void>;open?:(name:string)=>void|Promise<void>;close?:(name:string)=>void|Promise<void>;toast?:(message:string)=>void|Promise<void>}}
 function string(value:JsonValue):string {if(typeof value!=='string'||!value.trim())throw new PlainUIError('COMMAND_ERROR');return value;}
 export function emitFromHost(host:Element,name:string,detail:unknown):void {if(!name.trim()||['success','error','finally'].includes(name))throw new PlainUIError('COMMAND_ERROR');const value=normalizeJsBoundary(detail);const view=host.ownerDocument.defaultView;if(!view)throw new PlainUIError('COMMAND_ERROR');host.dispatchEvent(new view.CustomEvent(name,{bubbles:true,composed:true,detail:value}));}
 async function focusRef(env:BuiltinEnvironment,name:string):Promise<void> {const target=env.scopeApi.refs.get(name);if(!(target instanceof HTMLElement)||!target.isConnected||target.matches(':disabled,[hidden]')||!target.matches('a[href],button,input,select,textarea,[tabindex]'))throw new PlainUIError('REF_INVALID');
@@ -18,7 +18,7 @@ export async function runBuiltin(command:CompiledCommand,args:readonly JsonValue
   case 'emit':if(args.length<1||args.length>2)throw new PlainUIError('COMMAND_ERROR');emitFromHost(env.host,string(args[0]!),args[1]??null);return true;
   case 'focus':if(args.length!==1)throw new PlainUIError('COMMAND_ERROR');await focusRef(env,string(args[0]!));return true;
   case 'refresh':if(args.length!==1)throw new PlainUIError('COMMAND_ERROR');if(!env.services.refresh)throw new PlainUIError('RESOURCE_UNKNOWN');await env.services.refresh(string(args[0]!));return true;
-  case 'reset':if(args.length)throw new PlainUIError('COMMAND_ERROR');await env.services.reset?.();return true;
+  case 'reset':if(args.length!==1)throw new PlainUIError('COMMAND_ERROR');if(!env.services.reset)throw new PlainUIError('MODULE_MISSING');await env.services.reset(string(args[0]!));return true;
   case 'navigate':{if(args.length!==1)throw new PlainUIError('COMMAND_ERROR');const input=string(args[0]!);if(env.services.navigate){await env.services.navigate(input);return true;}const view=env.host.ownerDocument.defaultView;if(!view)throw new PlainUIError('MODULE_MISSING');let url:URL;try{url=new URL(input,view.location.href);}catch{throw new PlainUIError('URL_POLICY');}if(url.origin!==view.location.origin||!['http:','https:'].includes(url.protocol))throw new PlainUIError('URL_POLICY');view.location.assign(url.href);return true;}
   case 'open':case 'close':case 'toast':{if(args.length!==1)throw new PlainUIError('COMMAND_ERROR');const service=env.services[command.name];if(!service)throw new PlainUIError('MODULE_MISSING');await service(string(args[0]!));return true;}
   default:return false;

@@ -9,7 +9,7 @@ import type {StateStore} from '../state/store.js';
 import type {ScopeApi} from '../public-api/types.js';
 import {emitFromHost} from './builtins.js';
 
-export interface CommandServices {refresh?:(name:string)=>Promise<JsonValue>;reset?:()=>void|Promise<void>;navigate?:(url:string)=>void|Promise<void>;open?:(name:string)=>void|Promise<void>;close?:(name:string)=>void|Promise<void>;toast?:(message:string)=>void|Promise<void>}
+export interface CommandServices {refresh?:(name:string)=>Promise<JsonValue>;reset?:(name:string)=>void|Promise<void>;navigate?:(url:string)=>void|Promise<void>;open?:(name:string)=>void|Promise<void>;close?:(name:string)=>void|Promise<void>;toast?:(message:string)=>void|Promise<void>}
 export function createScopeApi(owner:Owner,scope:Scope,store:StateStore,scheduler:Scheduler,host:Element,services:CommandServices):ScopeApi {const live=()=>{if(!owner.active)throw new PlainUIError('OWNER_DISPOSED');};return {
   signal:owner.signal,
   get(path){live();return detachedSnapshot(store.read(path));},
