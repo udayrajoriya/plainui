@@ -126,6 +126,8 @@ Use the C08/C09 state machines and generation rules. No HTTP operation may commi
 
 ## T034 Implement resource activation modes and freshness observability
 
+**Status:** completed 15 October 2026. [Completion evidence](../../evidence/tasks/T034.md).
+
 **Depends on:** T033. **Sources:** RFC §7.1. **Files:** `data/src/resource/{activation,visibility,freshness}.ts`.
 
 1. auto resources start after initial bindings and automatically respond to eligible dependency changes. manual resources never initiate without refresh.
