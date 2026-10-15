@@ -368,6 +368,8 @@ All file paths are repository-relative. All tasks include the common definition 
 
 ## T025 Close foundation conformance and lifecycle gate
 
+**Status:** completed 15 October 2026. [Completion evidence](../../evidence/tasks/T025.md). [M1 milestone](../../evidence/milestones/M1.md).
+
 **Depends on:** T015,T018,T019,T020,T021,T024. **Sources:** RFC §18; Design §§15,16. **Files:** `tests/integration/foundation.spec.ts`, `evidence/milestones/M1.md`.
 
 1. Compose nested local state, store persistence, derived chains, if branches, keyed components-as-future-hosts, bindings, refs, and async commands into one fixture.

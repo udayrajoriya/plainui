@@ -1,0 +1,32 @@
+import {expect,test} from '@playwright/test';
+import {build} from 'esbuild';
+
+async function runtime(){return (await build({entryPoints:['packages/runtime/src/esm.ts'],bundle:true,write:false,format:'iife',globalName:'Runtime',platform:'browser'})).outputFiles[0]!.text;}
+test('derived declarations update before dependent text bindings',async({page})=>{
+  await page.setContent('<base href="https://example.test/"><main ui-app="one" ui-state=\'{"count":2}\'><template ui-derived="double" ui-value="count * 2"></template><span ui-text="double"></span></main>');await page.addScriptTag({content:await runtime()});
+  const result=await page.evaluate(async()=>{const app=(window as any).Runtime.PlainUI.mount(document.querySelector('main'));await app.ready;const initial=document.querySelector('span')!.textContent;app.set('count',3);await new Promise(resolve=>setTimeout(resolve,0));return {initial,updated:document.querySelector('span')!.textContent};});
+  expect(result).toEqual({initial:'4',updated:'6'});
+});
+test('persisted state restores before derived and bindings and keeps session reset state',async({page})=>{
+  await page.route('https://example.test/',route=>route.fulfill({status:200,contentType:'text/html',body:'<main ui-app="one" ui-state=\'{"count":2}\' ui-persist="local" ui-persist-key="counter"><template ui-derived="double" ui-value="count * 2"></template><span ui-text="double"></span></main>'}));await page.goto('https://example.test/');await page.addScriptTag({content:await runtime()});
+  const result=await page.evaluate(async()=>{const api=(window as any).Runtime.PlainUI;const root=document.querySelector('main')!;const first=api.mount(root);await first.ready;first.set('count',5);await new Promise(resolve=>setTimeout(resolve,0));const stored=localStorage.getItem('plainui:one:v1:counter');first.resetSession();const afterReset=first.get('count');first.unmount();const second=api.mount(root);await second.ready;return {stored:JSON.parse(stored!).value.count,afterReset,restored:second.get('count'),text:root.querySelector('span')!.textContent};});
+  expect(result).toEqual({stored:5,afterReset:5,restored:5,text:'10'});
+});
+test('one hundred mount, reorder, branch switch and unmount cycles release ownership',async({page})=>{
+  await page.setContent('<base href="https://example.test/"><main ui-app="one" ui-state=\'{"count":0,"show":true,"items":[{"id":1},{"id":2}]}\'><template ui-derived="double" ui-value="count * 2"></template><span ui-text="double"></span><template ui-if="show"><button ui-ref="action" ui-on:click="set(count,count+1)"></button></template><template ui-for="item in items" ui-key="item.id"><p ui-text="item.id"></p></template></main>');await page.addScriptTag({content:await runtime()});
+  const result=await page.evaluate(async()=>{const api=(window as any).Runtime.PlainUI;const root=document.querySelector('main')!;let maxAfter=0;for(let i=0;i<100;i++){const app=api.create({debug:true}).mount(root);await app.ready;app.set('count',i);app.set('items',[{id:2},{id:1}]);app.set('show',false);await new Promise(resolve=>setTimeout(resolve,0));app.unmount();const counts=app.inspect();maxAfter=Math.max(maxAfter,...Object.values(counts));}return {maxAfter};});
+  expect(result).toEqual({maxAfter:0});
+});
+test('switching a branch cancels an in-flight command before its later write',async({page})=>{
+  await page.setContent('<base href="https://example.test/"><main ui-app="one" ui-state=\'{"count":0,"show":true}\'><template ui-if="show"><button ui-on:click="hold();set(count,99)"></button></template></main>');await page.addScriptTag({content:await runtime()});
+  const result=await page.evaluate(async()=>{const app=(window as any).Runtime.PlainUI.create();let resume!:()=>void;const gate=new Promise<void>(resolve=>resume=resolve);app.registerCommand('hold',()=>gate);app.mount(document.querySelector('main'));await app.ready;(document.querySelector('button') as HTMLElement).click();app.set('show',false);await new Promise(resolve=>setTimeout(resolve,0));resume();await new Promise(resolve=>setTimeout(resolve,0));return {count:app.get('count'),buttons:document.querySelectorAll('button').length};});
+  expect(result).toEqual({count:0,buttons:0});
+});
+test('classic and ESM foundation directives reach the same outcome',async({page})=>{
+  const classic=(await build({entryPoints:['packages/runtime/src/classic.ts'],bundle:true,write:false,format:'iife',platform:'browser'})).outputFiles[0]!.text;
+  await page.setContent('<base href="https://example.test/"><main ui-app="one" ui-state=\'{"count":1,"show":true,"items":[{"id":1},{"id":2}]}\'><template ui-derived="double" ui-value="count * 2"></template><span ui-text="double"></span><template ui-if="show"><button ui-ref="action" ui-on:click="set(count,count+1)"></button></template><template ui-for="item in items" ui-key="item.id"><p ui-text="item.id"></p></template></main>');await page.addScriptTag({content:classic});
+  const first=await page.evaluate(async()=>{await new Promise(resolve=>setTimeout(resolve,0));const root=document.querySelector('main')!;const app=(document as any)[Symbol.for('plainui.document.mounts.v1')].roots.get(root);await app.ready;(root.querySelector('button') as HTMLElement).click();await new Promise(resolve=>setTimeout(resolve,0));app.set('items',[{id:2},{id:1}]);await new Promise(resolve=>setTimeout(resolve,0));const result={count:app.get('count'),text:root.querySelector('span')!.textContent,rows:[...root.querySelectorAll('p')].map(item=>item.textContent)};app.unmount();return result;});
+  await page.addScriptTag({content:await runtime()});
+  const second=await page.evaluate(async()=>{const root=document.querySelector('main')!;const app=(window as any).Runtime.PlainUI.mount(root);await app.ready;(root.querySelector('button') as HTMLElement).click();await new Promise(resolve=>setTimeout(resolve,0));app.set('items',[{id:2},{id:1}]);await new Promise(resolve=>setTimeout(resolve,0));const result={count:app.get('count'),text:root.querySelector('span')!.textContent,rows:[...root.querySelectorAll('p')].map(item=>item.textContent)};app.unmount();return result;});
+  expect(second).toEqual(first);expect(second).toEqual({count:2,text:'4',rows:['2','1']});
+});

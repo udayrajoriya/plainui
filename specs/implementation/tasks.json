@@ -616,7 +616,7 @@
       ],
       "stepCount": 6,
       "acceptance": "M1 evidence names exact build and test results; every foundation directive has valid/invalid/disposal coverage; no unresolved foundation blocker remains.",
-      "status": "pending"
+        "status": "complete"
     },
     {
       "id": "T026",

@@ -9,6 +9,8 @@ import {publishCell} from './cell.js';
 export interface StateObserver {readonly dependencies:Set<Dependency>;readonly invalidate:()=>void;readonly owner?:{readonly active:boolean}}
 export class StateStore {
   private static readonly observers=new Set<StateObserver>();private tracking:Set<Dependency>|null=null;private depth=0;private pending=new Set<StateObserver>();
+  static get activeObserverCount():number {return [...StateStore.observers].filter(observer=>observer.owner?.active??true).length;}
+  static notifyPublished(cell:ScopeCell,path:string):void {for(const observer of StateStore.observers)if((observer.owner?.active??true)&&[...observer.dependencies].some(dep=>affects(dep,cell,path)))observer.invalidate();}
   constructor(readonly scope:Scope){}
   private resolve(path:ParsedPath):ScopeCell {const cell=lookupBinding(this.scope,path.root);if(!cell)throw new PlainUIError('PATH_INVALID');return cell;}
   read(pathText:string,kind:DependencyKind='value'):JsonValue {const path=parsePath(pathText,{writable:false});const cell=this.resolve(path);if(this.tracking)this.tracking.add({cell,path:pathKey(path),kind});return readPath(new Map([[path.root,cell]]),path);}

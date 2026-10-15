@@ -17,4 +17,5 @@ export class Scheduler {
   }
   afterFlush(owner:{readonly active:boolean},callback:()=>void):()=>void {let active=true;const job:Job={owner,run:()=>{if(active){active=false;callback();}}};this.enqueue('afterFlush',job);return ()=>{active=false;this.queues.afterFlush.delete(job);this.next.afterFlush.delete(job);};}
   dispose():void {this.disposed=true;this.queues=emptyQueues();this.next=emptyQueues();}
+  get pendingCount():number {return Object.values(this.queues).reduce((count,queue)=>count+queue.size,0)+Object.values(this.next).reduce((count,queue)=>count+queue.size,0);}
 }
