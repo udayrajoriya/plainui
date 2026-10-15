@@ -541,7 +541,9 @@
       ],
       "stepCount": 6,
       "acceptance": "`command.quoted-semicolon`, `command.nested-expression`, `event.self-order`, `event.once`, `event.no-dom-leak`, `event.lifecycle-modifier`, `event.request-conflict` pass.",
-      "status": "pending"
+      "status": "completed",
+        "completedOn": "2026-10-15",
+        "evidence": "evidence/tasks/T022.md"
     },
     {
       "id": "T023",

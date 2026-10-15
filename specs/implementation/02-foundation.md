@@ -323,6 +323,8 @@ All file paths are repository-relative. All tasks include the common definition 
 
 ## T022 Implement command parsing and safe event snapshots
 
+**Status:** completed 15 October 2026. [Completion evidence](../../evidence/tasks/T022.md).
+
 **Depends on:** T009,T010,T011,T016. **Sources:** RFC §8.1. **Files:** `commands/{parse,snapshot,handler}.ts`.
 
 1. Parse semicolon-separated exact-name calls with optional final semicolon; reject empty interior commands, arbitrary statements, and nested effect calls in expression arguments.
