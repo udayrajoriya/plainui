@@ -968,7 +968,8 @@
       ],
       "stepCount": 6,
       "acceptance": "`model.checkbox-boolean`, `model.radio-string`, `model.radio-group-error`, `model.multiselect-order`, `model.no-selection`, `model.dynamic-options`, `model.cleanup-group` pass.",
-      "status": "pending"
+      "status": "completed",
+      "evidence": "../../evidence/tasks/T040.md"
     },
     {
       "id": "T041",

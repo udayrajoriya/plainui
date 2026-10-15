@@ -214,6 +214,8 @@ Use the C08/C09 state machines and generation rules. No HTTP operation may commi
 
 ## T040 Implement checkbox, radio, and select models
 
+**Status:** completed 15 October 2026. [Completion evidence](../../evidence/tasks/T040.md).
+
 **Depends on:** T039. **Sources:** RFC §9. **Files:** `forms/src/model/{checkbox,radio,select}.ts`.
 
 1. Checkbox model requires boolean and uses checked on change. Reject array-checkbox-model conventions; they are not in this RFC.
