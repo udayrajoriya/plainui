@@ -896,7 +896,9 @@
       ],
       "stepCount": 6,
       "acceptance": "`action.drop-double`, `action.replace-reversed`, `action.debounce-snapshot`, `action.debounce-dispose`, `action.disabled-original`, `action.old-completion-token`, `action.unknown-server-outcome` pass.",
-      "status": "pending"
+      "status": "completed",
+      "completedDate": "2026-10-15",
+      "evidence": "../../evidence/tasks/T037.md"
     },
     {
       "id": "T038",

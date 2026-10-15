@@ -1,0 +1,20 @@
+import {detachedSnapshot,type JsonValue} from '../../../core/src/index.js';
+import type {NormalizedRequestError} from '../adapter/error.js';
+import {IDLE_ACTION,type ActionRecord} from './record.js';
+
+export type ActionOutcome={readonly kind:'success';readonly value:JsonValue}|{readonly kind:'error';readonly error:NormalizedRequestError};
+export interface ActionControllerOptions<S extends JsonValue> {readonly owner:{readonly active:boolean};readonly debounceMs:number;readonly concurrency:'drop'|'replace';readonly start:(snapshot:Readonly<S>,signal:AbortSignal,generation:number)=>Promise<JsonValue>;readonly publish:(record:ActionRecord)=>void;readonly pending:(generation:number)=>()=>void;readonly accepted?:(outcome:ActionOutcome,record:ActionRecord)=>void;readonly canceled?:()=>void}
+interface Operation {readonly generation:number;readonly controller:AbortController;readonly release:()=>void}
+/** Scheduling and operation ownership are independent from HTTP response adapters. */
+export class ActionController<S extends JsonValue> {
+  record:ActionRecord=IDLE_ACTION;generation=0;private timer:ReturnType<typeof setTimeout>|null=null;private active:Operation|null=null;private disposed=false;private latest:S|undefined;private settled:ActionRecord=IDLE_ACTION;
+  constructor(private readonly options:ActionControllerOptions<S>){options.publish(this.record);}
+  trigger(snapshot:S):void {if(this.disposed||!this.options.owner.active)return;if(this.options.concurrency==='drop'&&this.active)return;this.latest=detachedSnapshot(snapshot) as S;if(this.timer!==null)clearTimeout(this.timer);if(this.options.debounceMs>0)this.timer=setTimeout(()=>{this.timer=null;this.launch();},this.options.debounceMs);else this.launch();}
+  private launch():void {if(this.disposed||!this.options.owner.active||this.latest===undefined)return;if(this.options.concurrency==='drop'&&this.active)return;if(this.options.concurrency==='replace'&&this.active)this.cancelActive(true);const snapshot=this.latest;this.latest=undefined;const generation=++this.generation,controller=new AbortController(),release=this.options.pending(generation);this.active={generation,controller,release};this.record=Object.freeze({...this.settled,pending:true,status:'pending',error:null});this.options.publish(this.record);void Promise.resolve().then(()=>{if(controller.signal.aborted)throw new DOMException('Operation canceled.','AbortError');return this.options.start(snapshot,controller.signal,generation);}).then(value=>this.accept(generation,{kind:'success',value}),error=>{if(!controller.signal.aborted)this.accept(generation,{kind:'error',error:error as NormalizedRequestError});});}
+  private accept(generation:number,outcome:ActionOutcome):void {const operation=this.active;if(!operation||operation.generation!==generation||this.disposed||!this.options.owner.active)return;this.active=null;operation.release();this.settled=outcome.kind==='success'?Object.freeze({pending:false,status:'success',data:detachedSnapshot(outcome.value),error:null}):Object.freeze({pending:false,status:'error',data:this.settled.data,error:outcome.error});this.record=this.settled;this.options.publish(this.record);this.options.accepted?.(outcome,this.record);}
+  private cancelActive(notify:boolean):void {const operation=this.active;if(!operation)return;this.active=null;operation.controller.abort();operation.release();if(notify&&this.options.owner.active)this.options.canceled?.();}
+  cancel():void {if(this.timer!==null)clearTimeout(this.timer);this.timer=null;this.latest=undefined;this.cancelActive(true);if(!this.disposed){this.record=this.settled;this.options.publish(this.record);}}
+  resetSession():void {this.cancel();this.generation++;this.settled=IDLE_ACTION;this.record=IDLE_ACTION;this.options.publish(this.record);}
+  dispose():void {if(this.disposed)return;this.disposed=true;if(this.timer!==null)clearTimeout(this.timer);this.timer=null;this.latest=undefined;this.cancelActive(false);}
+  get pendingTimer():boolean{return this.timer!==null;}
+}

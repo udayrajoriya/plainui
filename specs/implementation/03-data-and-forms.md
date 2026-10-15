@@ -171,6 +171,8 @@ Use the C08/C09 state machines and generation rules. No HTTP operation may commi
 
 ## T037 Implement action debounce and concurrency
 
+**Status:** completed 15 October 2026. [Completion evidence](../../evidence/tasks/T037.md).
+
 **Depends on:** T030,T035,T036. **Sources:** RFC §8; C09. **Files:** `data/src/action/controller.ts`, `forms/src/pending.ts`.
 
 1. Accept eligible triggers into the C09 preparation/debounce pipeline; cancel/restart trailing timers with newest captured input.
