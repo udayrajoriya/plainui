@@ -1,9 +1,14 @@
 import type {JsonValue} from '../json/normalize.js';
 import type {Diagnostic} from '../diagnostics/emit.js';
-export type ReadonlyJson=Readonly<JsonValue>;
+export type ReadonlyJson=null|boolean|string|number|readonly ReadonlyJson[]|{readonly [key:string]:ReadonlyJson};
 export type ScopeApi={readonly signal:AbortSignal;get(path:string):ReadonlyJson;set(path:string,value:unknown):void;batch<T>(fn:()=>T):T;refresh(name:string):Promise<JsonValue>;readonly refs:{get(name:string):Element|undefined};emit(name:string,detail:unknown):void;afterFlush(fn:()=>void):()=>void};
-export type SafeEventSnapshot={type:string;key:string|null;button:number|null;value:string|null;checked:boolean|null;detail:Readonly<JsonValue>};
+export type SafeEventSnapshot={readonly type:string;readonly key:string|null;readonly button:number|null;readonly value:string|null;readonly checked:boolean|null;readonly detail:ReadonlyJson};
 export type CommandContext={readonly scope:ScopeApi;readonly signal:AbortSignal;readonly host:Element;readonly event:SafeEventSnapshot|null;readonly canceled:boolean};
 export type BehaviorFactory=(element:Element,options:Readonly<JsonValue>,scope:ScopeApi,signal:AbortSignal)=>void|(()=>void);
 export type AdapterDefinition={readonly version:string;readonly prepare?:(draft:unknown,context:unknown)=>unknown|Promise<unknown>;readonly success?:(body:JsonValue,context:unknown)=>unknown|Promise<unknown>;readonly error?:(error:unknown,context:unknown)=>unknown|Promise<unknown>};
 export type DiagnosticListener=(diagnostic:Diagnostic)=>void;
+export type NormalizedRequestError={readonly kind:'network'|'http'|'parse'|'timeout'|'abort'|'adapter'|'policy';readonly message:string;readonly status:number|null;readonly url:string|null;readonly retryable:boolean};
+export type ResourceRecord={readonly status:'idle'|'pending'|'success'|'error';readonly data:ReadonlyJson;readonly error:NormalizedRequestError|null;readonly stale:boolean};
+export type ActionRecord={readonly status:'idle'|'pending'|'success'|'error';readonly result:ReadonlyJson;readonly error:NormalizedRequestError|null};
+export type RouteRecord={readonly path:string;readonly params:Readonly<Record<string,string>>;readonly query:Readonly<Record<string,string>>};
+export type ModuleInstaller=(app:{readonly status:'created'|'compiling'|'mounted'|'unmounting'|'unmounted'|'failed'})=>void;

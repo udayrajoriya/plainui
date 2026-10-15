@@ -4,6 +4,8 @@ import { FORMS_PACKAGE_STUB } from '../../forms/src/index.js';
 import { COMPONENTS_PACKAGE_STUB } from '../../components/src/index.js';
 import type { ActionService, DomService, RequestService, RuntimeServices } from '../../core/src/integration.js';
 import type { AppScaffold, OfficialModuleBridge } from '../../core/src/module-bridge.js';
+export type {PlainUIApp} from '../../core/src/public-api/app.js';
+export type {ScopeApi,ReadonlyJson,SafeEventSnapshot,CommandContext,BehaviorFactory,AdapterDefinition,NormalizedRequestError,ResourceRecord,ActionRecord,RouteRecord,ModuleInstaller} from '../../core/src/public-api/types.js';
 
 const unavailableRequest: RequestService = Object.freeze({
   send(): Promise<Response> {

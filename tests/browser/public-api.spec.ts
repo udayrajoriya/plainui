@@ -1,0 +1,9 @@
+import {expect,test} from '@playwright/test';
+import {build} from 'esbuild';
+
+test('public registration, readonly snapshots, root scope and idempotent subscriptions',async({page})=>{
+  const code=(await build({entryPoints:['packages/runtime/src/esm.ts'],bundle:true,write:false,format:'iife',globalName:'Runtime',platform:'browser'})).outputFiles[0]!.text;
+  await page.setContent('<base href="https://example.test/"><main ui-app="one" ui-state=\'{"count":1,"items":[1]}\'><button id="run" ui-on:click="inc()"></button><section ui-state=\'{"count":10}\'><button id="local" ui-on:click="inc()"></button></section></main>');await page.addScriptTag({content:code});
+  const result=await page.evaluate(async()=>{const app=(window as any).Runtime.PlainUI.create();const seen:string[]=[];app.registerCommand('inc',({scope}:any)=>scope.set('count',(scope.get('count') as number)+1));const release=app.onDiagnostic((item:any)=>seen.push(item.code));app.mount(document.querySelector('main'));await app.ready;const snapshot=app.get('items') as number[];let mutation=false;try{snapshot.push(2);}catch{mutation=true;}(document.querySelector('#local') as HTMLElement).click();await new Promise(resolve=>setTimeout(resolve,0));const afterLocal=app.get('count');(document.querySelector('#run') as HTMLElement).click();await new Promise(resolve=>setTimeout(resolve,0));const afterRoot=app.get('count');let late='';try{app.registerCommand('later',()=>{});}catch(error){late=(error as any).code;}release();release();app.unmount();let dead='';try{app.set('count',99);}catch(error){dead=(error as any).code;}return {mutation,original:snapshot.length,afterLocal,afterRoot,late,dead,seen};});
+  expect(result).toEqual({mutation:true,original:1,afterLocal:1,afterRoot:2,late:'REGISTRY_INVALID',dead:'OWNER_DISPOSED',seen:[]});
+});

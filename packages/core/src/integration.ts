@@ -15,4 +15,5 @@ export interface RuntimeServices {
   readonly request: RequestService;
   readonly dom: DomService;
   readonly actions: ActionService;
+  readonly navigation?: {beforeNavigate(guard:(url:string)=>boolean|Promise<boolean>):()=>void};
 }

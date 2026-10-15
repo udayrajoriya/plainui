@@ -353,6 +353,8 @@ All file paths are repository-relative. All tasks include the common definition 
 
 ## T024 Complete root and lexical public APIs
 
+**Status:** completed 15 October 2026. [Completion evidence](../../evidence/tasks/T024.md).
+
 **Depends on:** T011,T014,T017,T023. **Sources:** RFC §14; C03,C04. **Files:** `core/src/public-api/{app,scope,types}.ts`, `tests/types/`.
 
 1. Publish exact method signatures and App.ready/onDiagnostic/inspect clarifications. Restrict mutable operations by lifecycle state.

@@ -590,7 +590,7 @@
       ],
       "stepCount": 6,
       "acceptance": "`api.types`, `api.js-usage`, `api.dead-scope`, `api.app-vs-local`, `api.readonly-snapshot`, `api.unregister-twice` pass.",
-      "status": "pending"
+        "status": "complete"
     },
     {
       "id": "T025",

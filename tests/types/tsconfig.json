@@ -1,0 +1,5 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {"noEmit": true},
+  "include": ["public-api.ts", "../../packages/**/*.ts"]
+}
