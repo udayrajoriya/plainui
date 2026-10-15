@@ -1,9 +1,11 @@
 import {PlainUIError} from '../diagnostics/codes.js';
+import {TransactionJournal} from './transaction.js';
 export type OwnerRange={start:Comment;end:Comment;owner:Owner};
 export type OwnerKind='root'|'element'|'state'|'conditional'|'loop'|'loop-item'|'component'|'slot'|'route'|'fragment'|'behavior';
-export interface Owner {readonly id:number;readonly kind:OwnerKind;readonly parent:Owner|null;active:boolean;readonly children:Set<Owner>;readonly controller:AbortController;readonly signal:AbortSignal;readonly disposers:Array<()=>void>;range?:OwnerRange;readonly nodes:Set<Node>;readonly lifetimeDependents:Set<Owner>}
+export interface Owner {readonly id:number;readonly kind:OwnerKind;readonly parent:Owner|null;active:boolean;readonly children:Set<Owner>;readonly controller:AbortController;readonly signal:AbortSignal;readonly disposers:Array<()=>void>;range?:OwnerRange;host?:Node;readonly nodes:Set<Node>;readonly lifetimeDependents:Set<Owner>}
 export class OwnerTree {
   private nextId=1;private all=new Set<Owner>();
+  readonly journal=new TransactionJournal();
   readonly root:Owner;
   constructor(readonly element:Element,private readonly onCleanupError?:(error:unknown)=>void){this.root=this.create(null,'root');this.indexNode(this.root,element);}
   create(parent:Owner|null,kind:OwnerKind):Owner {
@@ -11,7 +13,8 @@ export class OwnerTree {
     const controller=new AbortController();const owner:Owner={id:this.nextId++,kind,parent,active:true,children:new Set(),controller,signal:controller.signal,disposers:[],nodes:new Set(),lifetimeDependents:new Set()};
     parent?.children.add(owner);this.all.add(owner);return owner;
   }
-  indexNode(owner:Owner,node:Node):void {this.assertActive(owner);this.indexSubtree(owner,node);}
+  indexNode(owner:Owner,node:Node):void {this.assertActive(owner);if(!owner.host&&node instanceof Element)owner.host=node;this.indexSubtree(owner,node);}
+  unindexNode(owner:Owner,node:Node):void {if(this.nodeOwners.get(node)===owner){this.nodeOwners.delete(node);owner.nodes.delete(node);}for(const child of node.childNodes)this.unindexNode(owner,child);}
   private indexSubtree(owner:Owner,node:Node):void {this.nodeOwners.set(node,owner);owner.nodes.add(node);for(const child of node.childNodes)this.indexSubtree(owner,child);}
   readonly nodeOwners=new WeakMap<Node,Owner>();
   ownerOf(node:Node):Owner|undefined{return this.nodeOwners.get(node);}
@@ -38,7 +41,7 @@ export class OwnerTree {
       for(const dependent of [...item.lifetimeDependents])if(seen.has(dependent)&&dependent.parent!==item)cleanup(dependent);
       for(let i=item.disposers.length-1;i>=0;i--)try{item.disposers[i]!();}catch(error){this.onCleanupError?.(error);}
       item.disposers.length=0;
-      if(item.range){try{const {start,end}=item.range;if(!start.parentNode||start.parentNode!==end.parentNode)throw new PlainUIError('OWNER_RANGE');let node:Node|null=start;const nodes:Node[]=[];while(node){nodes.push(node);if(node===end)break;node=node.nextSibling;}if(node!==end)throw new PlainUIError('OWNER_RANGE');for(const owned of nodes)owned.parentNode?.removeChild(owned);}catch(error){this.onCleanupError?.(error);item.range.start.remove();item.range.end.remove();}}
+      if(item.range){try{const {start,end}=item.range;if(!start.parentNode||start.parentNode!==end.parentNode)throw new PlainUIError('OWNER_RANGE');let node:Node|null=start;const nodes:Node[]=[];while(node){nodes.push(node);if(node===end)break;node=node.nextSibling;}if(node!==end)throw new PlainUIError('OWNER_RANGE');for(const owned of nodes){this.journal.recordRemoved(owned);owned.parentNode?.removeChild(owned);}}catch(error){this.onCleanupError?.(error);item.range.start.remove();item.range.end.remove();}}
       for(const node of item.nodes)this.nodeOwners.delete(node);item.nodes.clear();item.parent?.children.delete(item);this.all.delete(item);item.lifetimeDependents.clear();
     };cleanup(owner);
   }

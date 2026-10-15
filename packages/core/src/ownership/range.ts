@@ -7,7 +7,7 @@ function assertDestination(tree:OwnerTree,parent:Node):void {if(!(parent===tree.
 export function insertRange(tree:OwnerTree,range:DomRange,parent:Node,before:Node|null,content:DocumentFragment):void {
   tree.assertActive(range.owner);assertDestination(tree,parent);if(range.start.parentNode||range.end.parentNode)throw new PlainUIError('OWNER_RANGE');
   if(before&&before.parentNode!==parent)throw new PlainUIError('OWNER_RANGE');
-  const fragment=parent.ownerDocument!.createDocumentFragment();fragment.append(range.start,content,range.end);tree.indexNode(range.owner,fragment);parent.insertBefore(fragment,before);
+  const fragment=parent.ownerDocument!.createDocumentFragment();fragment.append(range.start,content,range.end);tree.indexNode(range.owner,fragment);for(const node of fragment.childNodes)tree.journal.recordAdded(node);parent.insertBefore(fragment,before);
 }
 export function moveRange(tree:OwnerTree,range:DomRange,parent:Node,before:Node|null):void {
   tree.assertActive(range.owner);assertDestination(tree,parent);const nodes=assertRange(range);
@@ -15,6 +15,6 @@ export function moveRange(tree:OwnerTree,range:DomRange,parent:Node,before:Node|
   if(before&&nodes.includes(before))return;
   const focused=parent.ownerDocument!.activeElement;
   const restoreFocus=focused&&nodes.some(node=>node===focused||node.contains(focused));
-  const fragment=parent.ownerDocument!.createDocumentFragment();for(const node of nodes)fragment.append(node);parent.insertBefore(fragment,before);
+  const fragment=parent.ownerDocument!.createDocumentFragment();for(const node of nodes){tree.journal.recordRemoved(node);tree.journal.recordAdded(node);fragment.append(node);}parent.insertBefore(fragment,before);
   if(restoreFocus&&focused instanceof HTMLElement&&focused.isConnected)focused.focus({preventScroll:true});
 }

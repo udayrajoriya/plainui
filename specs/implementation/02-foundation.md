@@ -308,6 +308,8 @@ All file paths are repository-relative. All tasks include the common definition 
 
 ## T021 Implement mutation observation and external DOM changes
 
+**Status:** completed 15 October 2026. [Completion evidence](../../evidence/tasks/T021.md).
+
 **Depends on:** T012,T016,T017,T019,T020. **Sources:** Design §4; C06. **Files:** `compiler/observe.ts`, `ownership/transaction.ts`.
 
 1. Observe each root for childList/subtree and directive-attribute changes; filter ignore descendants without compiling them.

@@ -22,6 +22,7 @@ import {collectConditionalChains,ConditionalChain} from './structure/conditional
 import {parseFor} from './structure/for-parser.js';
 import {KeyedList} from './structure/keyed-list.js';
 import type {Owner} from './ownership/owner.js';
+import {RootObserver} from './compiler/observe.js';
 import {ExtensionRegistry} from './registry.js';
 import type {RuntimeServices} from './integration.js';
 
@@ -31,9 +32,9 @@ type MountRegistry={roots:Map<Element,App>;names:Map<string,App>;serial:number};
 function registry(document:Document):MountRegistry {const host=document as Document&{[mountSymbol]?:MountRegistry};return host[mountSymbol]??(host[mountSymbol]={roots:new Map(),names:new Map(),serial:0});}
 export class App {
   status:AppStatus='created';readonly ready:Promise<void>;private resolveReady!:()=>void;private rejectReady!:(reason:unknown)=>void;
-  private root:Element|null=null;private name='';private registry:MountRegistry|null=null;private tree:OwnerTree|null=null;private scheduler:Scheduler|null=null;private scope:Scope|null=null;private state:StateStore|null=null;private bus:DiagnosticBus|null=null;private listeners=new Set<DiagnosticListener>();
+  private root:Element|null=null;private name='';private registry:MountRegistry|null=null;private tree:OwnerTree|null=null;private scheduler:Scheduler|null=null;private scope:Scope|null=null;private state:StateStore|null=null;private bus:DiagnosticBus|null=null;private observer:RootObserver|null=null;private listeners=new Set<DiagnosticListener>();
   readonly imports=new Map<string,DocumentFragment>();
-  private readonly scopeFactory=new ScopeFactory();private readonly stores=new WeakMap<Scope,StateStore>();private readonly conditionalTemplates=new WeakSet<HTMLTemplateElement>();private readonly listTemplates=new WeakSet<HTMLTemplateElement>();private readonly itemScopes=new WeakMap<Owner,Scope>();readonly planScopes=new WeakMap<Element,Scope>();readonly planOwners=new WeakMap<Element,Owner>();plans:readonly BindingPlan[]=[];
+  private readonly scopeFactory=new ScopeFactory();private readonly stores=new WeakMap<Scope,StateStore>();private readonly conditionalTemplates=new WeakSet<HTMLTemplateElement>();private readonly listTemplates=new WeakSet<HTMLTemplateElement>();private readonly itemScopes=new WeakMap<Owner,Scope>();private readonly lexicalParents=new WeakMap<Owner,Scope>();readonly planScopes=new WeakMap<Element,Scope>();readonly planOwners=new WeakMap<Element,Owner>();plans:readonly BindingPlan[]=[];
   readonly extensions=new ExtensionRegistry();options:ResolvedOptions|null=null;
   constructor(private readonly initialOptions:unknown={},private readonly moduleNames:()=>readonly string[]=()=>[],readonly services?:RuntimeServices){this.ready=new Promise<void>((resolve,reject)=>{this.resolveReady=resolve;this.rejectReady=reject;});}
   get installedModules():readonly string[]{return Object.freeze([...this.moduleNames()]);}
@@ -48,7 +49,7 @@ export class App {
     try {this.options=resolveConfiguration(root,this.initialOptions);this.bus=new DiagnosticBus(name,this.options.debug);for(const listener of this.listeners)this.bus.subscribe(listener);
       this.tree=new OwnerTree(root,error=>this.diagnose(error));this.scheduler=new Scheduler(error=>this.diagnose(error));this.scope=this.scopeFactory.create('app',this.tree.root);this.state=new StateStore(this.scope);this.stores.set(this.scope,this.state);
       this.extensions.freeze();const compiled=compileTree(root);if(compiled.fatal)throw new PlainUIError('ROOT_INVALID');this.reportIssues(compiled);
-      this.plans=compiled.plans;this.compileDeclarations(compiled);this.setupConditionals([root]);this.setupLists([root]);this.bindValues(compiled.plans);const imports=this.loadImports(compiled);this.scheduler.afterFlush(this.tree.root,()=>{void imports.then(()=>{if(this.status!=='compiling')return;this.status='mounted';this.resolveReady();});});return this;
+      this.plans=compiled.plans;this.compileDeclarations(compiled);this.setupConditionals([root]);this.setupLists([root]);this.bindValues(compiled.plans);this.observe();const imports=this.loadImports(compiled);this.scheduler.afterFlush(this.tree.root,()=>{void imports.then(()=>{if(this.status!=='compiling')return;this.status='mounted';this.resolveReady();});});return this;
     }catch(error){this.status='failed';this.release();this.rejectReady(error);throw error;}
   }
   private reportIssues(result:CompileResult):void {for(const issue of result.issues){const ownerId=this.tree?.ownerOf(issue.element)?.id;this.bus?.emit(issue.code,{directive:issue.name,...(ownerId===undefined?{}:{ownerId})});}}
@@ -56,7 +57,7 @@ export class App {
       const inCurrent=ancestor!==null&&included.has(ancestor);const parentScope=baseScope&&!inCurrent?baseScope:ancestor?this.planScopes.get(ancestor)!:this.scope!;const parentOwner=baseOwner&&!inCurrent?baseOwner:ancestor?this.planOwners.get(ancestor)!:this.tree!.root;const owner=element===this.root?this.tree!.root:this.tree!.create(parentOwner,'element');
       if(element!==this.root)this.tree!.indexNode(owner,element);
       const hasState=plan.phase.declarations.some(item=>item.name==='ui-state');const scope=element===this.root?this.scope!:hasState?this.scopeFactory.create('local',owner,parentScope):parentScope;
-      this.planOwners.set(element,owner);this.planScopes.set(element,scope);
+      this.planOwners.set(element,owner);this.planScopes.set(element,scope);this.lexicalParents.set(owner,parentScope);
       for(const directive of plan.phase.declarations){if(directive.name==='ui-state'||directive.name==='ui-store'){const target=directive.name==='ui-store'?this.scope!:scope;let value:Record<string,unknown>;try{value=JSON.parse(directive.value) as Record<string,unknown>;}catch{this.bus?.emit('JSON_INVALID',{directive:directive.name});continue;}
         if(directive.name==='ui-store'){target.bindings.set('store',{value:normalizeJson(value),version:0,writable:true,source:'store'});continue;}
         for(const [name,item] of Object.entries(value))try{declareBinding(target,name,'state',item as never);}catch(error){this.diagnose(error);}
@@ -64,7 +65,7 @@ export class App {
     }}
   private bindValues(plans:readonly BindingPlan[]):void {for(const plan of plans){const owner=this.planOwners.get(plan.element);const scope=this.planScopes.get(plan.element);if(!owner||!scope)continue;const element=plan.element;const store=this.stores.get(scope)??new StateStore(scope);this.stores.set(scope,store);
       const directives=plan.phase.values.filter(item=>item.name==='ui-text'||item.name==='ui-src'||item.name==='ui-href'||item.name==='ui-class'||item.name==='ui-show'||item.name.startsWith('ui-bind-'));
-      const clearCloak=()=>{element.removeAttribute('ui-cloak');element.removeAttribute('data-ui-cloak');};
+      const clearCloak=()=>{if(element.hasAttribute('ui-cloak')){this.tree!.journal.recordAttribute(element,'ui-cloak');element.removeAttribute('ui-cloak');}if(element.hasAttribute('data-ui-cloak')){this.tree!.journal.recordAttribute(element,'data-ui-cloak');element.removeAttribute('data-ui-cloak');}};
       if(!directives.length){this.scheduler!.enqueue('bindings',{owner,run:clearCloak});continue;}
       let pending=directives.length;const errors=new Set<string>();
       for(const directive of directives){let ast;try{ast=parseExpression(directive.value);}catch{this.bus?.emit('EXPRESSION_PARSE',{directive:directive.name,ownerId:owner.id});errors.add(directive.name);pending--;continue;}
@@ -103,9 +104,17 @@ export class App {
         const response=await fetch(url.href,{signal:controller.signal});if(!response.ok)throw new PlainUIError('COMPONENT_IMPORT');const markup=await response.text();if(!signal.aborted)this.imports.set(url.href,parseDeveloperImport(markup,plan.element.ownerDocument));
       }catch{if(!signal.aborted)this.bus?.emit('COMPONENT_IMPORT',{directive:'ui-import'});}finally{clearTimeout(timer);signal.removeEventListener('abort',abort);}
     }));await Promise.all(tasks);}
+  private nearest(element:Element|null):{owner:Owner;scope:Scope} {while(element){const owner=this.planOwners.get(element),scope=this.planScopes.get(element);if(owner?.active&&scope)return {owner,scope};element=element.parentElement;}return {owner:this.tree!.root,scope:this.scope!};}
+  private activateExternal(node:Node):void {if(!(node instanceof Element))return;const base=this.nearest(node.parentElement);const compiled=compileTree(node);this.reportIssues(compiled);this.compileDeclarations(compiled,base.owner,base.scope);this.setupConditionals([node]);this.setupLists([node]);this.bindValues(compiled.plans);}
+  private observe():void {this.observer=new RootObserver(this.root!,this.tree!,{
+    added:node=>this.activateExternal(node),
+    moved:(node,owner)=>{if(!(node instanceof Element))return;const expected=this.lexicalParents.get(owner);if(!expected)return;const destination=this.nearest(node.parentElement);if(destination.scope===expected)return;this.tree!.dispose(owner);this.activateExternal(node);},
+    removed:(node,owner)=>{if(node===owner.host||node===owner.range?.start||node===owner.range?.end){if(owner===this.tree!.root)this.tree!.unindexNode(owner,node);else this.tree!.dispose(owner);}else this.tree!.unindexNode(owner,node);},
+    directiveChanged:(element,name)=>{const ownerId=this.tree!.ownerOf(element)?.id;this.bus?.emit('DECLARATION_CHANGED',{directive:name,...(ownerId===undefined?{}:{ownerId})});},
+  });}
   private diagnose(error:unknown):void {this.bus?.emit(error instanceof PlainUIError?error.code:'COMMAND_ERROR');}
   unmount():void {if(this.status==='unmounted'||this.status==='unmounting')return;if(this.status==='compiling')this.rejectReady(new PlainUIError('OWNER_DISPOSED'));this.status='unmounting';this.release();this.status='unmounted';}
-  private release():void {this.scheduler?.dispose();this.tree?.dispose(this.tree.root);if(this.root)this.registry?.roots.delete(this.root);if(this.name)this.registry?.names.delete(this.name);this.bus?.clear();}
+  private release():void {this.observer?.disconnect();this.scheduler?.dispose();this.tree?.dispose(this.tree.root);if(this.root)this.registry?.roots.delete(this.root);if(this.name)this.registry?.names.delete(this.name);this.bus?.clear();}
   get(path:string){if(!this.state)throw new PlainUIError('OWNER_DISPOSED');return this.state.read(path);}
   set(path:string,value:unknown):void {if(!this.state)throw new PlainUIError('OWNER_DISPOSED');this.state.write(path,value);}
   batch<T>(callback:()=>T):T {if(!this.state)throw new PlainUIError('OWNER_DISPOSED');return this.state.batch(callback);}

@@ -515,7 +515,9 @@
       ],
       "stepCount": 6,
       "acceptance": "`observe.framework-no-duplicate`, `observe.external-add`, `observe.same-scope-move`, `observe.cross-scope`, `observe.remove-reinsert`, `observe.attribute-change`, `observe.ignore` pass.",
-      "status": "pending"
+      "status": "completed",
+        "completedOn": "2026-10-15",
+        "evidence": "evidence/tasks/T021.md"
     },
     {
       "id": "T022",
