@@ -186,6 +186,8 @@ Use the C08/C09 state machines and generation rules. No HTTP operation may commi
 
 ## T038 Implement action settlement and lifecycle handlers
 
+**Status:** completed 15 October 2026. [Completion evidence](../../evidence/tasks/T038.md).
+
 **Depends on:** T023,T032,T037. **Sources:** RFC §§7.2,8.1; C09. **Files:** `data/src/action/{settle,lifecycle,invalidation}.ts`.
 
 1. Commit pending=false plus status/data/error in one state transaction before handlers. Preserve last successful same-action data on failure; expose latest normalized failure separately.

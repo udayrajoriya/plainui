@@ -2,6 +2,7 @@ import { createScaffoldApp, getModuleBridge } from '../../core/src/module-bridge
 import { DATA_PACKAGE_STUB } from '../../data/src/index.js';
 import {DataResourceRoot} from '../../data/src/resource/root.js';
 import {compileAction} from '../../data/src/action/compile.js';
+import {activateAction} from './action-runtime.js';
 import { FORMS_PACKAGE_STUB } from '../../forms/src/index.js';
 import { COMPONENTS_PACKAGE_STUB } from '../../components/src/index.js';
 import type { ActionService, DomService, RequestService, RuntimeServices } from '../../core/src/integration.js';
@@ -21,6 +22,7 @@ const unavailableDom: DomService = Object.freeze({
 });
 const unavailableActions: ActionService = Object.freeze({
   compile:compileAction,
+  activate:activateAction,
   submit(): Promise<unknown> {
     return Promise.reject(new Error('PlainUI action service is scheduled for T035'));
   },

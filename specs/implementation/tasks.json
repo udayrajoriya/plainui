@@ -921,7 +921,9 @@
       ],
       "stepCount": 6,
       "acceptance": "`lifecycle.order` logs `record,invalidation,DOM,success,finally`; `lifecycle.error-finally`, `lifecycle.command-failure`, `lifecycle.cancel-finally`, `lifecycle.disposed-none`, `invalidate.shared-key`, `invalidate.refresh-shared` pass.",
-      "status": "pending"
+      "status": "completed",
+      "completedDate": "2026-10-15",
+      "evidence": "../../evidence/tasks/T038.md"
     },
     {
       "id": "T039",

@@ -1,0 +1,2 @@
+/** Resolve every declared name, deduplicate by final cache key, and isolate bad names. */
+export function invalidateActionResources(names:readonly string[],resolve:(name:string)=>string|null,apply:(keys:readonly string[])=>void,diagnose:(error:unknown)=>void):void {const keys=new Set<string>();for(const name of names)try{const key=resolve(name);if(key)keys.add(key);}catch(error){diagnose(error);}if(keys.size)try{apply([...keys]);}catch(error){diagnose(error);}}
