@@ -8,7 +8,7 @@ export interface FlightSubscription {readonly cancel:()=>void}
 export class FlightCoordinator<T> {
   readonly inFlight=new Map<string,Flight<T>>();
   subscribe(key:string,draft:FinalRequestDraft,invalidationGeneration:number,subscriber:FlightSubscriber<T>,start:(signal:AbortSignal)=>Promise<T>,onAccepted?:(value:T)=>void,targetId=''):FlightSubscription {
-    if(subscriber.key!==key||subscriber.invalidationGeneration!==invalidationGeneration||subscriber.epoch!==draft.metadata.epoch||subscriber.generation!==draft.metadata.generation)throw new Error('Subscriber identity does not match request.');
+    if(subscriber.key!==key||subscriber.invalidationGeneration!==invalidationGeneration||subscriber.epoch!==draft.metadata.epoch)throw new Error('Subscriber identity does not match request.');
     const shared=draft.metadata.method==='GET';const identity=flightKey(key,draft,invalidationGeneration,targetId);
     let flight=shared?this.inFlight.get(identity):undefined;
     if(!flight){flight={controller:new AbortController(),subscribers:new Map()};if(shared)this.inFlight.set(identity,flight);const created=flight;

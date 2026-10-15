@@ -799,7 +799,9 @@
       ],
       "stepCount": 7,
       "acceptance": "`resource.null-success`, `resource.refresh-failure-keeps-data`, `resource.key-switch-clears`, `resource.incomplete`, `resource.late-old-response`, `resource.cancel-restore`, `resource.empty-values` pass against explicit record snapshots.",
-      "status": "pending"
+      "status": "completed",
+      "completedDate": "2026-10-15",
+      "evidence": "../../evidence/tasks/T033.md"
     },
     {
       "id": "T034",

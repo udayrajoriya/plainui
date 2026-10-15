@@ -1,5 +1,6 @@
 import { createScaffoldApp, getModuleBridge } from '../../core/src/module-bridge.js';
 import { DATA_PACKAGE_STUB } from '../../data/src/index.js';
+import {DataResourceRoot} from '../../data/src/resource/root.js';
 import { FORMS_PACKAGE_STUB } from '../../forms/src/index.js';
 import { COMPONENTS_PACKAGE_STUB } from '../../components/src/index.js';
 import type { ActionService, DomService, RequestService, RuntimeServices } from '../../core/src/integration.js';
@@ -32,7 +33,7 @@ export function composeRuntimeServices(
   return Object.freeze({ request, dom, actions });
 }
 
-const scaffoldServices = composeRuntimeServices(unavailableRequest, unavailableDom, unavailableActions);
+const scaffoldServices:RuntimeServices = Object.freeze({...composeRuntimeServices(unavailableRequest, unavailableDom, unavailableActions),resources:{createRoot:(id:string,options:ConstructorParameters<typeof DataResourceRoot>[1])=>new DataResourceRoot(id,options)}});
 
 export const bundledFoundationPackages = Object.freeze([
   'core',

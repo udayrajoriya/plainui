@@ -110,6 +110,8 @@ Use the C08/C09 state machines and generation rules. No HTTP operation may commi
 
 ## T033 Implement resource records and load state machine
 
+**Status:** completed 15 October 2026. [Completion evidence](../../evidence/tasks/T033.md).
+
 **Depends on:** T014,T016,T032. **Sources:** RFC §7. **Files:** `data/src/resource/{record,controller,dependencies}.ts`.
 
 1. Register resource read-only cell before bindings evaluate. Initialize data=null,status=idle,loading=false,refreshing=false,error=null,empty=false,stale=false,updatedAt=null and private hasSuccess=false.
