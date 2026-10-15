@@ -7,7 +7,7 @@ export type CommandContext={readonly scope:ScopeApi;readonly signal:AbortSignal;
 export type BehaviorFactory=(element:Element,options:Readonly<JsonValue>,scope:ScopeApi,signal:AbortSignal)=>void|(()=>void);
 export type AdapterDefinition={readonly version:string;readonly prepare?:(draft:unknown,context:unknown)=>unknown|Promise<unknown>;readonly success?:(body:JsonValue,context:unknown)=>unknown|Promise<unknown>;readonly error?:(error:unknown,context:unknown)=>unknown|Promise<unknown>};
 export type DiagnosticListener=(diagnostic:Diagnostic)=>void;
-export type NormalizedRequestError={readonly kind:'network'|'http'|'parse'|'timeout'|'abort'|'adapter'|'policy';readonly message:string;readonly status:number|null;readonly url:string|null;readonly retryable:boolean};
+export type NormalizedRequestError={readonly kind:'network'|'timeout'|'http'|'parse'|'validation'|'adapter'|'security';readonly status:number|null;readonly code:string|null;readonly message:string;readonly fields:Readonly<Record<string,readonly string[]>>;readonly retryable:boolean;readonly requestId:string|null};
 export type ResourceRecord={readonly status:'idle'|'pending'|'success'|'error';readonly data:ReadonlyJson;readonly error:NormalizedRequestError|null;readonly stale:boolean};
 export type ActionRecord={readonly status:'idle'|'pending'|'success'|'error';readonly result:ReadonlyJson;readonly error:NormalizedRequestError|null};
 export type RouteRecord={readonly path:string;readonly params:Readonly<Record<string,string>>;readonly query:Readonly<Record<string,string>>};

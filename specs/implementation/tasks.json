@@ -684,7 +684,7 @@
       ],
       "stepCount": 6,
       "acceptance": "`adapter.envelope`, `adapter.validation-map`, `adapter.async-stale`, `adapter.non-json`, `adapter.invalid-error`, `adapter.throw`, `adapter.version-cache` pass with literal expected normalized objects.",
-      "status": "pending"
+        "status": "complete"
     },
     {
       "id": "T029",

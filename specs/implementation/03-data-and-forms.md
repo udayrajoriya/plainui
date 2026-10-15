@@ -34,6 +34,8 @@ Use the C08/C09 state machines and generation rules. No HTTP operation may commi
 
 ## T028 Implement adapters and normalized errors
 
+**Status:** completed 15 October 2026. [Completion evidence](../../evidence/tasks/T028.md).
+
 **Depends on:** T011,T027. **Sources:** RFC §§9,14; C04,C14. **Files:** `data/src/adapter/{registry,identity,invoke,error}.ts`.
 
 1. Register identity version 1 automatically; unknown adapter names fail the affected declaration. Custom adapters must have nonempty version strings.

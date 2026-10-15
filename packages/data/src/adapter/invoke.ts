@@ -1,0 +1,16 @@
+import {detachedSnapshot,normalizeJsBoundary} from '../../../core/src/index.js';
+import type {JsonValue} from '../../../core/src/index.js';
+import {normalizeRequestError,validateAdapterError,type NormalizedRequestError} from './error.js';
+import type {AdapterContext,RequestAdapter,ResponseMetadata} from './registry.js';
+
+function aborted():DOMException {return new DOMException('Operation canceled.','AbortError');}
+function safeContext(context:AdapterContext):AdapterContext {return Object.freeze({signal:context.signal,timeoutMs:context.timeoutMs,isCurrent:context.isCurrent,metadata:detachedSnapshot(normalizeJsBoundary(context.metadata)) as Readonly<Record<string,unknown>>});}
+function safeMeta(meta:ResponseMetadata):ResponseMetadata {const headers:Record<string,string>=Object.create(null);for(const [name,value] of Object.entries(meta.headers))if(name.toLowerCase()!=='set-cookie')headers[name.toLowerCase()]=value;return Object.freeze({status:meta.status,statusText:meta.statusText,url:meta.url,headers:Object.freeze(headers)});}
+async function invoke<T>(callback:()=>T|Promise<T>,context:AdapterContext):Promise<T> {if(context.signal.aborted||!context.isCurrent())throw aborted();let timeout=false;let timer:ReturnType<typeof setTimeout>|undefined;let onAbort:()=>void=()=>{};
+  try {const deadline=new Promise<never>((_resolve,reject)=>{timer=setTimeout(()=>{timeout=true;reject(new Error('deadline'));},context.timeoutMs);});const cancellation=new Promise<never>((_resolve,reject)=>{onAbort=()=>reject(aborted());context.signal.addEventListener('abort',onAbort,{once:true});});const result=await Promise.race([Promise.resolve().then(callback),deadline,cancellation]);if(context.signal.aborted||!context.isCurrent())throw aborted();return result;}
+  catch(error){if(context.signal.aborted||error instanceof DOMException&&error.name==='AbortError'||!context.isCurrent())throw aborted();if(timeout)throw normalizeRequestError('adapter',null,{code:'ADAPTER_TIMEOUT'});throw normalizeRequestError('adapter',null,{code:'ADAPTER_ERROR'});}
+  finally{if(timer!==undefined)clearTimeout(timer);context.signal.removeEventListener('abort',onAbort);}
+}
+export async function invokePrepare(adapter:RequestAdapter,draft:unknown,context:AdapterContext):Promise<unknown> {if(!adapter.prepare)return undefined;const safe=safeContext(context);return invoke(()=>adapter.prepare!(draft,safe),safe);}
+export async function invokeSuccess(adapter:RequestAdapter,body:JsonValue,meta:ResponseMetadata,context:AdapterContext):Promise<JsonValue> {if(!adapter.success)return normalizeJsBoundary(body);const safe=safeContext(context);const result=await invoke(()=>adapter.success!(detachedSnapshot(body),safeMeta(meta),safe),safe);try{return normalizeJsBoundary(result);}catch{throw normalizeRequestError('adapter',null,{code:'ADAPTER_ERROR'});}}
+export async function invokeError(adapter:RequestAdapter,error:NormalizedRequestError,body:JsonValue|null,meta:ResponseMetadata|null,context:AdapterContext):Promise<NormalizedRequestError> {if(!adapter.error)return error;const safe=safeContext(context);const result=await invoke(()=>adapter.error!(error,body===null?null:detachedSnapshot(body),meta?safeMeta(meta):null,safe),safe);try{return validateAdapterError(result);}catch{throw normalizeRequestError('adapter',null,{code:'ADAPTER_ERROR'});}}
