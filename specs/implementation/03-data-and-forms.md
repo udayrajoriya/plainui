@@ -49,6 +49,8 @@ Use the C08/C09 state machines and generation rules. No HTTP operation may commi
 
 ## T029 Implement Fetch transport and response decoding
 
+**Status:** completed 15 October 2026. [Completion evidence](../../evidence/tasks/T029.md).
+
 **Depends on:** T027,T028. **Sources:** RFC §§7,8,12,15. **Files:** `data/src/transport/{fetch,decode,response-meta}.ts`.
 
 1. Call browser Fetch with the immutable draft, redirect:'error', credentials, and a linked AbortController. Reject opaque/opaqueredirect responses as security failures.

@@ -707,7 +707,7 @@
       ],
       "stepCount": 7,
       "acceptance": "`transport.empty-204`, `transport.empty-200`, `transport.whitespace-json`, `transport.plus-json`, `transport.wrong-type`, `transport.redirect-no-follow`, `transport.body-once`, `transport.abort-vs-timeout` pass.",
-      "status": "pending"
+        "status": "complete"
     },
     {
       "id": "T030",
