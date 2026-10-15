@@ -17,6 +17,7 @@ export interface DomService {
 
 export interface ActionService {
   submit(form: HTMLFormElement, signal: AbortSignal): Promise<unknown>;
+  compile?(input:{readonly tagName:string;readonly directives:Readonly<Record<string,string>>;readonly fragmentsInstalled:boolean;readonly nativeForm?:{readonly action:string|null;readonly method:string|null}}):unknown;
 }
 
 export interface RuntimeServices {

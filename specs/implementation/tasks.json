@@ -871,7 +871,9 @@
       ],
       "stepCount": 6,
       "acceptance": "`action.default-trigger`, `action.method-conflict`, `action.name-collision`, `action.unnamed-context`, `action.body-get`, `action.missing-module`, `action.invalid-native-fallback` pass.",
-      "status": "pending"
+      "status": "completed",
+      "completedDate": "2026-10-15",
+      "evidence": "../../evidence/tasks/T036.md"
     },
     {
       "id": "T037",

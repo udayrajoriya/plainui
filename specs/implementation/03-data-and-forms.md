@@ -156,6 +156,8 @@ Use the C08/C09 state machines and generation rules. No HTTP operation may commi
 
 ## T036 Compile action declarations and action records
 
+**Status:** completed 15 October 2026. [Completion evidence](../../evidence/tasks/T036.md).
+
 **Depends on:** T016,T022,T033. **Sources:** RFC §8. **Files:** `data/src/action/{compile,record,context}.ts`.
 
 1. Distinguish resource template from action by ui-data. For action require one method, validate method-specific options, and select submit/change/click default trigger.
