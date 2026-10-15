@@ -773,7 +773,9 @@
       ],
       "stepCount": 6,
       "acceptance": "`cache.lru-bound`, `cache.zero`, `cache.ttl-per-consumer`, `cache.boundary`, `cache.error-excluded`, `cache.invalidation-old-flight`, `cache.concurrent-refresh` pass with fake clocks.",
-      "status": "pending"
+      "status": "completed",
+      "completedDate": "2026-10-15",
+      "evidence": "../../evidence/tasks/T032.md"
     },
     {
       "id": "T033",

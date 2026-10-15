@@ -95,6 +95,8 @@ Use the C08/C09 state machines and generation rules. No HTTP operation may commi
 
 ## T032 Implement bounded resource cache and invalidation generations
 
+**Status:** completed 15 October 2026. [Completion evidence](../../evidence/tasks/T032.md).
+
 **Depends on:** T031. **Sources:** RFC §7.2; Design §8.2. **Files:** `data/src/cache/{lru,entry,invalidate}.ts`.
 
 1. Maintain per-root LRU Map with data, acceptedAt, adapter identity, epoch, and invalidation generation; never retain errors.
