@@ -14,7 +14,8 @@ export interface ModelService {bind(mount:ModelMount):MountedModel}
 export interface ComponentRoot {discover():void;loadImports(urls:readonly string[],timeoutMs:number,signal:AbortSignal,record?:(url:string,fragment:DocumentFragment)=>void):Promise<void>;freeze():void;dispose():void;definition(name:string):unknown}
 export interface ComponentService {createRoot(root:Element,diagnose:(error:unknown)=>void):ComponentRoot}
 export interface NavigationService {beforeNavigate(guard:(url:string)=>boolean|Promise<boolean>):()=>void;navigate?(url:string):Promise<void>}
-export interface ModuleRuntime {mount(root:Element,options:ResolvedOptions):void;unmount():void;readonly navigation?:NavigationService}
+export interface UiService {open(target:Element|undefined):void|Promise<void>;close(target:Element|undefined):void|Promise<void>;toast(message:string):void|Promise<void>}
+export interface ModuleRuntime {mount(root:Element,options:ResolvedOptions):void;unmount():void;readonly navigation?:NavigationService;readonly ui?:UiService}
 export interface ResourceService {createRoot(id:string,options:ResolvedOptions):ResourceRoot}
 export interface RequestService {
   send(request: Request, signal: AbortSignal): Promise<Response>;

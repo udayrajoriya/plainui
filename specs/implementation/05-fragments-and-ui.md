@@ -125,6 +125,8 @@ The sanitizer is mandatory for every fragment response, including same-origin re
 
 ## T070 Implement accessible native dialog commands
 
+**Status:** completed 16 October 2026. [Completion evidence](../../evidence/tasks/T070.md).
+
 **Depends on:** T023,T069. **Sources:** RFC §13; C13. **Files:** `packages/ui/src/{module,dialog}.ts`.
 
 1. Implement installUI(app) and register built-in service for open/close/toast plus tabs behavior without replacing core command names.
