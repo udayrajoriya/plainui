@@ -30,4 +30,6 @@ export class FlightCoordinator<T> {
     return {cancel:()=>{if(!flight?.subscribers.delete(subscriber.id))return;if(flight.subscribers.size===0){if(shared&&this.inFlight.get(identity)===flight)this.inFlight.delete(identity);flight.controller.abort();}}};
   }
   cancelAll():void {for(const flight of this.inFlight.values()){flight.subscribers.clear();flight.controller.abort();}this.inFlight.clear();}
+  get transportCount():number{return this.inFlight.size;}
+  get subscriberCount():number{return [...this.inFlight.values()].reduce((count,flight)=>count+flight.subscribers.size,0);}
 }

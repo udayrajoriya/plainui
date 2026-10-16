@@ -2,6 +2,7 @@ export { SCHEMA_FORMAT_VERSION } from '../../schema/src/index.js';
 export { resolveConfiguration } from './config.js';
 export { DiagnosticBus } from './diagnostics/emit.js';
 export { Inspector } from './diagnostics/inspector.js';
+export type {InspectorSnapshot,InspectorResource,InspectorResourceError} from './diagnostics/inspector.js';
 export { PlainUIError } from './diagnostics/codes.js';
 export {parseExpression} from './expression/parse.js';
 export {evaluate} from './expression/evaluate.js';

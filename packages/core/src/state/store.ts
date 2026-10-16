@@ -10,6 +10,7 @@ export interface StateObserver {readonly dependencies:Set<Dependency>;readonly i
 export class StateStore {
   private static readonly observers=new Set<StateObserver>();private tracking:Set<Dependency>|null=null;private depth=0;private pending=new Set<StateObserver>();
   static get activeObserverCount():number {return [...StateStore.observers].filter(observer=>observer.owner?.active??true).length;}
+  static countObservers(predicate:(owner:NonNullable<StateObserver['owner']>)=>boolean):number {return [...StateStore.observers].filter(observer=>observer.owner?.active&&predicate(observer.owner)).length;}
   static notifyPublished(cell:ScopeCell,path:string):void {for(const observer of StateStore.observers)if((observer.owner?.active??true)&&[...observer.dependencies].some(dep=>affects(dep,cell,path)))observer.invalidate();}
   constructor(readonly scope:Scope){}
   private resolve(path:ParsedPath):ScopeCell {const cell=lookupBinding(this.scope,path.root);if(!cell)throw new PlainUIError('PATH_INVALID');return cell;}

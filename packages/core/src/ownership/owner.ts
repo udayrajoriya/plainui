@@ -46,4 +46,6 @@ export class OwnerTree {
     };cleanup(owner);
   }
   get liveCount():number{return this.all.size;}
+  owns(owner:{readonly active:boolean}):boolean{return this.all.has(owner as Owner);}
+  snapshot():{readonly byKind:Readonly<Record<OwnerKind,number>>;readonly ranges:number;readonly rangeConsumers:number} {const byKind=Object.fromEntries(['root','element','state','conditional','loop','loop-item','component','slot','route','fragment','behavior'].map(kind=>[kind,0])) as Record<OwnerKind,number>;let ranges=0,rangeConsumers=0;for(const owner of this.all){if(!owner.active)continue;byKind[owner.kind]++;if(owner.range){ranges++;rangeConsumers+=owner.lifetimeDependents.size;}}return {byKind,ranges,rangeConsumers};}
 }

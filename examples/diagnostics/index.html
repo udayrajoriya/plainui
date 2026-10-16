@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>PlainUI diagnostics</title></head>
+<body>
+  <main ui-app="diagnostics" ui-state='{"message":"Inspector ready"}'>
+    <h1 ui-text="message"></h1>
+    <button id="refresh" type="button">Refresh snapshot</button>
+    <pre id="snapshot" aria-live="polite"></pre>
+  </main>
+  <script type="module" src="./app.mjs"></script>
+</body>
+</html>

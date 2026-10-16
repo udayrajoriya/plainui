@@ -1920,7 +1920,7 @@
       ],
       "stepCount": 6,
       "acceptance": "`inspect.redacted`, `inspect.no-side-effect`, `inspect.frozen`, `inspect.production`, `inspect.shared-counts`, `inspect.zero-unmount` pass.",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "T081",
