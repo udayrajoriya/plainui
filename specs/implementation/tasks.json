@@ -1280,7 +1280,8 @@
       ],
       "stepCount": 6,
       "acceptance": "all component scenarios pass and evidence contains measured lifecycle counts, not just DOM snapshots.",
-      "status": "pending"
+      "status": "completed",
+      "evidence": "../../evidence/tasks/T053.md"
     },
     {
       "id": "T054",

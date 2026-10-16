@@ -1,8 +1,7 @@
 import type {ComponentDefinition} from './definition.js';
 
-const documentSerials=new WeakMap<Document,number>();
+const documentSerials=new WeakMap<Document,{next:number;roots:WeakMap<Element,number>}>();
 const rewritten=new WeakSet<DocumentFragment>();
-let nextRootSerial=1;
 
 const referenceAttributes=['for','aria-labelledby','aria-describedby','aria-controls'] as const;
 
@@ -23,7 +22,7 @@ export interface RewrittenIds {readonly serial:number;readonly prefix:string;rea
 export class ComponentIdRewriter {
   readonly rootSerial:number;
   private nextInstanceSerial=1;
-  constructor(private readonly root:Element){const document=root.ownerDocument;let serial=documentSerials.get(document);if(serial===undefined){serial=nextRootSerial++;documentSerials.set(document,serial);}this.rootSerial=serial;}
+  constructor(private readonly root:Element){const document=root.ownerDocument;let registry=documentSerials.get(document);if(!registry){registry={next:1,roots:new WeakMap()};documentSerials.set(document,registry);}let serial=registry.roots.get(root);if(serial===undefined){serial=registry.next++;registry.roots.set(root,serial);}this.rootSerial=serial;}
 
   rewrite(fragment:DocumentFragment,definition:Pick<ComponentDefinition,'ids'>):RewrittenIds {
     if(rewritten.has(fragment))return Object.freeze({serial:0,prefix:'',ids:new Map()});

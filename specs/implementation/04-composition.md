@@ -94,6 +94,8 @@ Component lexical scope, DOM ownership, and navigation lifetime are separate con
 
 ## T053 Close component integration and import lifetime tests
 
+**Status:** completed 16 October 2026. [Completion evidence](../../evidence/tasks/T053.md).
+
 **Depends on:** T046,T052. **Sources:** RFC §§11,18. **Files:** `tests/integration/components.spec.ts`, `evidence/components.md`.
 
 1. Build a product-card fixture with typed object props, stateful quantity, named/default slots, local resource, caller event, and linked form labels.
