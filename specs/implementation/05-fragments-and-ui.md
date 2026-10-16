@@ -50,6 +50,8 @@ The sanitizer is mandatory for every fragment response, including same-origin re
 
 ## T065 Prepare detached fragment candidates
 
+**Status:** completed 16 October 2026. [Completion evidence](../../evidence/tasks/T065.md).
+
 **Depends on:** T016,T052,T063,T064. **Sources:** Design §12.2. **Files:** `fragments/src/candidate.ts`.
 
 1. Sanitize response before touching live destination. Build a provisional owner/scope graph that can be discarded without DOM or registry side effects.

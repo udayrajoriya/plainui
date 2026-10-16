@@ -8,6 +8,8 @@ export {compileFragmentAction,assertResourceResponseMode,fragmentRequestHeaders,
 export type {FragmentActionMode,FragmentSwapMode} from './action-mode.js';
 export {resolveFragmentTarget,TargetArbiter} from './target.js';
 export type {FragmentTarget} from './target.js';
+export {FragmentCandidate,prepareFragmentCandidate} from './candidate.js';
+export type {FragmentCandidateOptions} from './candidate.js';
 export {FragmentRuntime} from './module.js';
 
 export const fragmentsModule: OfficialModuleDefinition = Object.freeze({ name: 'fragments', bridgeVersion: 1,setup:(app:AppScaffold)=>installFragmentsRuntime(app) });

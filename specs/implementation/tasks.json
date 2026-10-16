@@ -1564,7 +1564,9 @@
       ],
       "stepCount": 6,
       "acceptance": "`candidate.no-side-effects`, `candidate.ref-conflict`, `candidate.id-conflict`, `candidate.outer-count`, `candidate.outer-untrusted-ref`, `candidate.forbidden-directive`, `candidate.failure-preserves` pass.",
-      "status": "pending"
+      "status": "completed",
+      "completedOn": "2026-10-16",
+      "evidence": "evidence/tasks/T065.md"
     },
     {
       "id": "T066",
