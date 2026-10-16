@@ -244,6 +244,8 @@ Use the C08/C09 state machines and generation rules. No HTTP operation may commi
 
 ## T042 Implement native form validation and submit interception
 
+**Status:** completed 16 October 2026. [Completion evidence](../../evidence/tasks/T042.md).
+
 **Depends on:** T037,T041. **Sources:** RFC §§8,9. **Files:** `forms/src/{validation,submit}.ts`.
 
 1. Observe the actual submit event and SubmitEvent.submitter; respect form novalidate and submitter formnovalidate. Use native validity checks/reportValidity where validation is required.

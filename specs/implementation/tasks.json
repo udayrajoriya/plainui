@@ -1016,7 +1016,8 @@
       ],
       "stepCount": 6,
       "acceptance": "`submit.required`, `submit.novalidate`, `submit.formnovalidate`, `submit.enter`, `submit.actual-button`, `submit.prepare-reject-no-replay`, `submit.native-invalid-config` pass using request counters and navigation observers.",
-      "status": "pending"
+      "status": "completed",
+      "evidence": "../../evidence/tasks/T042.md"
     },
     {
       "id": "T043",
