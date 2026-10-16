@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PlainUI Chart.js behavior</title></head><body>
+<main ui-app="chart-example">
+  <template ui-data="sales" ui-get="/api/sales" ui-on:success="renderChart()"></template>
+  <section ui-ref="salesChart" ui-use="chart" ui-options='{"dataPath":"sales.data","type":"bar"}' aria-labelledby="sales-title"><h1 id="sales-title">Sales</h1><div ui-ignore><canvas width="640" height="320" aria-label="Sales chart" role="img"></canvas></div></section>
+</main>
+<script type="module">import {PlainUI} from '../../dist/plainui.mjs';import {registerChartExample} from './chart.js';const app=registerChartExample(PlainUI.create());app.mount(document.querySelector('main'));</script>
+</body></html>

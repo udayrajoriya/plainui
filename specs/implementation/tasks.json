@@ -1775,7 +1775,7 @@
       ],
       "stepCount": 6,
       "acceptance": "chart/editor mount-update-unmount 100 cycles return to baseline with no retained framework/widget listeners; ignored descendants are never compiled.",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "T075",

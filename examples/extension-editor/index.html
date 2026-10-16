@@ -1,0 +1,7 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PlainUI CodeMirror behavior</title></head><body>
+<main ui-app="editor-example" ui-state='{"document":"Edit me"}'>
+  <section ui-use="editor" ui-options='{"documentPath":"document"}'><label for="source">Document</label><textarea id="source">Edit me</textarea><div ui-ignore aria-label="Document editor"></div></section>
+</main>
+<script type="module">import {PlainUI} from '../../dist/plainui.mjs';import {registerEditorExample} from './editor.js';const app=registerEditorExample(PlainUI.create());app.mount(document.querySelector('main'));</script>
+</body></html>
