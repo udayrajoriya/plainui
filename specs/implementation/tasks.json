@@ -1065,7 +1065,8 @@
       ],
       "stepCount": 6,
       "acceptance": "`error.literal-name`, `error.first-message`, `error.aria-preserve`, `error.edit-one-field`, `error.new-submit-clear`, `error.unmatched-summary`, `error.cleanup-owned-only` pass plus axe checks.",
-      "status": "pending"
+      "status": "completed",
+      "evidence": "../../evidence/tasks/T044.md"
     },
     {
       "id": "T045",

@@ -9,5 +9,6 @@ export function validateElement(element:Element,directives:readonly NormalizedDi
   if(values.has('ui-src')&&values.has('ui-bind-src'))issues.push({code:'DIRECTIVE_CONFLICT',name:'ui-src'});
   if(values.has('ui-href')&&values.has('ui-bind-href'))issues.push({code:'DIRECTIVE_CONFLICT',name:'ui-href'});
   if(values.has('ui-model')&&(values.has('ui-bind-value')||values.has('ui-bind-checked')))issues.push({code:'DIRECTIVE_CONFLICT',name:'ui-model'});
+  if(values.has('ui-field-error')){const form=element.closest('form');if(!form||!['ui-get','ui-post','ui-put','ui-patch','ui-delete','data-ui-get','data-ui-post','data-ui-put','data-ui-patch','data-ui-delete'].some(name=>form.hasAttribute(name)))issues.push({code:'FORM_INVALID',name:'ui-field-error'});}
   return issues;
 }

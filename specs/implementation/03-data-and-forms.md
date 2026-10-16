@@ -274,6 +274,8 @@ Use the C08/C09 state machines and generation rules. No HTTP operation may commi
 
 ## T044 Implement server field errors and accessibility associations
 
+**Status:** completed 16 October 2026. [Completion evidence](../../evidence/tasks/T044.md).
+
 **Depends on:** T028,T038,T042,T043. **Sources:** RFC §9. **Files:** `forms/src/errors/{index,presenter,aria}.ts`.
 
 1. Associate ui-field-error with its nearest action form and literal name; outside-form placement fails. Index all matching successful or unsuccessful controls by name, including external form-associated controls.
