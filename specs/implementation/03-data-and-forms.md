@@ -289,6 +289,8 @@ Use the C08/C09 state machines and generation rules. No HTTP operation may commi
 
 ## T045 Integrate request accessibility state and form lifecycle
 
+**Status:** completed 16 October 2026. [Completion evidence](../../evidence/tasks/T045.md).
+
 **Depends on:** T034,T038,T044. **Sources:** RFC §§9,13. **Files:** `data/src/request/accessibility.ts`, `tests/browser/forms.spec.ts`.
 
 1. Define busy region: an action element itself; for resource template its nearest parent element. Maintain a per-element count so one request completion cannot clear aria-busy while another is active.

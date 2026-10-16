@@ -1089,7 +1089,8 @@
       ],
       "stepCount": 6,
       "acceptance": "`a11y.busy-count`, `a11y.busy-restore`, `form.failure-preserves`, `form.success-no-reset`, `form.explicit-reset-order`, `form.external-submit-disabled` pass.",
-      "status": "pending"
+      "status": "completed",
+      "evidence": "../../evidence/tasks/T045.md"
     },
     {
       "id": "T046",
