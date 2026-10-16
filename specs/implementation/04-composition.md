@@ -184,6 +184,8 @@ Component lexical scope, DOM ownership, and navigation lifetime are separate con
 
 ## T059 Implement titles, focus, scroll, and hash anchors
 
+**Status:** completed 16 October 2026. [Completion evidence](../../evidence/tasks/T059.md).
+
 **Depends on:** T014,T058. **Sources:** RFC §10. **Files:** `router/src/{title,focus,scroll}.ts`.
 
 1. Evaluate ui-title after publishing route context; require primitive/null output. Absent preserves prior title; null becomes empty string. Assign document.title as text.

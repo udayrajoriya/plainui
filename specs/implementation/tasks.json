@@ -1420,7 +1420,8 @@
       ],
       "stepCount": 6,
       "acceptance": "`route.title-expression`, `route.focus-h1`, `route.focus-outlet`, `route.scroll-top`, `route.traversal-scroll`, `route.hash-priority`, `route.no-refresh-focus`, `route.superseded-postflush` pass.",
-      "status": "pending"
+      "status": "completed",
+      "evidence": "../../evidence/tasks/T059.md"
     },
     {
       "id": "T060",
