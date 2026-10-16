@@ -79,6 +79,8 @@ Component lexical scope, DOM ownership, and navigation lifetime are separate con
 
 ## T052 Implement instance lifecycle and custom events
 
+**Status:** completed 16 October 2026. [Completion evidence](../../evidence/tasks/T052.md).
+
 **Depends on:** T017,T023,T049,T050,T051. **Sources:** RFC §§11,14. **Files:** `components/src/instance.ts`, `components/src/events.ts`.
 
 1. Preserve the custom host and create an instance owner/component scope. Initialize copied props/defaults/local state, then render cloned light DOM through the normal compiler.

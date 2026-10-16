@@ -1257,7 +1257,8 @@
       ],
       "stepCount": 6,
       "acceptance": "`instance.local-isolation`, `instance.preserved-host`, `instance.event-caller`, `instance.nested-cleanup`, `instance.recursion`, `instance.import-fallback` pass.",
-      "status": "pending"
+      "status": "completed",
+      "evidence": "../../evidence/tasks/T052.md"
     },
     {
       "id": "T053",
