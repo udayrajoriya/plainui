@@ -1465,7 +1465,8 @@
       ],
       "stepCount": 6,
       "acceptance": "M3 has no failing component or navigation contract case and all lifetime counts return to baseline between routes.",
-      "status": "pending"
+      "status": "completed",
+      "evidence": "../../evidence/tasks/T061.md"
     },
     {
       "id": "T062",

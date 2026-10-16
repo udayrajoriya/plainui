@@ -214,6 +214,8 @@ Component lexical scope, DOM ownership, and navigation lifetime are separate con
 
 ## T061 Close composition milestone
 
+**Status:** completed 16 October 2026. [Completion evidence](../../evidence/tasks/T061.md).
+
 **Depends on:** T053,T060. **Sources:** RFC §18; Design §17. **Files:** `tests/integration/composition.spec.ts`, `evidence/milestones/M3.md`.
 
 1. Compose imported components, caller-scoped slots, route parameters, guarded form, persisted store, and resource invalidation into a complete test shell.
