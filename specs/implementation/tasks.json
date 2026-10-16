@@ -1751,7 +1751,7 @@
       ],
       "stepCount": 6,
       "acceptance": "`styles.hidden`, `styles.narrow-no-overflow`, `styles.zoom`, `styles.rtl`, `styles.reduced-motion`, `styles.override`, `styles.runtime-without-css` pass with visual/manual evidence where appropriate.",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "T074",

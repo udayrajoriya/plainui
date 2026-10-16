@@ -1,1 +1,40 @@
-/* T077 supplies the optional PlainUI theme. This T003 file reserves the distribution entry. */
+:root {
+  --ui-color-bg: #ffffff;
+  --ui-color-text: #18212f;
+  --ui-color-primary: #1d4ed8;
+  --ui-color-danger: #b91c1c;
+  --ui-space-1: .25rem;
+  --ui-space-2: .5rem;
+  --ui-space-3: .75rem;
+  --ui-space-4: 1rem;
+  --ui-space-5: 1.5rem;
+  --ui-space-6: 2rem;
+  --ui-radius: .375rem;
+  --ui-font: system-ui, sans-serif;
+  color-scheme: light;
+}
+
+:where(*, *::before, *::after) { box-sizing: border-box; }
+:where([hidden]) { display: none !important; }
+:where(body) { margin: 0; background: var(--ui-color-bg); color: var(--ui-color-text); font-family: var(--ui-font); line-height: 1.5; }
+:where(h1, h2, h3, p, li, label, legend, output) { overflow-wrap: anywhere; }
+:where(button, input, select, textarea) { max-inline-size: 100%; color: inherit; font: inherit; border: 1px solid currentColor; border-radius: var(--ui-radius); padding-block: var(--ui-space-2); padding-inline: var(--ui-space-3); background: var(--ui-color-bg); }
+:where(button) { cursor: pointer; }
+:where(button:disabled, input:disabled, select:disabled, textarea:disabled, [aria-disabled="true"]) { cursor: not-allowed; opacity: .6; }
+:where(:focus-visible) { outline: .1875rem solid var(--ui-color-primary); outline-offset: .125rem; }
+:where([aria-invalid="true"]) { border-color: var(--ui-color-danger); }
+:where([ui-field-error], [data-ui-field-error]) { color: var(--ui-color-danger); }
+:where(dialog) { max-inline-size: min(40rem, calc(100% - 2 * var(--ui-space-4))); border: 1px solid currentColor; border-radius: var(--ui-radius); padding: var(--ui-space-5); color: var(--ui-color-text); background: var(--ui-color-bg); }
+:where(dialog)::backdrop { background: rgb(24 33 47 / .55); }
+:where([data-ui-toast-list]) { margin: 0; padding: 0; list-style: none; }
+:where([data-ui-toast-owner]) { display: flex; align-items: center; justify-content: space-between; gap: var(--ui-space-3); padding: var(--ui-space-3); border: 1px solid currentColor; border-radius: var(--ui-radius); background: var(--ui-color-bg); }
+:where([data-ui-toast-announcer]) { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+:where(.ui-stack) { display: flex; flex-direction: column; gap: var(--ui-stack-gap, var(--ui-space-4)); }
+:where(.ui-cluster) { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ui-cluster-gap, var(--ui-space-3)); }
+:where(.ui-grid) { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: var(--ui-grid-gap, var(--ui-space-4)); }
+:where(.ui-container) { inline-size: 100%; max-inline-size: var(--ui-container-width, 72rem); margin-inline: auto; padding-inline: var(--ui-container-padding, var(--ui-space-4)); }
+
+@media (prefers-reduced-motion: reduce) {
+  :where(*, *::before, *::after) { animation-duration: 0s !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: 0s !important; }
+}
