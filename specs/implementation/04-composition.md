@@ -64,6 +64,8 @@ Component lexical scope, DOM ownership, and navigation lifetime are separate con
 
 ## T051 Implement static ID and ARIA reference rewriting
 
+**Status:** completed 16 October 2026. [Completion evidence](../../evidence/tasks/T051.md).
+
 **Depends on:** T047,T050. **Sources:** RFC §11; C10. **Files:** `components/src/ids.ts`.
 
 1. Assign each root a document-wide serial and each instance a monotonic serial. Prefix literal definition IDs with `pui-r<root>-c<instance>-`.

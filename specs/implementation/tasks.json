@@ -1231,7 +1231,8 @@
       ],
       "stepCount": 6,
       "acceptance": "`ids.two-instances`, `ids.multitoken-aria`, `ids.external-retained`, `ids.projected-unchanged`, `ids.dynamic-explicit`, `ids.generated-collision` pass with label and accessible-name assertions.",
-      "status": "pending"
+      "status": "completed",
+      "evidence": "../../evidence/tasks/T051.md"
     },
     {
       "id": "T052",
