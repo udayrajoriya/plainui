@@ -18,7 +18,7 @@ const allowed = new Map([
   ['fragments', new Set(['schema'])],
   ['ui', new Set(['schema'])],
   ['styles', new Set()],
-  ['tooling', new Set(['schema'])],
+  ['tooling', new Set(['schema', 'core', 'router'])],
 ]);
 
 function slash(path) {

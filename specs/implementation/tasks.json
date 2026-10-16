@@ -1828,7 +1828,7 @@
       ],
       "stepCount": 7,
       "acceptance": "`validate.runtime-parity`, `validate.template-content`, `validate.import-cycle`, `validate.dynamic-warning`, `validate.locations`, `validate.no-network`, `validate.no-mutation` pass.",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "T077",
