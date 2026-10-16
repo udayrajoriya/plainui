@@ -1851,7 +1851,7 @@
       ],
       "stepCount": 7,
       "acceptance": "`cli.exit-codes`, `cli.json-stable`, `cli.windows-path`, `cli.build-copy`, `cli.build-no-unrelated-delete`, `cli.invalid-no-output`, `cli.zero-build-independent` pass.",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "T078",

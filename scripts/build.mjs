@@ -119,4 +119,6 @@ await writeFile(join(dist, 'build-manifest.json'), `${JSON.stringify({
   dev: development,
 }, null, 2)}\n`);
 
+await build({entryPoints:[join(root,'packages/tooling/src/bin.ts')],outfile:join(dist,'plainui-cli.mjs'),bundle:true,format:'esm',platform:'node',target:'node24',minify:true,logLevel:'silent'});
+
 console.log(`Built ${Object.keys(release).length} production and ${Object.keys(development).length} development entries.`);
