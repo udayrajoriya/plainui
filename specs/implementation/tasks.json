@@ -1801,7 +1801,7 @@
       ],
       "stepCount": 6,
       "acceptance": "all hybrid scenarios pass, zero leaks after unmount, and any budget miss has an explicit unresolved gate or accepted numerical specification revision.",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "T076",
