@@ -169,6 +169,8 @@ Component lexical scope, DOM ownership, and navigation lifetime are separate con
 
 ## T058 Commit route scopes and outlet ownership
 
+**Status:** completed 16 October 2026. [Completion evidence](../../evidence/tasks/T058.md).
+
 **Depends on:** T012,T053,T057. **Sources:** RFC §10; Design §11. **Files:** `router/src/view.ts`, `router/src/navigation/commit.ts`.
 
 1. Precompile the destination template plan before disposal when possible; malformed route declarations fail locally with fallback/error rendering rather than corrupting shell.

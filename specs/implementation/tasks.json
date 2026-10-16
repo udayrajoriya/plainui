@@ -1397,7 +1397,8 @@
       ],
       "stepCount": 6,
       "acceptance": "`route.same-pattern-new-scope`, `route.store-survives`, `route.shell-preserved`, `route.resource-not-blocking`, `route.old-request-disposed`, `route.outlet-exclusive` pass.",
-      "status": "pending"
+      "status": "completed",
+      "evidence": "../../evidence/tasks/T058.md"
     },
     {
       "id": "T059",
