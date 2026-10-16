@@ -95,6 +95,8 @@ The sanitizer is mandatory for every fragment response, including same-origin re
 
 ## T068 Build the fragment security regression suite
 
+**Status:** completed 16 October 2026. [Completion evidence](../../evidence/tasks/T068.md). [Security manifest](../../evidence/security/fragment-policy.json).
+
 **Depends on:** T067. **Sources:** RFC §§12,15,18; Design §15. **Files:** `tests/security/fragments/`, `evidence/security/fragment-policy.json`.
 
 1. Create table-driven positive/negative fixtures for every allowed tag/attribute and every forbidden category, including data-ui-* case/namespace variants.

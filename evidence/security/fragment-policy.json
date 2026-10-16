@@ -1,0 +1,62 @@
+{
+  "completedOn": "2026-10-16",
+  "sanitizer": {
+    "name": "dompurify",
+    "version": "3.4.16",
+    "integrity": "sha512-sqo+pNp3qRhCIpbgRi1y8Tgk27Bo2Ry7w0dC1NBeNTdZChWjz9Xb/KOoZbRP/R6pQZ80Qw8YhXw13hWWBbMRnQ=="
+  },
+  "policy": {
+    "algorithm": "sha256",
+    "hash": "01490e4c521ed02b88b50d12e5b7c7197565a0adf0790b8f21abd72edd7eebc4",
+    "files": [
+      "packages/fragments/src/tags.ts",
+      "packages/fragments/src/attributes.ts",
+      "packages/fragments/src/policy.ts",
+      "packages/fragments/src/html-service.ts",
+      "packages/fragments/src/action-mode.ts",
+      "packages/fragments/src/target.ts",
+      "packages/fragments/src/candidate.ts",
+      "packages/fragments/src/swap.ts",
+      "packages/fragments/src/focus.ts"
+    ]
+  },
+  "corpus": {
+    "algorithm": "sha256",
+    "fixtureHash": "e74352ef4c14efa1451d9fe8d5175fa57813670b70422091f8804bf4a994b823",
+    "suiteHash": "65b46644d8dee44fff36a6adfc753cab18bbc31118ae77042b595c30c07affcd",
+    "cases": [
+      "all-allowed-tags",
+      "all-allowed-attributes",
+      "script-subtree",
+      "event-style-srcdoc",
+      "encoded-javascript",
+      "mixed-javascript",
+      "controlled-javascript",
+      "namespace-confusion",
+      "metadata-embed",
+      "directive-bypass",
+      "custom-template",
+      "dom-clobber",
+      "mutation-xss",
+      "foster-parenting",
+      "same-origin-sanitized",
+      "failed-http-preserves",
+      "response-cannot-enhance",
+      "late-target-rejected",
+      "nested-registered-components",
+      "slot-projection"
+    ]
+  },
+  "runner": {
+    "playwright": "1.64.0",
+    "browsers": [
+      {"name": "chromium", "revision": "1248", "outcome": "5 passed"},
+      {"name": "firefox", "revision": "1555", "outcome": "5 passed"},
+      {"name": "webkit", "revision": "2370", "outcome": "5 passed"}
+    ],
+    "total": "15 passed",
+    "csp": "external script only; trusted-types plainui-template dompurify; require-trusted-types-for 'script'",
+    "forbiddenEffects": 0,
+    "forbiddenBeacons": 0
+  }
+}

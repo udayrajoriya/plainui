@@ -1636,7 +1636,9 @@
       ],
       "stepCount": 6,
       "acceptance": "no forbidden executable effect, policy bypass, late-target commit, or preserved-DOM failure; all corpus cases named in evidence.",
-      "status": "pending"
+      "status": "completed",
+      "completedOn": "2026-10-16",
+      "evidence": "evidence/tasks/T068.md"
     },
     {
       "id": "T069",
