@@ -34,6 +34,8 @@ Component lexical scope, DOM ownership, and navigation lifetime are separate con
 
 ## T049 Implement literal and reactive props
 
+**Status:** completed 16 October 2026. [Completion evidence](../../evidence/tasks/T049.md).
+
 **Depends on:** T013,T047,T048. **Sources:** RFC §11. **Files:** `components/src/props/{compile,validate,connect}.ts`.
 
 1. Match declared prop names exactly, retaining kebab case. String literals come from same-name attributes; ui-prop-* compiles caller-scope expressions. Supplying both fails.
