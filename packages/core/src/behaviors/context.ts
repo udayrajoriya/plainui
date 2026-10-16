@@ -1,0 +1,7 @@
+import {PlainUIError} from '../diagnostics/codes.js';
+import {detachedSnapshot} from '../json/freeze.js';
+import {normalizeJsBoundary,type JsonValue} from '../json/normalize.js';
+import type {ScopeApi} from '../public-api/types.js';
+
+export interface BehaviorContextHooks {readonly owner:{readonly active:boolean;readonly signal:AbortSignal};readonly get:(path:string)=>JsonValue;readonly set:(path:string,value:unknown)=>void;readonly batch:<T>(callback:()=>T)=>T;readonly refresh:(name:string)=>Promise<JsonValue>;readonly ref:(name:string)=>Element|undefined;readonly emit:(name:string,detail:JsonValue)=>void;readonly afterFlush:(callback:()=>void)=>()=>void;readonly diagnose:(error:unknown)=>void}
+export function createBehaviorContext(hooks:BehaviorContextHooks):ScopeApi {const live=():void=>{if(!hooks.owner.active){const error=new PlainUIError('OWNER_DISPOSED');hooks.diagnose(error);throw error;}};return Object.freeze({signal:hooks.owner.signal,get(path:string){live();return detachedSnapshot(hooks.get(path));},set(path:string,value:unknown){live();hooks.set(path,value);},batch<T>(callback:()=>T):T{live();return hooks.batch(callback);},refresh(name:string){live();return hooks.refresh(name);},refs:Object.freeze({get(name:string){live();return hooks.ref(name);}}),emit(name:string,detail:unknown){live();hooks.emit(name,normalizeJsBoundary(detail));},afterFlush(callback:()=>void){live();return hooks.afterFlush(()=>{if(hooks.owner.active)callback();});}});}

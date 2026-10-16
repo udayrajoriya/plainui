@@ -110,6 +110,8 @@ The sanitizer is mandatory for every fragment response, including same-origin re
 
 ## T069 Implement behavior factories and widget ownership
 
+**Status:** completed 16 October 2026. [Completion evidence](../../evidence/tasks/T069.md).
+
 **Depends on:** T024,T052. **Sources:** RFC §14. **Files:** `core/src/behaviors/{compile,mount,context}.ts`.
 
 1. Parse ui-use as ordered space-separated unique names; reject duplicate/unknown names. ui-options is a safe JSON object, not expression text.
