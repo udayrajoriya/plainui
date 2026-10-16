@@ -1707,7 +1707,7 @@
       ],
       "stepCount": 6,
       "acceptance": "`toast.text-only`, `toast.single-region`, `toast.queue-bound`, `toast.duration`, `toast.pause`, `toast.persistent-dismiss`, `toast.cleanup` pass, with screen-reader behavior reviewed in T092.",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "T072",

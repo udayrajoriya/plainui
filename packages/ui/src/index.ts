@@ -2,6 +2,7 @@ import type { AppScaffold, OfficialModuleBridge, OfficialModuleDefinition } from
 import {installUIRuntime} from './module.js';
 
 export {DialogController} from './dialog.js';
+export {ToastController} from './toast.js';
 export {UiRuntime} from './module.js';
 
 export const uiModule: OfficialModuleDefinition = Object.freeze({ name: 'ui', bridgeVersion: 1,setup:(app:AppScaffold)=>installUIRuntime(app) });
