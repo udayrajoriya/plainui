@@ -1964,7 +1964,7 @@
       ],
       "stepCount": 6,
       "acceptance": "identical API contract suite passes both servers; only intended envelope differences exist; fragments escape injected user values; servers start/stop cleanly on Windows/Linux.",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "T083",
