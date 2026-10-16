@@ -10,5 +10,5 @@ export type DiagnosticListener=(diagnostic:Diagnostic)=>void;
 export type NormalizedRequestError={readonly kind:'network'|'timeout'|'http'|'parse'|'validation'|'adapter'|'security';readonly status:number|null;readonly code:string|null;readonly message:string;readonly fields:Readonly<Record<string,readonly string[]>>;readonly retryable:boolean;readonly requestId:string|null};
 export type ResourceRecord={readonly data:ReadonlyJson;readonly status:'idle'|'loading'|'success'|'error';readonly loading:boolean;readonly refreshing:boolean;readonly error:NormalizedRequestError|null;readonly empty:boolean;readonly stale:boolean;readonly updatedAt:number|null};
 export type ActionRecord={readonly pending:boolean;readonly status:'idle'|'pending'|'success'|'error';readonly data:ReadonlyJson;readonly error:NormalizedRequestError|null};
-export type RouteRecord={readonly path:string;readonly params:Readonly<Record<string,string>>;readonly query:Readonly<Record<string,string>>};
+export type RouteRecord={readonly path:string;readonly params:Readonly<Record<string,string>>;readonly query:Readonly<Record<string,string|readonly string[]>>;readonly hash:string};
 export type ModuleInstaller=(app:{readonly status:'created'|'compiling'|'mounted'|'unmounting'|'unmounted'|'failed'})=>void;

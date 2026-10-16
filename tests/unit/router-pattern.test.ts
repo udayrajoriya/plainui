@@ -1,0 +1,8 @@
+import {expect,test} from 'vitest';
+import {compilePattern,comparePatterns,validatePatternAmbiguity} from '../../packages/router/src/pattern.js';
+import {parseLocation} from '../../packages/router/src/location.js';
+
+test('route.literal-rank and route.segment-rank compare left to right',()=>{expect([compilePattern('/users/:id'),compilePattern('/users/new')].sort(comparePatterns).map(x=>x.path)).toEqual(['/users/new','/users/:id']);expect([compilePattern('/a/:x/c'),compilePattern('/a/b/:y')].sort(comparePatterns).map(x=>x.path)).toEqual(['/a/b/:y','/a/:x/c']);});
+test('route.ambiguous rejects equal-specificity overlapping patterns',()=>{expect(()=>validatePatternAmbiguity([compilePattern('/p/:x'),compilePattern('/p/:y')])).toThrow();expect(()=>validatePatternAmbiguity([compilePattern('/p/a'),compilePattern('/p/b')])).not.toThrow();});
+test('route location decoding, queries and base boundaries are exact',()=>{const value=parseLocation('https://example.test/app/files/a%2Fb?q=1&q=2&q#part%20one','https://example.test/app/','history','/app/');expect(value.path).toBe('/files/a/b');expect(value.segments).toEqual(['files','a/b']);expect(value.query).toEqual({q:['1','2','']});expect(value.hash).toBe('part one');expect(()=>parseLocation('https://example.test/application/x','https://example.test/app/','history','/app')).toThrow();expect(()=>parseLocation('https://example.test/app/%zz','https://example.test/app/','history','/app')).toThrow();});
+test('hash mode parses inner path, query and anchor',()=>{const value=parseLocation('https://example.test/app/#/app/東京?q=a#target','https://example.test/app/','hash','/app');expect(value.path).toBe('/東京');expect(value.query).toEqual({q:'a'});expect(value.hash).toBe('target');});

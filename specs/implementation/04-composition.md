@@ -109,6 +109,8 @@ Component lexical scope, DOM ownership, and navigation lifetime are separate con
 
 ## T054 Compile route patterns and destination values
 
+**Status:** completed 16 October 2026. [Completion evidence](../../evidence/tasks/T054.md).
+
 **Depends on:** T004,T010,T053. **Sources:** RFC §10; C11. **Files:** `packages/router/src/{pattern,match,location}.ts`.
 
 1. Parse route segments into literal/parameter/final-catchall records; require `/` prefix except special `*`; validate parameter identifiers and unique names.

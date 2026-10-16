@@ -1304,7 +1304,8 @@
       ],
       "stepCount": 6,
       "acceptance": "`route.literal-rank`, `route.segment-rank`, `route.ambiguous`, `route.encoded-slash`, `route.bad-encoding`, `route.catchall-empty`, `route.query-array`, `route.base-boundary`, `route.fallback` pass.",
-      "status": "pending"
+      "status": "completed",
+      "evidence": "../../evidence/tasks/T054.md"
     },
     {
       "id": "T055",

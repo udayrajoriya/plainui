@@ -1,0 +1,11 @@
+import {PlainUIError} from '../../core/src/index.js';
+
+export type RouteQueryValue=string|readonly string[];
+export interface CandidateLocation {readonly url:URL;readonly path:string;readonly segments:readonly string[];readonly query:Readonly<Record<string,RouteQueryValue>>;readonly hash:string}
+const fail=():never=>{throw new PlainUIError('ROUTE_INVALID');};
+export function normalizeBasePath(value:string):string {if(!value.startsWith('/')||value.includes('?')||value.includes('#')||value.includes('\\'))return fail();const normalized=`/${value.split('/').filter(Boolean).join('/')}`;return normalized==='/'||normalized===''?'/':normalized;}
+function contained(path:string,base:string):boolean {return base==='/'||path===base||path.startsWith(`${base}/`);}
+function decode(value:string):string {try{return decodeURIComponent(value);}catch{return fail();}}
+function query(searchParams:URLSearchParams):Readonly<Record<string,RouteQueryValue>> {const result:Record<string,string|string[]>=Object.create(null);for(const [name,value] of searchParams){const current=result[name];if(current===undefined)result[name]=value;else if(Array.isArray(current))current.push(value);else result[name]=[current,value];}for(const value of Object.values(result))if(Array.isArray(value))Object.freeze(value);return Object.freeze(result);}
+
+export function parseLocation(input:string|URL,documentUrl:string|URL,mode:'history'|'hash',basePath='/'):CandidateLocation {const document=new URL(documentUrl),url=new URL(input,document);if(url.origin!==document.origin||!['http:','https:'].includes(url.protocol))return fail();const base=normalizeBasePath(basePath);let route:URL;if(mode==='hash'){const source=url.hash.startsWith('#/')?url.hash.slice(1):url.pathname+url.search+url.hash;route=new URL(source,'https://plainui.invalid');}else route=url;if(!contained(route.pathname,base))return fail();const raw=base==='/'?route.pathname:route.pathname.slice(base.length)||'/';const path=raw.length>1?raw.replace(/\/+$/u,''):raw;const segments=path==='/'?[]:path.slice(1).split('/').map(decode);const hash=decode(route.hash.startsWith('#')?route.hash.slice(1):route.hash);return Object.freeze({url,path:Object.freeze(segments).length?`/${segments.join('/')}`:'/',segments:Object.freeze(segments),query:query(route.searchParams),hash});}
