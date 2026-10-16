@@ -1,6 +1,7 @@
 import {PlainUIError,type AppScaffold,type ResolvedOptions,type ModuleRuntime} from '@plainui/runtime-bridge';
 import {DialogController} from './dialog.js';
 import {ToastController} from './toast.js';
+import {tabsBehavior} from './tabs.js';
 
 export class UiRuntime implements ModuleRuntime {
   private dialogs:DialogController|null=null;private toasts:ToastController|null=null;
@@ -8,4 +9,4 @@ export class UiRuntime implements ModuleRuntime {
   mount(root:Element,_options:ResolvedOptions):void {this.dialogs=new DialogController(root);this.toasts=new ToastController(root);}
   unmount():void {this.toasts?.dispose();this.toasts=null;this.dialogs?.dispose();this.dialogs=null;}
 }
-export function installUIRuntime(app:AppScaffold):void {app.installModuleRuntime(new UiRuntime());}
+export function installUIRuntime(app:AppScaffold):void {app.registerBehavior('tabs',tabsBehavior);app.installModuleRuntime(new UiRuntime());}

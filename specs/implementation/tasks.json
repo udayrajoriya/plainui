@@ -1729,7 +1729,7 @@
       ],
       "stepCount": 6,
       "acceptance": "`tabs.manual`, `tabs.automatic`, `tabs.rtl`, `tabs.vertical`, `tabs.disabled`, `tabs.active-removal`, `tabs.relationship-errors`, `tabs.cleanup` pass using keyboard and focus assertions.",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "T073",

@@ -8,6 +8,7 @@ export {PlainUIError,parseExpression,evaluate};
 export type {ResolvedOptions} from './config.js';
 export type {ModuleRuntime} from './integration.js';
 export type {RouteRecord} from './public-api/types.js';
+export type {BehaviorFactory,ReadonlyJson} from './public-api/types.js';
 
 declare const __PLAINUI_DEBUG__: boolean;
 
