@@ -259,6 +259,8 @@ Use the C08/C09 state machines and generation rules. No HTTP operation may commi
 
 ## T043 Implement explicit form reset snapshots
 
+**Status:** completed 16 October 2026. [Completion evidence](../../evidence/tasks/T043.md).
+
 **Depends on:** T015,T040,T042. **Sources:** RFC §9. **Files:** `forms/src/reset.ts`.
 
 1. After state/persistence/initial models resolve, capture immutable values for each distinct model path in the form. Deduplicate shared radio paths and overlapping parent/child paths deterministically by keeping the broadest captured path once.

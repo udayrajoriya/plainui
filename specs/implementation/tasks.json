@@ -1040,7 +1040,8 @@
       ],
       "stepCount": 6,
       "acceptance": "`reset.persisted-defaults`, `reset.only-bound-paths`, `reset.native-file`, `reset.canceled`, `reset.radio-once`, `reset.no-refetch`, `reset.remount` pass.",
-      "status": "pending"
+      "status": "completed",
+      "evidence": "../../evidence/tasks/T043.md"
     },
     {
       "id": "T044",
