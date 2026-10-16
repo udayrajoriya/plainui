@@ -1538,7 +1538,9 @@
       ],
       "stepCount": 6,
       "acceptance": "`fragment.required-target`, `fragment.cross-root`, `fragment.ignore`, `fragment.two-actions-latest`, `fragment.enhance-policy`, `fragment.resource-rejected`, `fragment.target-disposed` pass.",
-      "status": "pending"
+      "status": "completed",
+      "completedOn": "2026-10-16",
+      "evidence": "evidence/tasks/T064.md"
     },
     {
       "id": "T065",

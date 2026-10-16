@@ -35,6 +35,8 @@ The sanitizer is mandatory for every fragment response, including same-origin re
 
 ## T064 Compile fragment actions and arbitrate targets
 
+**Status:** completed 16 October 2026. [Completion evidence](../../evidence/tasks/T064.md).
+
 **Depends on:** T036,T037,T062. **Sources:** RFC §12; C12. **Files:** `fragments/src/{module,target,action-mode}.ts`.
 
 1. Implement installFragments(app), register HTML action response mode, and reject resource HTML mode or missing target ref.
