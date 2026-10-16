@@ -124,6 +124,8 @@ Component lexical scope, DOM ownership, and navigation lifetime are separate con
 
 ## T055 Install router and intercept eligible navigation
 
+**Status:** completed 16 October 2026. [Completion evidence](../../evidence/tasks/T055.md).
+
 **Depends on:** T017,T023,T054. **Sources:** RFC §§3,10; C03,C11. **Files:** `router/src/{module,links,native-navigation}.ts`.
 
 1. Implement installRouter(app), claim document router ownership, register route directives/navigation service, and release claim on unmount or failed boot.

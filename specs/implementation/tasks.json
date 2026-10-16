@@ -1328,7 +1328,8 @@
       ],
       "stepCount": 6,
       "acceptance": "`link.eligible`, `link.modified`, `link.external-target`, `link.hash-native`, `link.unmarked`, `router.second-root`, `navigate.native-fallback`, `router.initial-deep-link` pass.",
-      "status": "pending"
+      "status": "completed",
+      "evidence": "../../evidence/tasks/T055.md"
     },
     {
       "id": "T056",

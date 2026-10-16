@@ -13,6 +13,8 @@ export interface MountedModel {update():void;dispose():void}
 export interface ModelService {bind(mount:ModelMount):MountedModel}
 export interface ComponentRoot {discover():void;loadImports(urls:readonly string[],timeoutMs:number,signal:AbortSignal,record?:(url:string,fragment:DocumentFragment)=>void):Promise<void>;freeze():void;dispose():void;definition(name:string):unknown}
 export interface ComponentService {createRoot(root:Element,diagnose:(error:unknown)=>void):ComponentRoot}
+export interface NavigationService {beforeNavigate(guard:(url:string)=>boolean|Promise<boolean>):()=>void;navigate?(url:string):Promise<void>}
+export interface ModuleRuntime {mount(root:Element,options:ResolvedOptions):void;unmount():void;readonly navigation?:NavigationService}
 export interface ResourceService {createRoot(id:string,options:ResolvedOptions):ResourceRoot}
 export interface RequestService {
   send(request: Request, signal: AbortSignal): Promise<Response>;
@@ -35,5 +37,5 @@ export interface RuntimeServices {
   readonly components?:ComponentService;
   readonly dom: DomService;
   readonly actions: ActionService;
-  readonly navigation?: {beforeNavigate(guard:(url:string)=>boolean|Promise<boolean>):()=>void};
+  readonly navigation?: NavigationService;
 }

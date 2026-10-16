@@ -9,6 +9,7 @@ export type OfficialModuleName = 'router' | 'fragments' | 'ui';
 export interface OfficialModuleDefinition {
   readonly name: OfficialModuleName;
   readonly bridgeVersion: typeof MODULE_BRIDGE_VERSION;
+  readonly setup?:(app:AppScaffold)=>void;
 }
 
 export type AppScaffold=App;
@@ -58,6 +59,7 @@ export const officialModuleBridge: OfficialModuleBridge = Object.freeze({
     if (!record) throw new Error('PlainUI module installation requires an App from this runtime');
     if(app.status!=='created')throw new Error('PlainUI modules must be installed before mount');
     addModule(record.modules, definition);
+    definition.setup?.(app);
     return app;
   },
   registerClassic(definition: OfficialModuleDefinition): void {
@@ -72,6 +74,7 @@ export function createScaffoldApp(services: RuntimeServices,options:unknown={}):
   };
   const app=new App(options,()=>[...record.modules.keys()],services);
   apps.set(app, record);
+  for(const definition of record.modules.values())definition.setup?.(app);
   return app;
 }
 
