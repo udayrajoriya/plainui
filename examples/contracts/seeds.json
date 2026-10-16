@@ -1,0 +1,555 @@
+{
+  "schemaVersion": 1,
+  "sampleOnly": true,
+  "demoPassword": "plainui-demo",
+  "csrfToken": "plainui-demo-csrf",
+  "articles": [
+    {
+      "id": "a1",
+      "title": "Getting started",
+      "summary": "Plain HTML first",
+      "publishedAt": "2026-01-01T12:00:00Z"
+    },
+    {
+      "id": "a2",
+      "title": "Working with forms",
+      "summary": "Native controls and HTTP",
+      "publishedAt": "2026-01-02T12:00:00Z"
+    },
+    {
+      "id": "a3",
+      "title": "Reusable components",
+      "summary": "Explicit props and slots",
+      "publishedAt": "2026-01-03T12:00:00Z"
+    }
+  ],
+  "products": [
+    {
+      "id": "p1",
+      "name": "Notebook",
+      "description": "Plain paper notebook",
+      "priceCents": 1200,
+      "currency": "USD",
+      "stock": 10,
+      "imageUrl": "/images/notebook.svg"
+    },
+    {
+      "id": "p2",
+      "name": "Pen",
+      "description": "Black ink pen",
+      "priceCents": 250,
+      "currency": "USD",
+      "stock": 20,
+      "imageUrl": "/images/pen.svg"
+    },
+    {
+      "id": "p3",
+      "name": "Tote",
+      "description": "Cotton tote",
+      "priceCents": 1800,
+      "currency": "USD",
+      "stock": 0,
+      "imageUrl": "/images/tote.svg"
+    },
+    {
+      "id": "p4",
+      "name": "Sample product 4",
+      "description": "Pagination fixture",
+      "priceCents": 400,
+      "currency": "USD",
+      "stock": 10,
+      "imageUrl": "/images/notebook.svg"
+    },
+    {
+      "id": "p5",
+      "name": "Sample product 5",
+      "description": "Pagination fixture",
+      "priceCents": 500,
+      "currency": "USD",
+      "stock": 10,
+      "imageUrl": "/images/notebook.svg"
+    },
+    {
+      "id": "p6",
+      "name": "Sample product 6",
+      "description": "Pagination fixture",
+      "priceCents": 600,
+      "currency": "USD",
+      "stock": 10,
+      "imageUrl": "/images/notebook.svg"
+    },
+    {
+      "id": "p7",
+      "name": "Sample product 7",
+      "description": "Pagination fixture",
+      "priceCents": 700,
+      "currency": "USD",
+      "stock": 10,
+      "imageUrl": "/images/notebook.svg"
+    },
+    {
+      "id": "p8",
+      "name": "Sample product 8",
+      "description": "Pagination fixture",
+      "priceCents": 800,
+      "currency": "USD",
+      "stock": 10,
+      "imageUrl": "/images/notebook.svg"
+    },
+    {
+      "id": "p9",
+      "name": "Sample product 9",
+      "description": "Pagination fixture",
+      "priceCents": 900,
+      "currency": "USD",
+      "stock": 10,
+      "imageUrl": "/images/notebook.svg"
+    },
+    {
+      "id": "p10",
+      "name": "Sample product 10",
+      "description": "Pagination fixture",
+      "priceCents": 1000,
+      "currency": "USD",
+      "stock": 10,
+      "imageUrl": "/images/notebook.svg"
+    },
+    {
+      "id": "p11",
+      "name": "Sample product 11",
+      "description": "Pagination fixture",
+      "priceCents": 1100,
+      "currency": "USD",
+      "stock": 10,
+      "imageUrl": "/images/notebook.svg"
+    },
+    {
+      "id": "p12",
+      "name": "Sample product 12",
+      "description": "Pagination fixture",
+      "priceCents": 1200,
+      "currency": "USD",
+      "stock": 10,
+      "imageUrl": "/images/notebook.svg"
+    },
+    {
+      "id": "p13",
+      "name": "Sample product 13",
+      "description": "Pagination fixture",
+      "priceCents": 1300,
+      "currency": "USD",
+      "stock": 10,
+      "imageUrl": "/images/notebook.svg"
+    },
+    {
+      "id": "p14",
+      "name": "Sample product 14",
+      "description": "Pagination fixture",
+      "priceCents": 1400,
+      "currency": "USD",
+      "stock": 10,
+      "imageUrl": "/images/notebook.svg"
+    },
+    {
+      "id": "p15",
+      "name": "Sample product 15",
+      "description": "Pagination fixture",
+      "priceCents": 1500,
+      "currency": "USD",
+      "stock": 10,
+      "imageUrl": "/images/notebook.svg"
+    },
+    {
+      "id": "p16",
+      "name": "Sample product 16",
+      "description": "Pagination fixture",
+      "priceCents": 1600,
+      "currency": "USD",
+      "stock": 10,
+      "imageUrl": "/images/notebook.svg"
+    },
+    {
+      "id": "p17",
+      "name": "Sample product 17",
+      "description": "Pagination fixture",
+      "priceCents": 1700,
+      "currency": "USD",
+      "stock": 10,
+      "imageUrl": "/images/notebook.svg"
+    },
+    {
+      "id": "p18",
+      "name": "Sample product 18",
+      "description": "Pagination fixture",
+      "priceCents": 1800,
+      "currency": "USD",
+      "stock": 10,
+      "imageUrl": "/images/notebook.svg"
+    },
+    {
+      "id": "p19",
+      "name": "Sample product 19",
+      "description": "Pagination fixture",
+      "priceCents": 1900,
+      "currency": "USD",
+      "stock": 10,
+      "imageUrl": "/images/notebook.svg"
+    },
+    {
+      "id": "p20",
+      "name": "Sample product 20",
+      "description": "Pagination fixture",
+      "priceCents": 2000,
+      "currency": "USD",
+      "stock": 10,
+      "imageUrl": "/images/notebook.svg"
+    },
+    {
+      "id": "p21",
+      "name": "Sample product 21",
+      "description": "Pagination fixture",
+      "priceCents": 2100,
+      "currency": "USD",
+      "stock": 10,
+      "imageUrl": "/images/notebook.svg"
+    },
+    {
+      "id": "p22",
+      "name": "Sample product 22",
+      "description": "Pagination fixture",
+      "priceCents": 2200,
+      "currency": "USD",
+      "stock": 10,
+      "imageUrl": "/images/notebook.svg"
+    },
+    {
+      "id": "p23",
+      "name": "Sample product 23",
+      "description": "Pagination fixture",
+      "priceCents": 2300,
+      "currency": "USD",
+      "stock": 10,
+      "imageUrl": "/images/notebook.svg"
+    }
+  ],
+  "users": [
+    {
+      "id": "u1",
+      "email": "demo@example.test",
+      "name": "Demo User"
+    }
+  ],
+  "projects": [
+    {
+      "id": "pr1",
+      "name": "Website",
+      "description": "Public site redesign",
+      "updatedAt": "2026-01-01T12:00:00Z"
+    },
+    {
+      "id": "pr2",
+      "name": "Portal",
+      "description": "Customer portal",
+      "updatedAt": "2026-01-02T12:00:00Z"
+    },
+    {
+      "id": "pr3",
+      "name": "Sample project 3",
+      "description": "Pagination fixture",
+      "updatedAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "pr4",
+      "name": "Sample project 4",
+      "description": "Pagination fixture",
+      "updatedAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "pr5",
+      "name": "Sample project 5",
+      "description": "Pagination fixture",
+      "updatedAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "pr6",
+      "name": "Sample project 6",
+      "description": "Pagination fixture",
+      "updatedAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "pr7",
+      "name": "Sample project 7",
+      "description": "Pagination fixture",
+      "updatedAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "pr8",
+      "name": "Sample project 8",
+      "description": "Pagination fixture",
+      "updatedAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "pr9",
+      "name": "Sample project 9",
+      "description": "Pagination fixture",
+      "updatedAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "pr10",
+      "name": "Sample project 10",
+      "description": "Pagination fixture",
+      "updatedAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "pr11",
+      "name": "Sample project 11",
+      "description": "Pagination fixture",
+      "updatedAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "pr12",
+      "name": "Sample project 12",
+      "description": "Pagination fixture",
+      "updatedAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "pr13",
+      "name": "Sample project 13",
+      "description": "Pagination fixture",
+      "updatedAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "pr14",
+      "name": "Sample project 14",
+      "description": "Pagination fixture",
+      "updatedAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "pr15",
+      "name": "Sample project 15",
+      "description": "Pagination fixture",
+      "updatedAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "pr16",
+      "name": "Sample project 16",
+      "description": "Pagination fixture",
+      "updatedAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "pr17",
+      "name": "Sample project 17",
+      "description": "Pagination fixture",
+      "updatedAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "pr18",
+      "name": "Sample project 18",
+      "description": "Pagination fixture",
+      "updatedAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "pr19",
+      "name": "Sample project 19",
+      "description": "Pagination fixture",
+      "updatedAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "pr20",
+      "name": "Sample project 20",
+      "description": "Pagination fixture",
+      "updatedAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "pr21",
+      "name": "Sample project 21",
+      "description": "Pagination fixture",
+      "updatedAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "pr22",
+      "name": "Sample project 22",
+      "description": "Pagination fixture",
+      "updatedAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "pr23",
+      "name": "Sample project 23",
+      "description": "Pagination fixture",
+      "updatedAt": "2026-01-03T12:00:00Z"
+    }
+  ],
+  "activities": [
+    {
+      "id": "ac1",
+      "projectId": "pr1",
+      "message": "Project created",
+      "createdAt": "2026-01-01T12:00:00Z"
+    },
+    {
+      "id": "ac-pr3",
+      "projectId": "pr3",
+      "message": "Project created",
+      "createdAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "ac-pr4",
+      "projectId": "pr4",
+      "message": "Project created",
+      "createdAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "ac-pr5",
+      "projectId": "pr5",
+      "message": "Project created",
+      "createdAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "ac-pr6",
+      "projectId": "pr6",
+      "message": "Project created",
+      "createdAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "ac-pr7",
+      "projectId": "pr7",
+      "message": "Project created",
+      "createdAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "ac-pr8",
+      "projectId": "pr8",
+      "message": "Project created",
+      "createdAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "ac-pr9",
+      "projectId": "pr9",
+      "message": "Project created",
+      "createdAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "ac-pr10",
+      "projectId": "pr10",
+      "message": "Project created",
+      "createdAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "ac-pr11",
+      "projectId": "pr11",
+      "message": "Project created",
+      "createdAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "ac-pr12",
+      "projectId": "pr12",
+      "message": "Project created",
+      "createdAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "ac-pr13",
+      "projectId": "pr13",
+      "message": "Project created",
+      "createdAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "ac-pr14",
+      "projectId": "pr14",
+      "message": "Project created",
+      "createdAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "ac-pr15",
+      "projectId": "pr15",
+      "message": "Project created",
+      "createdAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "ac-pr16",
+      "projectId": "pr16",
+      "message": "Project created",
+      "createdAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "ac-pr17",
+      "projectId": "pr17",
+      "message": "Project created",
+      "createdAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "ac-pr18",
+      "projectId": "pr18",
+      "message": "Project created",
+      "createdAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "ac-pr19",
+      "projectId": "pr19",
+      "message": "Project created",
+      "createdAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "ac-pr20",
+      "projectId": "pr20",
+      "message": "Project created",
+      "createdAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "ac-pr21",
+      "projectId": "pr21",
+      "message": "Project created",
+      "createdAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "ac-pr22",
+      "projectId": "pr22",
+      "message": "Project created",
+      "createdAt": "2026-01-03T12:00:00Z"
+    },
+    {
+      "id": "ac-pr23",
+      "projectId": "pr23",
+      "message": "Project created",
+      "createdAt": "2026-01-03T12:00:00Z"
+    }
+  ],
+  "metrics": {
+    "labels": [
+      "Mon",
+      "Tue",
+      "Wed"
+    ],
+    "values": [
+      2,
+      4,
+      3
+    ]
+  },
+  "empty": {
+    "items": [],
+    "page": 99,
+    "pageSize": 10,
+    "total": 0
+  },
+  "upload": {
+    "fields": [
+      [
+        "caption",
+        "Sample upload"
+      ]
+    ],
+    "files": [
+      {
+        "field": "attachment",
+        "name": "empty.txt",
+        "size": 0,
+        "type": "text/plain"
+      }
+    ]
+  },
+  "articleBodies": {
+    "a1": "PlainUI begins with ordinary HTML. <strong>Enhancement is optional.</strong>",
+    "a2": "Use labels, native controls, and server validation.",
+    "a3": "Components use explicit props and caller-owned slots."
+  }
+}

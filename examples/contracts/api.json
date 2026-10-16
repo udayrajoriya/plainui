@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "pagination": { "defaultPage": 1, "pageSize": 10, "filter": "case-insensitive title/name substring", "unknownQuery": "ignore" },
+  "transport": { "jsonContentType": "application/json; charset=utf-8", "requestIdHeader": "x-request-id", "requestIdPattern": "^demo-[1-9][0-9]*$", "redirects": false },
+  "testControls": { "enabledOnlyInTestMode": true, "delayHeader": "x-plainui-test-delay", "errorHeader": "x-plainui-test-error", "reset": "POST /__test/reset" },
+  "uploads": { "maxRequestBytes": 2097152, "maxFileBytes": 1048576, "maxFiles": 4, "maxFields": 20, "maxFieldBytes": 1024, "temporaryOnly": true },
+  "endpoints": [
+    { "method": "GET", "path": "/api/articles", "query": ["q", "page"], "response": "Page<ArticleSummary>" },
+    { "method": "GET", "path": "/api/articles/:id", "response": "ArticleSummary", "errors": [404] },
+    { "method": "GET", "path": "/fragments/articles/:id", "response": "escaped text/html", "errors": [404] },
+    { "method": "GET", "path": "/api/products", "query": ["q", "page"], "response": "Page<Product>" },
+    { "method": "GET", "path": "/api/products/:id", "response": "Product", "errors": [404] },
+    { "method": "POST", "path": "/api/orders", "request": "CheckoutDraft", "response": "Order", "status": 201, "csrf": true, "errors": [409, 422] },
+    { "method": "GET", "path": "/api/orders/by-client-id/:id", "response": "Order", "errors": [404] },
+    { "method": "GET", "path": "/fragments/orders/:id", "response": "escaped text/html", "errors": [404] },
+    { "method": "POST", "path": "/api/session", "request": "Login", "response": "Session", "csrf": true, "cookie": true, "errors": [401, 422] },
+    { "method": "GET", "path": "/api/session", "response": "Session", "cookie": true, "errors": [401] },
+    { "method": "DELETE", "path": "/api/session", "response": "empty", "status": 204, "csrf": true, "cookie": true },
+    { "method": "GET", "path": "/api/projects", "query": ["page"], "response": "Page<Project>", "cookie": true, "errors": [401] },
+    { "method": "GET", "path": "/api/projects/:id", "response": "Project", "cookie": true, "errors": [401, 404] },
+    { "method": "PATCH", "path": "/api/projects/:id", "request": "ProjectPatch", "response": "Project", "cookie": true, "csrf": true, "errors": [401, 404, 422] },
+    { "method": "GET", "path": "/api/projects/:id/activity", "query": ["page"], "response": "Page<Activity>", "cookie": true, "errors": [401, 404] },
+    { "method": "GET", "path": "/api/projects/:id/metrics", "response": "Metrics", "cookie": true, "errors": [401, 404] },
+    { "method": "POST", "path": "/api/uploads", "request": "multipart", "response": "UploadMetadata", "errors": [413, 422] }
+  ],
+  "rules": {
+    "money": "integer minor units; USD",
+    "checkout": "aggregate duplicate product IDs; ignore supplied price/total; validate stock; decrement once; clientOrderId is idempotency key",
+    "project": "name trimmed length 3-80; description maximum 1000; accepted edit appends activity",
+    "session": "sample-only cookie session; HttpOnly; SameSite=Lax; every unsafe endpoint requires injected CSRF token; login rotates session ID; reload may rotate token"
+  },
+  "alternateEnvelope": { "adapter": "python-demo", "version": "1", "success": { "payload": "semantic response", "meta": { "requestId": "demo-N" } }, "error": { "error": { "type": "code", "detail": "message", "violations": [{ "field": "literal field", "messages": ["message"] }] }, "trace": "demo-N" } }
+}

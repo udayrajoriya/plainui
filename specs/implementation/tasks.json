@@ -1943,7 +1943,7 @@
       ],
       "stepCount": 6,
       "acceptance": "contract fixture validator accepts all seeded successes/errors and rejects malformed shapes; example requirements map to endpoints with no undefined backend behavior.",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "T082",

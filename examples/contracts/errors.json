@@ -1,0 +1,16 @@
+{
+  "identity": {
+    "validation": { "code": "VALIDATION", "message": "Check the form", "fields": { "email": ["Enter a valid email"] }, "requestId": "demo-7" },
+    "notFound": { "code": "NOT_FOUND", "message": "Record not found", "fields": {}, "requestId": "demo-8" },
+    "unauthorized": { "code": "UNAUTHORIZED", "message": "Sign in required", "fields": {}, "requestId": "demo-9" },
+    "conflict": { "code": "CONFLICT", "message": "Client order ID already has different content", "fields": { "clientOrderId": ["Use a new client order ID"] }, "requestId": "demo-10" }
+  },
+  "alternate": {
+    "validation": { "error": { "type": "VALIDATION", "detail": "Check the form", "violations": [{ "field": "email", "messages": ["Enter a valid email"] }] }, "trace": "demo-7" },
+    "notFound": { "error": { "type": "NOT_FOUND", "detail": "Record not found", "violations": [] }, "trace": "demo-8" },
+    "unauthorized": { "error": { "type": "UNAUTHORIZED", "detail": "Sign in required", "violations": [] }, "trace": "demo-9" },
+    "conflict": { "error": { "type": "CONFLICT", "detail": "Client order ID already has different content", "violations": [{ "field": "clientOrderId", "messages": ["Use a new client order ID"] }] }, "trace": "demo-10" }
+  },
+  "checkoutFields": ["email", "address", "items", "clientOrderId"],
+  "projectFields": ["name", "description"]
+}
