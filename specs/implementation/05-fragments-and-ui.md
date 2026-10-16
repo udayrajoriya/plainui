@@ -20,6 +20,8 @@ The sanitizer is mandatory for every fragment response, including same-origin re
 
 ## T063 Enforce Trusted Types and HTML sink isolation
 
+**Status:** completed 16 October 2026. [Completion evidence](../../evidence/tasks/T063.md).
+
 **Depends on:** T048,T062. **Sources:** RFC §15; C12. **Files:** `fragments/src/html-service.ts`, `core/src/html/template-service.ts`, `tests/security/trusted-types.spec.ts`.
 
 1. Promote T007's proven parsing services into production with private policy handles. Cache a single policy per runtime/document to avoid duplicate-name failures across roots.

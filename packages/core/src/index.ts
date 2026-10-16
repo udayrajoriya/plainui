@@ -7,7 +7,7 @@ export {parseExpression} from './expression/parse.js';
 export {evaluate} from './expression/evaluate.js';
 export {normalizeJsBoundary} from './json/normalize.js';
 export {detachedSnapshot} from './json/freeze.js';
-export {parseDeveloperImport} from './html/inert.js';
+export {TemplateHtmlService,parseDeveloperImport} from './html/template-service.js';
 export type {JsonValue} from './json/normalize.js';
 export type {AstNode} from './expression/ast.js';
 export type {LexicalReader,EvaluationOptions} from './expression/evaluate.js';

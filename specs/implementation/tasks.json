@@ -1513,7 +1513,9 @@
       ],
       "stepCount": 6,
       "acceptance": "`tt.core`, `tt.import`, `tt.fragment`, `tt.multiroot`, `tt.blocked-policy-preserves`, `tt.no-extra-sinks` pass; browsers without Trusted Types still sanitize identically.",
-      "status": "pending"
+      "status": "completed",
+      "completedOn": "2026-10-16",
+      "evidence": "evidence/tasks/T063.md"
     },
     {
       "id": "T064",
