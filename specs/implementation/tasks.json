@@ -1161,7 +1161,8 @@
       ],
       "stepCount": 6,
       "acceptance": "`import.once-per-root`, `import.nested-relative`, `import.cycle`, `import.cross-origin`, `import.redirect`, `import.script-style`, `import.timeout-localized`, `import.unmount` pass.",
-      "status": "pending"
+      "status": "completed",
+      "evidence": "../../evidence/tasks/T048.md"
     },
     {
       "id": "T049",

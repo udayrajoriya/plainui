@@ -19,6 +19,8 @@ Component lexical scope, DOM ownership, and navigation lifetime are separate con
 
 ## T048 Implement explicit component import graph
 
+**Status:** completed 16 October 2026. [Completion evidence](../../evidence/tasks/T048.md).
+
 **Depends on:** T007,T012,T029,T047. **Sources:** RFC §11; Design §10; C10. **Files:** `components/src/imports/{resolve,load,parse,graph}.ts`.
 
 1. Resolve top-level and nested import URLs using C10, enforce same origin and HTTP(S), remove URL hash, reject userinfo, and include canonical URL in root-local graph identity.

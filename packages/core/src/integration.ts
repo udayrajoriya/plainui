@@ -11,7 +11,7 @@ export interface MountedAction {dispose():void;resetSession():void}
 export interface ModelMount {readonly element:Element;readonly path:string;readonly owner:{readonly active:boolean;readonly signal:AbortSignal};readonly read:()=>JsonValue;readonly write:(value:JsonValue)=>void;readonly watch:(notify:()=>void)=>()=>void;readonly diagnose:(error:unknown)=>void}
 export interface MountedModel {update():void;dispose():void}
 export interface ModelService {bind(mount:ModelMount):MountedModel}
-export interface ComponentRoot {discover():void;freeze():void;dispose():void;definition(name:string):unknown}
+export interface ComponentRoot {discover():void;loadImports(urls:readonly string[],timeoutMs:number,signal:AbortSignal):Promise<void>;freeze():void;dispose():void;definition(name:string):unknown}
 export interface ComponentService {createRoot(root:Element,diagnose:(error:unknown)=>void):ComponentRoot}
 export interface ResourceService {createRoot(id:string,options:ResolvedOptions):ResourceRoot}
 export interface RequestService {

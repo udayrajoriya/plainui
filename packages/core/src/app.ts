@@ -17,7 +17,6 @@ import {setAttribute} from './bindings/attribute.js';
 import {ClassBinding} from './bindings/class.js';
 import {setShow} from './bindings/show.js';
 import type {StateObserver} from './state/store.js';
-import {parseDeveloperImport} from './html/inert.js';
 import {collectConditionalChains,ConditionalChain} from './structure/conditional.js';
 import {parseFor} from './structure/for-parser.js';
 import {KeyedList} from './structure/keyed-list.js';
@@ -132,12 +131,7 @@ export class App implements PlainUIApp {
       const job={owner:list.owner,run:()=>{keyReads=[];const result=evaluate(listAst,lexicalReader(parentScope),{locale:this.options!.locale,timeZone:this.options!.timeZone,formatters:this.extensions.formatterMap()});if(!result.ok){this.bus?.emit(result.code,{directive:'ui-for',ownerId:list.owner.id});return;}try{list.update(result.value);store.replaceDependencies(observer,[...new Set([...result.dependencies,...keyReads])].map(path=>({path})));}catch(error){this.diagnose(error);}}};
       this.tree!.registerDisposer(list.owner,()=>store.untrack(observer));job.run();
     }}
-  private async loadImports(result:CompileResult):Promise<void> {const tasks=result.plans.flatMap(plan=>plan.phase.components.filter(item=>item.name==='ui-import').map(async directive=>{
-      const controller=new AbortController();const signal=this.tree!.root.signal;const abort=()=>controller.abort();signal.addEventListener('abort',abort,{once:true});const timer=setTimeout(abort,5000);this.activeImports++;
-      try{const url=new URL(directive.value,plan.element.ownerDocument.baseURI);if(!['http:','https:'].includes(url.protocol)||url.origin!==new URL(plan.element.ownerDocument.baseURI).origin)throw new PlainUIError('COMPONENT_IMPORT');
-        const response=await fetch(url.href,{signal:controller.signal});if(!response.ok)throw new PlainUIError('COMPONENT_IMPORT');const markup=await response.text();if(!signal.aborted)this.imports.set(url.href,parseDeveloperImport(markup,plan.element.ownerDocument));
-      }catch{if(!signal.aborted)this.bus?.emit('COMPONENT_IMPORT',{directive:'ui-import'});}finally{clearTimeout(timer);signal.removeEventListener('abort',abort);this.activeImports--;}
-    }));await Promise.all(tasks);}
+  private async loadImports(result:CompileResult):Promise<void> {const urls=result.plans.flatMap(plan=>plan.phase.components.filter(item=>item.name==='ui-import').map(item=>item.value));if(!urls.length||!this.componentRoot)return;this.activeImports++;try{await this.componentRoot.loadImports(urls,this.options!.api.timeoutMs,this.tree!.root.signal);}finally{this.activeImports--;}}
   private nearest(element:Element|null):{owner:Owner;scope:Scope} {while(element){const owner=this.planOwners.get(element),scope=this.planScopes.get(element);if(owner?.active&&scope)return {owner,scope};element=element.parentElement;}return {owner:this.tree!.root,scope:this.scope!};}
   private activateExternal(node:Node):void {if(!(node instanceof Element))return;const base=this.nearest(node.parentElement);const compiled=compileTree(node);this.reportIssues(compiled);this.compileDeclarations(compiled,base.owner,base.scope);this.setupPersistence(compiled.plans);this.setupDerived(compiled.plans);this.setupResources(compiled.plans);this.setupActions(compiled.plans);this.setupModels(compiled.plans);this.bindRefs(compiled.plans);this.setupConditionals([node]);this.setupLists([node]);this.bindValues(compiled.plans);this.bindEvents(compiled.plans);this.activateActions(compiled.plans);for(const plan of compiled.plans){const resource=plan.phase.resources.find(item=>item.name==='ui-data');if(resource)(this.planScopes.get(plan.element)?.resources.get(resource.value) as MountedResource|undefined)?.activate();}}
   private observe():void {this.observer=new RootObserver(this.root!,this.tree!,{
@@ -146,7 +140,7 @@ export class App implements PlainUIApp {
     removed:(node,owner)=>{if(node===owner.host||node===owner.range?.start||node===owner.range?.end){if(owner===this.tree!.root)this.tree!.unindexNode(owner,node);else this.tree!.dispose(owner);}else this.tree!.unindexNode(owner,node);},
     directiveChanged:(element,name)=>{const ownerId=this.tree!.ownerOf(element)?.id;this.bus?.emit('DECLARATION_CHANGED',{directive:name,...(ownerId===undefined?{}:{ownerId})});},
   });}
-  private diagnose(error:unknown):void {this.bus?.emit(error instanceof PlainUIError?error.code:'COMMAND_ERROR');}
+  private diagnose(error:unknown):void {this.bus?.emit(error instanceof PlainUIError?error.code:'COMMAND_ERROR',error instanceof PlainUIError&&'location' in error&&typeof error.location==='string'?{location:error.location}:{});}
   unmount():void {if(this.status==='unmounted'||this.status==='unmounting')return;if(this.status==='compiling')this.rejectReady(new PlainUIError('OWNER_DISPOSED'));this.status='unmounting';this.release();this.status='unmounted';}
   private release():void {this.observer?.disconnect();for(const action of this.mountedActions)action.dispose();this.mountedActions.clear();this.resourceRoot?.dispose();this.mountedResources.clear();this.componentRoot?.dispose();this.componentRoot=null;this.scheduler?.dispose();this.tree?.dispose(this.tree.root);if(this.root)this.registry?.roots.delete(this.root);if(this.name)this.registry?.names.delete(this.name);this.bus?.clear();this.listeners.clear();}
   private live():void {if(!this.tree?.root.active||this.status==='unmounted'||this.status==='unmounting'||this.status==='failed')throw new PlainUIError('OWNER_DISPOSED');}
