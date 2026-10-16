@@ -1113,7 +1113,8 @@
       ],
       "stepCount": 6,
       "acceptance": "complete M2 evidence with recorded seeds, request timelines, form browser outcomes, and zero-leak assertions.",
-      "status": "pending"
+      "status": "completed",
+      "evidence": "../../evidence/milestones/M2.md"
     },
     {
       "id": "T047",

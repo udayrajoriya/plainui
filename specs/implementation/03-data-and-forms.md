@@ -304,6 +304,8 @@ Use the C08/C09 state machines and generation rules. No HTTP operation may commi
 
 ## T046 Close data and form race conformance
 
+**Status:** completed 16 October 2026. [M2 evidence](../../evidence/milestones/M2.md).
+
 **Depends on:** T035,T038,T045. **Sources:** RFC §18; Design §15. **Files:** `tests/integration/data-forms.spec.ts`, `evidence/milestones/M2.md`.
 
 1. Generate seeded schedules of at least 500 cases combining dependency changes, response order, adapter delays, refresh, mutation invalidation, disposal, and session reset.

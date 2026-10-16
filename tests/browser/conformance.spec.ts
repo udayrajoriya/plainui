@@ -18,7 +18,9 @@ test('harness.race: named barriers release in reverse request order', async ({ p
     await page.goto(server.origins[0]!);
     await page.evaluate(({origin})=>{(window as typeof window & {results:string[]}).results=[];for(const name of ['a','b'])void fetch(`${origin}/${name}`).then(r=>r.json()).then(v=>(window as typeof window & {results:string[]}).results.push(v));},{origin:server.origins[0]});
     await waitForPredicate(()=>server.pendingBarriers,count=>count===2,1000,'two held responses');
-    server.release('second');server.release('first');
+    server.release('second');
+    await waitForPredicate(()=>page.evaluate(()=>(window as typeof window & {results:string[]}).results),value=>value.length===1,1000,'second response accepted first');
+    server.release('first');
     const results=await waitForPredicate(()=>page.evaluate(()=>(window as typeof window & {results:string[]}).results),value=>value.length===2,1000,'two completed responses');
     expect(results).toEqual(['B','A']);
     expect(server.requests).toHaveLength(2);
