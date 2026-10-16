@@ -1,0 +1,10 @@
+import {HistoryIndex} from './index.js';
+
+export interface TraversalHandlers {readonly accept:(url:URL,state:{readonly index:number;readonly routeKey:string;readonly scroll:readonly [number,number]})=>Promise<boolean>;readonly unknown:(url:URL)=>void}
+export class HistoryTraversal {
+  private active=false;private correcting:number|null=null;private lastEvent='';private previousRestoration:ScrollRestoration='auto';private readonly listener=()=>{void this.changed();};
+  constructor(private readonly view:Window,readonly index:HistoryIndex,private readonly handlers:TraversalHandlers,private readonly hashMode=false){}
+  start(routeKey:string):void {if(this.active)return;this.active=true;this.previousRestoration=this.view.history.scrollRestoration;this.view.history.scrollRestoration='manual';this.index.adopt(routeKey);this.view.addEventListener('popstate',this.listener);if(this.hashMode)this.view.addEventListener('hashchange',this.listener);}
+  private async changed():Promise<void> {if(!this.active)return;const state=this.index.owned(this.view.history.state),signature=`${this.view.location.href}|${state?.index??'unknown'}`;if(signature===this.lastEvent)return;this.lastEvent=signature;queueMicrotask(()=>{if(this.lastEvent===signature)this.lastEvent='';});if(this.correcting!==null&&state?.index===this.correcting){this.index.accept(state.index);this.correcting=null;return;}if(!state){this.handlers.unknown(new URL(this.view.location.href));return;}const committed=this.index.index;if(await this.handlers.accept(new URL(this.view.location.href),state)){if(this.active)this.index.accept(state.index);return;}if(!this.active)return;const delta=committed-state.index;if(delta){this.correcting=committed;this.view.history.go(delta);}}
+  stop():void {if(!this.active)return;this.active=false;this.view.removeEventListener('popstate',this.listener);if(this.hashMode)this.view.removeEventListener('hashchange',this.listener);this.view.history.scrollRestoration=this.previousRestoration;this.correcting=null;}
+}

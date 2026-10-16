@@ -154,6 +154,8 @@ Component lexical scope, DOM ownership, and navigation lifetime are separate con
 
 ## T057 Implement history indexing and canceled traversal restoration
 
+**Status:** completed 16 October 2026. [Completion evidence](../../evidence/tasks/T057.md).
+
 **Depends on:** T056. **Sources:** RFC §10; Design §11; C11. **Files:** `router/src/history/{state,index,traverse}.ts`.
 
 1. Adopt initial entry with replaceState, merging `__plainui:{rootSession,index,routeKey,scroll}` into existing history.state. Preserve unrelated state fields.

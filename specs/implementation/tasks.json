@@ -1373,7 +1373,8 @@
       ],
       "stepCount": 6,
       "acceptance": "`history.preserve-state`, `history.push-count`, `history.cancel-back`, `history.cancel-forward`, `history.no-guard-on-correction`, `history.rapid-traversal`, `history.unknown-entry`, `history.hash-dedup` pass in real browsers.",
-      "status": "pending"
+      "status": "completed",
+      "evidence": "../../evidence/tasks/T057.md"
     },
     {
       "id": "T058",
