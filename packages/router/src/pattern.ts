@@ -1,4 +1,4 @@
-import {PlainUIError} from '../../core/src/index.js';
+import {PlainUIError} from '@plainui/runtime-bridge';
 
 export type RouteSegment={readonly kind:'literal';readonly value:string}|{readonly kind:'parameter'|'catchall';readonly name:string};
 export interface RoutePattern {readonly source:string;readonly path:string;readonly segments:readonly RouteSegment[];readonly fallback:boolean}

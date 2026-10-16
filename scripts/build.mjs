@@ -20,14 +20,15 @@ function slash(path) {
   return path.split(sep).join('/');
 }
 
-function bridgeImportPlugin() {
+function bridgeImportPlugin(kind) {
   return {
     name: 'plainui-official-bridge',
     setup(pluginBuild) {
-      pluginBuild.onResolve({ filter: /^@plainui\/runtime-bridge$/ }, () => ({
-        path: './plainui.mjs',
-        external: true,
-      }));
+      pluginBuild.onResolve({ filter: /^@plainui\/runtime-bridge$/ }, () => ({ path: 'runtime-bridge', namespace: 'plainui-bridge' }));
+      pluginBuild.onResolve({filter:/^\.\/plainui\.mjs$/,namespace:'plainui-bridge'},()=>({path:'./plainui.mjs',external:true}));
+      pluginBuild.onLoad({filter:/.*/,namespace:'plainui-bridge'},()=>({loader:'js',contents:kind==='esm'
+        ? `import {getModuleBridge} from './plainui.mjs';const bridge=getModuleBridge();export {getModuleBridge};export const PlainUIError=bridge.PlainUIError,parseExpression=bridge.parseExpression,evaluate=bridge.evaluate;`
+        : `const bridge=globalThis.PlainUI?.__moduleBridge_v1;export const getModuleBridge=()=>bridge,PlainUIError=bridge?.PlainUIError,parseExpression=bridge?.parseExpression,evaluate=bridge?.evaluate;`}));
     },
   };
 }
@@ -53,7 +54,7 @@ async function buildVariant(directory, debug) {
         metafile: true,
         logLevel: 'silent',
         define: { __PLAINUI_DEBUG__: String(debug) },
-        plugins: kind === 'esm' && entry.name !== 'plainui' ? [bridgeImportPlugin()] : [],
+        plugins: entry.name !== 'plainui' ? [bridgeImportPlugin(kind)] : [],
       });
       const output = result.metafile.outputs[slash(relative(root, file))];
       if (!output) throw new Error(`Missing esbuild metadata for ${file}`);

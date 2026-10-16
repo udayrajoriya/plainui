@@ -1,4 +1,4 @@
-import {PlainUIError} from '../../core/src/index.js';
+import {PlainUIError} from '@plainui/runtime-bridge';
 
 export type RouteQueryValue=string|readonly string[];
 export interface CandidateLocation {readonly url:URL;readonly path:string;readonly segments:readonly string[];readonly query:Readonly<Record<string,RouteQueryValue>>;readonly hash:string}

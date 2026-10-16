@@ -1,4 +1,4 @@
-import {PlainUIError} from '../../core/src/index.js';
+import {PlainUIError} from '@plainui/runtime-bridge';
 import {FragmentHtmlService} from './html-service.js';
 import type {FragmentSwapMode} from './action-mode.js';
 

@@ -1,4 +1,4 @@
-import {PlainUIError} from '../../core/src/index.js';
+import {PlainUIError} from '@plainui/runtime-bridge';
 import type {FragmentCandidate} from './candidate.js';
 import type {FragmentSwapMode} from './action-mode.js';
 import type {FragmentTarget,TargetArbiter} from './target.js';

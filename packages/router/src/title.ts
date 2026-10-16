@@ -1,4 +1,3 @@
-import {evaluate,parseExpression,PlainUIError} from '../../core/src/index.js';
-import type {RouteRecord} from '../../core/src/public-api/types.js';
+import {evaluate,parseExpression,PlainUIError,type RouteRecord} from '@plainui/runtime-bridge';
 
 export function applyRouteTitle(template:HTMLTemplateElement,route:RouteRecord,locale='en-US',timeZone='UTC'):void {const source=template.getAttribute('ui-title')??template.getAttribute('data-ui-title');if(source===null)return;let ast;try{ast=parseExpression(source);}catch{throw new PlainUIError('ROUTE_INVALID');}const result=evaluate(ast,{read:name=>name==='$route'||name==='route'?{found:true,value:route as any}:{found:false,value:null}},{locale,timeZone,formatters:new Map()});if(!result.ok||result.value!==null&&!['string','number','boolean'].includes(typeof result.value))throw new PlainUIError('ROUTE_INVALID');template.ownerDocument.title=result.value===null?'':String(result.value);}

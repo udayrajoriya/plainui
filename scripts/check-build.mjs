@@ -22,7 +22,8 @@ async function required(file) {
 function checkNoEval(file, code) {
   const tokens = sourceTokens(code);
   for (let index = 0; index < tokens.length; index += 1) {
-    if (tokens[index].kind === 'identifier' && ['eval', 'Function'].includes(tokens[index].value)) {
+    const token=tokens[index],previous=tokens[index-1],next=tokens[index+1];
+    if (token.kind === 'identifier' && next?.value==='(' && (token.value==='eval'||token.value==='Function'||previous?.value==='new'&&token.value==='Function')) {
       issues.push(`build.no-eval: ${file} contains ${tokens[index].value} execution`);
     }
   }

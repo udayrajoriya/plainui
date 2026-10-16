@@ -1,4 +1,4 @@
-import {PlainUIError} from '../../core/src/index.js';
+import {PlainUIError} from '@plainui/runtime-bridge';
 
 export type FragmentSwapMode='inner'|'outer'|'before'|'after'|'append'|'prepend';
 export interface FragmentActionMode {readonly targetRef:string;readonly swap:FragmentSwapMode;readonly enhance:boolean}

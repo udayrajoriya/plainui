@@ -1,4 +1,4 @@
-import {PlainUIError} from '../../core/src/index.js';
+import {PlainUIError} from '@plainui/runtime-bridge';
 
 interface DialogRecord {readonly dialog:HTMLDialogElement;opener:HTMLElement|null;readonly close:()=>void}
 function fail():never {throw new PlainUIError('UI_INVALID');}

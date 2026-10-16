@@ -1,5 +1,4 @@
-import {PlainUIError} from '../../../core/src/index.js';
-import type {RouteRecord} from '../../../core/src/public-api/types.js';
+import {PlainUIError,type RouteRecord} from '@plainui/runtime-bridge';
 
 export interface NavigationGuardContext {readonly from:RouteRecord|null;readonly to:RouteRecord;readonly signal:AbortSignal}
 export type NavigationGuard=(context:NavigationGuardContext)=>boolean|void|Promise<boolean|void>;

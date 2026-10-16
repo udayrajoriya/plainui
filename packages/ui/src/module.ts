@@ -1,7 +1,4 @@
-import type {App} from '../../core/src/app.js';
-import type {ResolvedOptions} from '../../core/src/config.js';
-import type {ModuleRuntime} from '../../core/src/integration.js';
-import {PlainUIError} from '../../core/src/index.js';
+import {PlainUIError,type AppScaffold,type ResolvedOptions,type ModuleRuntime} from '@plainui/runtime-bridge';
 import {DialogController} from './dialog.js';
 
 export class UiRuntime implements ModuleRuntime {
@@ -10,4 +7,4 @@ export class UiRuntime implements ModuleRuntime {
   mount(root:Element,_options:ResolvedOptions):void {this.dialogs=new DialogController(root);}
   unmount():void {this.dialogs?.dispose();this.dialogs=null;}
 }
-export function installUIRuntime(app:App):void {app.installModuleRuntime(new UiRuntime());}
+export function installUIRuntime(app:AppScaffold):void {app.installModuleRuntime(new UiRuntime());}

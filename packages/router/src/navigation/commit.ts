@@ -1,4 +1,4 @@
-import {PlainUIError} from '../../../core/src/index.js';
+import {PlainUIError} from '@plainui/runtime-bridge';
 import type {NavigationPreparer} from './prepare.js';
 import type {PreparedNavigation} from './transaction.js';
 import type {RouteView} from '../view.js';

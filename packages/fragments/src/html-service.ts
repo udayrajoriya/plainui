@@ -1,5 +1,5 @@
 import createDOMPurify from 'dompurify';
-import {PlainUIError} from '../../core/src/index.js';
+import {PlainUIError} from '@plainui/runtime-bridge';
 import {allowedFragmentAttribute} from './attributes.js';
 import {createFragmentPolicy,validateFragmentElement,type FragmentPolicy} from './policy.js';
 import {allowedFragmentTag,DROPPED_FRAGMENT_SUBTREES,REMOVED_METADATA_TAGS} from './tags.js';

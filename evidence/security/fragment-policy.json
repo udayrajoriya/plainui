@@ -7,7 +7,7 @@
   },
   "policy": {
     "algorithm": "sha256",
-    "hash": "01490e4c521ed02b88b50d12e5b7c7197565a0adf0790b8f21abd72edd7eebc4",
+    "hash": "3031a17d0c5d687e1e59d74cf87715f6c7ddb910fad2cd922bf6b6d5132e18ce",
     "files": [
       "packages/fragments/src/tags.ts",
       "packages/fragments/src/attributes.ts",

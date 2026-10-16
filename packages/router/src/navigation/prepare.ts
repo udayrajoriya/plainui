@@ -1,5 +1,4 @@
-import {PlainUIError} from '../../../core/src/index.js';
-import type {RouteRecord} from '../../../core/src/public-api/types.js';
+import {PlainUIError,type RouteRecord} from '@plainui/runtime-bridge';
 import type {RouteMatch} from '../match.js';
 import {GuardRegistry,type NavigationGuard} from './guards.js';
 import type {PreparedNavigation} from './transaction.js';

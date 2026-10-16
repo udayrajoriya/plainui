@@ -1,4 +1,4 @@
-import {PlainUIError} from '../../core/src/index.js';
+import {PlainUIError} from '@plainui/runtime-bridge';
 import {allowedFragmentAttribute} from './attributes.js';
 import {allowedFragmentTag} from './tags.js';
 

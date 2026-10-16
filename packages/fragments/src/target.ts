@@ -1,4 +1,4 @@
-import {PlainUIError} from '../../core/src/index.js';
+import {PlainUIError} from '@plainui/runtime-bridge';
 
 export interface FragmentTarget {readonly element:Element;readonly owner:object;readonly generation:number;readonly signal:AbortSignal;readonly lifetime?:AbortSignal}
 interface Generation {value:number;controller:AbortController|null}

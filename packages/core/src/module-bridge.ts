@@ -1,5 +1,13 @@
 import type { RuntimeServices } from './integration.js';
 import {App} from './app.js';
+import {PlainUIError} from './diagnostics/codes.js';
+import {parseExpression} from './expression/parse.js';
+import {evaluate} from './expression/evaluate.js';
+
+export {PlainUIError,parseExpression,evaluate};
+export type {ResolvedOptions} from './config.js';
+export type {ModuleRuntime} from './integration.js';
+export type {RouteRecord} from './public-api/types.js';
 
 declare const __PLAINUI_DEBUG__: boolean;
 
@@ -48,12 +56,18 @@ function addModule(
 
 export interface OfficialModuleBridge {
   readonly version: typeof MODULE_BRIDGE_VERSION;
+  readonly PlainUIError:typeof PlainUIError;
+  readonly parseExpression:typeof parseExpression;
+  readonly evaluate:typeof evaluate;
   install<T extends AppScaffold>(app: T, definition: OfficialModuleDefinition): T;
   registerClassic(definition: OfficialModuleDefinition): void;
 }
 
 export const officialModuleBridge: OfficialModuleBridge = Object.freeze({
   version: MODULE_BRIDGE_VERSION,
+  PlainUIError,
+  parseExpression,
+  evaluate,
   install<T extends AppScaffold>(app: T, definition: OfficialModuleDefinition): T {
     const record = apps.get(app);
     if (!record) throw new Error('PlainUI module installation requires an App from this runtime');
