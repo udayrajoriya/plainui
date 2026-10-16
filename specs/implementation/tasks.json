@@ -1874,7 +1874,7 @@
       ],
       "stepCount": 6,
       "acceptance": "all schema entries appear once, no orphan exports, valid snippets validate, deliberately invalid examples carry expected codes, and generation produces no diff.",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "T079",

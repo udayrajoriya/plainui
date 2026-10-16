@@ -1,0 +1,3 @@
+import type {PlainUIApp,ScopeApi,ReadonlyJson,SafeEventSnapshot,CommandContext,BehaviorFactory,AdapterDefinition,NormalizedRequestError,ResourceRecord,ActionRecord,RouteRecord,ModuleInstaller,AppScaffold,OfficialModuleBridge} from '../../packages/runtime/src/esm.js';
+declare const app:PlainUIApp,scope:ScopeApi,value:ReadonlyJson,event:SafeEventSnapshot,command:CommandContext,behavior:BehaviorFactory,adapter:AdapterDefinition,error:NormalizedRequestError,resource:ResourceRecord,action:ActionRecord,route:RouteRecord,installer:ModuleInstaller,scaffold:AppScaffold,bridge:OfficialModuleBridge;
+void [app,scope,value,event,command,behavior,adapter,error,resource,action,route,installer,scaffold,bridge];

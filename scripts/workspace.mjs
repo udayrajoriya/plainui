@@ -62,6 +62,7 @@ if (task in deferred) {
   runNode(join(root, 'scripts', 'check-boundaries.mjs'));
 } else if (task === 'check:generated') {
   runNode(join(root, 'scripts', 'generate-schema.mjs'), ['--check']);
+  if (process.exitCode === 0) runNode(join(root, 'scripts', 'generate-reference.mjs'), ['--check']);
 } else {
   console.error(`Unknown workspace task: ${task ?? '(missing)'}`);
   process.exitCode = 1;
