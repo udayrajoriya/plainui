@@ -10,6 +10,8 @@ export {resolveFragmentTarget,TargetArbiter} from './target.js';
 export type {FragmentTarget} from './target.js';
 export {FragmentCandidate,prepareFragmentCandidate} from './candidate.js';
 export type {FragmentCandidateOptions} from './candidate.js';
+export {commitFragmentSwap} from './swap.js';
+export type {CommittedFragmentRange,FragmentSwapHooks,FragmentSwapOptions} from './swap.js';
 export {FragmentRuntime} from './module.js';
 
 export const fragmentsModule: OfficialModuleDefinition = Object.freeze({ name: 'fragments', bridgeVersion: 1,setup:(app:AppScaffold)=>installFragmentsRuntime(app) });

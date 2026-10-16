@@ -65,6 +65,8 @@ The sanitizer is mandatory for every fragment response, including same-origin re
 
 ## T066 Commit all six swap modes transactionally
 
+**Status:** completed 16 October 2026. [Completion evidence](../../evidence/tasks/T066.md).
+
 **Depends on:** T012,T014,T065. **Sources:** RFC §12; C12. **Files:** `fragments/src/swap.ts`.
 
 1. Recheck owner/action/target generations, epoch, destination connectivity, and ownership restrictions immediately before commit.

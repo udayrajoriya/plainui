@@ -1589,7 +1589,9 @@
       ],
       "stepCount": 6,
       "acceptance": "`swap.inner-owner-retained`, `swap.outer-ref`, `swap.before-after-lifetime`, `swap.append-prepend-order`, `swap.stale-candidate`, `swap.activation-failure-local`, `swap.observer-once` pass.",
-      "status": "pending"
+      "status": "completed",
+      "completedOn": "2026-10-16",
+      "evidence": "evidence/tasks/T066.md"
     },
     {
       "id": "T067",
