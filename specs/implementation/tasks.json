@@ -1490,7 +1490,8 @@
       ],
       "stepCount": 7,
       "acceptance": "`sanitize.tags-exact`, `sanitize.attrs-exact`, `sanitize.subtree-vs-unwrap`, `sanitize.data-ui-bypass`, `sanitize.urls-encoded`, `sanitize.blank-rel`, `sanitize.form-origin`, `sanitize.namespace` pass.",
-      "status": "pending"
+      "status": "completed",
+      "evidence": "../../evidence/tasks/T062.md"
     },
     {
       "id": "T063",

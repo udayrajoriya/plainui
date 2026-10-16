@@ -4,6 +4,8 @@ The sanitizer is mandatory for every fragment response, including same-origin re
 
 ## T062 Implement the sanitizer adapter and exact allowlist
 
+**Status:** completed 16 October 2026. [Completion evidence](../../evidence/tasks/T062.md).
+
 **Depends on:** T004,T007,T061. **Sources:** RFC §12; Design §12; C12. **Files:** `packages/fragments/src/{sanitize,policy,tags,attributes}.ts`.
 
 1. Instantiate DOMPurify privately per document; do not mutate an application-owned global sanitizer. Register hooks once and remove instance references on final document release.

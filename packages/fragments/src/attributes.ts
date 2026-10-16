@@ -1,0 +1,8 @@
+import {FRAGMENT_ATTRIBUTES,bindSinkAllowed,resolveDirective} from '../../schema/src/index.js';
+
+const ordinary=new Set(FRAGMENT_ATTRIBUTES);
+const prohibited=new Set(['style','srcdoc','formaction','formtarget']);
+const enhancedExact=new Set('ui-state ui-derived ui-value ui-text ui-src ui-href ui-class ui-show ui-model ui-field-error ui-if ui-else-if ui-else ui-for ui-key ui-data ui-get ui-post ui-put ui-patch ui-delete ui-load ui-query ui-headers ui-body ui-adapter ui-credentials ui-timeout ui-cache ui-retry ui-action ui-trigger ui-concurrency ui-debounce ui-invalidate ui-encoding ui-response ui-target ui-swap ui-enhance ui-ref ui-ignore ui-cloak ui-use ui-options'.split(' '));
+function canonical(name:string):string {return name.startsWith('data-ui-')?name.slice(5):name;}
+export function allowedEnhancedDirective(name:string):boolean {const value=canonical(name);if(enhancedExact.has(value))return true;if(value.startsWith('ui-bind-'))return bindSinkAllowed(value.slice(8))&&Boolean(resolveDirective(value));if(value.startsWith('ui-on:')||value.startsWith('ui-prop-'))return Boolean(resolveDirective(value));return false;}
+export function allowedFragmentAttribute(name:string,tag:string,enhanced:boolean,componentProps:ReadonlyMap<string,ReadonlySet<string>>):boolean {name=name.toLowerCase();if(name.startsWith('on')||prohibited.has(name))return false;if(name.startsWith('ui-')||name.startsWith('data-ui-'))return enhanced&&allowedEnhancedDirective(name);if(ordinary.has(name))return true;if(name.startsWith('aria-'))return /^[a-z0-9_.:-]+$/u.test(name.slice(5));if(name.startsWith('data-'))return !name.startsWith('data-ui-')&&/^[a-z0-9_.:-]+$/u.test(name.slice(5));return enhanced&&(componentProps.get(tag)?.has(name)??false);}
