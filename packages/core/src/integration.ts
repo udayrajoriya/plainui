@@ -11,6 +11,8 @@ export interface MountedAction {dispose():void;resetSession():void}
 export interface ModelMount {readonly element:Element;readonly path:string;readonly owner:{readonly active:boolean;readonly signal:AbortSignal};readonly read:()=>JsonValue;readonly write:(value:JsonValue)=>void;readonly watch:(notify:()=>void)=>()=>void;readonly diagnose:(error:unknown)=>void}
 export interface MountedModel {update():void;dispose():void}
 export interface ModelService {bind(mount:ModelMount):MountedModel}
+export interface ComponentRoot {discover():void;freeze():void;dispose():void;definition(name:string):unknown}
+export interface ComponentService {createRoot(root:Element,diagnose:(error:unknown)=>void):ComponentRoot}
 export interface ResourceService {createRoot(id:string,options:ResolvedOptions):ResourceRoot}
 export interface RequestService {
   send(request: Request, signal: AbortSignal): Promise<Response>;
@@ -30,6 +32,7 @@ export interface RuntimeServices {
   readonly request: RequestService;
   readonly resources?:ResourceService;
   readonly models?:ModelService;
+  readonly components?:ComponentService;
   readonly dom: DomService;
   readonly actions: ActionService;
   readonly navigation?: {beforeNavigate(guard:(url:string)=>boolean|Promise<boolean>):()=>void};

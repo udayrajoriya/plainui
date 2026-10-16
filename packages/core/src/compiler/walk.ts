@@ -6,8 +6,8 @@ export interface CompileResult {readonly plans:BindingPlan[];readonly issues:Arr
 export function compileTree(root:Element):CompileResult {
   const plans:BindingPlan[]=[];const issues:Array<DirectiveIssue&{element:Element}>=[];
   const visit=(element:Element):void=>{const normalized=normalizeElement(element);issues.push(...normalized.issues);issues.push(...validateElement(element,normalized.directives).map(issue=>({...issue,element})));
-    if(!issues.some(issue=>issue.element===element))plans.push(createPlan(element,normalized.directives));
-    const names=new Set(normalized.directives.map(item=>item.name));if(names.has('ui-ignore')||names.has('ui-component')||names.has('ui-import')||names.has('ui-route'))return;
+    const names=new Set(normalized.directives.map(item=>item.name));if(!issues.some(issue=>issue.element===element)&&!names.has('ui-component'))plans.push(createPlan(element,normalized.directives));
+    if(names.has('ui-ignore')||names.has('ui-component')||names.has('ui-import')||names.has('ui-route'))return;
     const children=element instanceof HTMLTemplateElement?element.content.children:element.children;for(const child of children)visit(child);
   };visit(root);return {plans,issues,fatal:issues.some(issue=>issue.element===root&&['ui-app','ui-config'].includes(issue.name))};
 }

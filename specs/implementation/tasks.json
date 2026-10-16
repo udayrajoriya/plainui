@@ -1136,7 +1136,8 @@
       ],
       "stepCount": 6,
       "acceptance": "`component.forward-definition`, `component.duplicate`, `component.ui-prefix`, `component.custom-element-collision`, `component.bad-schema`, `component.immutable`, `component.other-root-same-name` pass.",
-      "status": "pending"
+      "status": "completed",
+      "evidence": "../../evidence/tasks/T047.md"
     },
     {
       "id": "T048",

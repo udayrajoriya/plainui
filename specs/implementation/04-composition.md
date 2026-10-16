@@ -4,6 +4,8 @@ Component lexical scope, DOM ownership, and navigation lifetime are separate con
 
 ## T047 Discover and validate inline component definitions
 
+**Status:** completed 16 October 2026. [Completion evidence](../../evidence/tasks/T047.md).
+
 **Depends on:** T016,T025. **Sources:** RFC §11; C10. **Files:** `packages/components/src/{registry,definition,discover}.ts`.
 
 1. Before instance activation, scan owned declaration positions for native template[ui-component], including declarations appearing after instances. Do not discover definitions inside uninstantiated route/loop/conditional bodies as new global registries.

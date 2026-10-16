@@ -24,7 +24,7 @@ import {KeyedList} from './structure/keyed-list.js';
 import type {Owner} from './ownership/owner.js';
 import {RootObserver} from './compiler/observe.js';
 import {ExtensionRegistry} from './registry.js';
-import type {RuntimeServices,ResourceRoot,MountedResource,MountedAction} from './integration.js';
+import type {RuntimeServices,ResourceRoot,MountedResource,MountedAction,ComponentRoot} from './integration.js';
 import {registerRef,lookupRef} from './scope/refs.js';
 import {parseCommands} from './commands/parse.js';
 import {attachEventHandler,parseEventDirective} from './commands/handler.js';
@@ -53,6 +53,7 @@ export class App implements PlainUIApp {
   status:AppStatus='created';readonly ready:Promise<void>;private resolveReady!:()=>void;private rejectReady!:(reason:unknown)=>void;
   private root:Element|null=null;private name='';private registry:MountRegistry|null=null;private tree:OwnerTree|null=null;private scheduler:Scheduler|null=null;private scope:Scope|null=null;private state:StateStore|null=null;private bus:DiagnosticBus|null=null;private observer:RootObserver|null=null;private listeners=new Set<DiagnosticListener>();private sessionEpoch=0;private activeEventHandlers=0;private activeImports=0;
   private resourceRoot:ResourceRoot|null=null;private readonly mountedResources=new Set<MountedResource>();
+  private componentRoot:ComponentRoot|null=null;
   private readonly mountedActions=new Set<MountedAction>();
   readonly imports=new Map<string,DocumentFragment>();
   private readonly scopeFactory=new ScopeFactory();private readonly stores=new WeakMap<Scope,StateStore>();private readonly derivedGraphs=new WeakMap<Scope,DerivedGraph>();private readonly compiledActions=new WeakMap<Element,unknown>();private readonly conditionalTemplates=new WeakSet<HTMLTemplateElement>();private readonly listTemplates=new WeakSet<HTMLTemplateElement>();private readonly itemScopes=new WeakMap<Owner,Scope>();private readonly lexicalParents=new WeakMap<Owner,Scope>();readonly planScopes=new WeakMap<Element,Scope>();readonly planOwners=new WeakMap<Element,Owner>();plans:readonly BindingPlan[]=[];
@@ -70,7 +71,7 @@ export class App implements PlainUIApp {
     try {this.options=resolveConfiguration(root,this.initialOptions);this.bus=new DiagnosticBus(name,this.options.debug);for(const listener of this.listeners)this.bus.subscribe(listener);
       this.tree=new OwnerTree(root,error=>this.diagnose(error));this.scheduler=new Scheduler(error=>this.diagnose(error));this.scope=this.scopeFactory.create('app',this.tree.root);this.state=new StateStore(this.scope);this.stores.set(this.scope,this.state);
       this.extensions.freeze();const compiled=compileTree(root);if(compiled.fatal)throw new PlainUIError('ROOT_INVALID');this.reportIssues(compiled);
-      this.plans=compiled.plans;this.compileDeclarations(compiled);this.setupPersistence(compiled.plans);this.setupDerived(compiled.plans);this.setupResources(compiled.plans);this.setupActions(compiled.plans);this.setupModels(compiled.plans);this.bindRefs(compiled.plans);this.setupConditionals([root]);this.setupLists([root]);this.bindValues(compiled.plans);this.bindEvents(compiled.plans);this.activateActions(compiled.plans);for(const resource of this.mountedResources)resource.activate();this.observe();const imports=this.loadImports(compiled);this.scheduler.afterFlush(this.tree.root,()=>{void imports.then(()=>{if(this.status!=='compiling')return;this.status='mounted';this.resolveReady();});});return this;
+      this.componentRoot=this.services?.components?.createRoot(root,error=>this.diagnose(error))??null;this.componentRoot?.discover();this.plans=compiled.plans;this.compileDeclarations(compiled);this.setupPersistence(compiled.plans);this.setupDerived(compiled.plans);this.setupResources(compiled.plans);this.setupActions(compiled.plans);this.setupModels(compiled.plans);this.bindRefs(compiled.plans);this.setupConditionals([root]);this.setupLists([root]);this.bindValues(compiled.plans);this.bindEvents(compiled.plans);this.activateActions(compiled.plans);for(const resource of this.mountedResources)resource.activate();this.observe();const imports=this.loadImports(compiled);this.scheduler.afterFlush(this.tree.root,()=>{void imports.then(()=>{if(this.status!=='compiling')return;this.componentRoot?.freeze();this.status='mounted';this.resolveReady();});});return this;
     }catch(error){this.status='failed';this.release();this.rejectReady(error);throw error;}
   }
   private reportIssues(result:CompileResult):void {for(const issue of result.issues){const ownerId=this.tree?.ownerOf(issue.element)?.id;this.bus?.emit(issue.code,{directive:issue.name,...(ownerId===undefined?{}:{ownerId})});}}
@@ -147,7 +148,7 @@ export class App implements PlainUIApp {
   });}
   private diagnose(error:unknown):void {this.bus?.emit(error instanceof PlainUIError?error.code:'COMMAND_ERROR');}
   unmount():void {if(this.status==='unmounted'||this.status==='unmounting')return;if(this.status==='compiling')this.rejectReady(new PlainUIError('OWNER_DISPOSED'));this.status='unmounting';this.release();this.status='unmounted';}
-  private release():void {this.observer?.disconnect();for(const action of this.mountedActions)action.dispose();this.mountedActions.clear();this.resourceRoot?.dispose();this.mountedResources.clear();this.scheduler?.dispose();this.tree?.dispose(this.tree.root);if(this.root)this.registry?.roots.delete(this.root);if(this.name)this.registry?.names.delete(this.name);this.bus?.clear();this.listeners.clear();}
+  private release():void {this.observer?.disconnect();for(const action of this.mountedActions)action.dispose();this.mountedActions.clear();this.resourceRoot?.dispose();this.mountedResources.clear();this.componentRoot?.dispose();this.componentRoot=null;this.scheduler?.dispose();this.tree?.dispose(this.tree.root);if(this.root)this.registry?.roots.delete(this.root);if(this.name)this.registry?.names.delete(this.name);this.bus?.clear();this.listeners.clear();}
   private live():void {if(!this.tree?.root.active||this.status==='unmounted'||this.status==='unmounting'||this.status==='failed')throw new PlainUIError('OWNER_DISPOSED');}
   private registration():void {if(this.status!=='created')throw new PlainUIError('REGISTRY_INVALID');}
   registerCommand(name:string,command:Command):this {this.registration();this.extensions.registerCommand(name,command);return this;}
@@ -165,4 +166,5 @@ export class App implements PlainUIApp {
   resetSession():void {this.live();this.sessionEpoch++;for(const action of this.mountedActions)action.resetSession();this.resourceRoot?.resetSession();}
   afterFlush(callback:()=>void):()=>void {if(!this.scheduler||!this.tree)throw new PlainUIError('OWNER_DISPOSED');return this.scheduler.afterFlush(this.tree.root,callback);}
 }
+
 

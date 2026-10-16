@@ -6,6 +6,8 @@ import {activateAction} from './action-runtime.js';
 import { FORMS_PACKAGE_STUB } from '../../forms/src/index.js';
 import {bindModel} from '../../forms/src/model/compile.js';
 import { COMPONENTS_PACKAGE_STUB } from '../../components/src/index.js';
+import {ComponentRegistry} from '../../components/src/registry.js';
+import {discoverInline} from '../../components/src/discover.js';
 import type { ActionService, DomService, RequestService, RuntimeServices } from '../../core/src/integration.js';
 import type { AppScaffold, OfficialModuleBridge } from '../../core/src/module-bridge.js';
 export type {PlainUIApp} from '../../core/src/public-api/app.js';
@@ -38,7 +40,7 @@ export function composeRuntimeServices(
   return Object.freeze({ request, dom, actions });
 }
 
-const scaffoldServices:RuntimeServices = Object.freeze({...composeRuntimeServices(unavailableRequest, unavailableDom, unavailableActions),resources:{createRoot:(id:string,options:ConstructorParameters<typeof DataResourceRoot>[1])=>new DataResourceRoot(id,options)},models:{bind:bindModel}});
+const scaffoldServices:RuntimeServices = Object.freeze({...composeRuntimeServices(unavailableRequest, unavailableDom, unavailableActions),resources:{createRoot:(id:string,options:ConstructorParameters<typeof DataResourceRoot>[1])=>new DataResourceRoot(id,options)},models:{bind:bindModel},components:{createRoot:(root:Element,diagnose:(error:unknown)=>void)=>{const registry=new ComponentRegistry(diagnose);return {discover:()=>discoverInline(root,registry),freeze:()=>registry.freeze(),dispose:()=>registry.dispose(),definition:(name:string)=>registry.get(name)};}}});
 
 export const bundledFoundationPackages = Object.freeze([
   'core',
@@ -60,3 +62,4 @@ export const PlainUI = Object.freeze({
 
 export { getModuleBridge };
 export type { AppScaffold, OfficialModuleBridge };
+
