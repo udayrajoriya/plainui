@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'">
+  <title>PlainUI router example</title>
+  <link rel="stylesheet" href="/dist/plainui.css">
+  <script defer src="/dist/plainui.js"></script>
+  <script defer src="/dist/plainui-router.js"></script>
+</head>
+<body>
+  <script id="router-config" type="application/json">{"router":{"mode":"hash","basePath":"/app"}}</script>
+  <main ui-app="router-example" ui-config="router-config">
+    <nav aria-label="Examples"><a ui-link href="#/app/products/42">Product</a> <a ui-link href="#/app/about">About</a></nav>
+    <div ui-outlet></div>
+    <template ui-route="/products/:id" ui-title="'Product ' + $route.params.id"><h1>Product</h1></template>
+    <template ui-route="/about" ui-title="'About'"><h1>About</h1></template>
+    <template ui-route="*" ui-title="'Not found'"><h1>Not found</h1></template>
+  </main>
+</body>
+</html>

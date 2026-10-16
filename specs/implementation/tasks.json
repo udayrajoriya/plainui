@@ -1442,7 +1442,8 @@
       ],
       "stepCount": 6,
       "acceptance": "both routing modes pass with actual navigation events and recorded host recipes; no document-global state leaks after root removal.",
-      "status": "pending"
+      "status": "completed",
+      "evidence": "../../evidence/tasks/T060.md"
     },
     {
       "id": "T061",

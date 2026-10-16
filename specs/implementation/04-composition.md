@@ -199,6 +199,8 @@ Component lexical scope, DOM ownership, and navigation lifetime are separate con
 
 ## T060 Validate hash and history mode end-to-end behavior
 
+**Status:** completed 16 October 2026. [Completion evidence](../../evidence/tasks/T060.md).
+
 **Depends on:** T059. **Sources:** RFC §§10,18. **Files:** `tests/browser/router.spec.ts`, `examples/csp/router.html`, `docs/router-hosting.md`.
 
 1. Run identical route fixtures in history and hash modes, including basePath `/app`, query arrays, inner hash anchors, fallback, Unicode, encoded slash, and malformed encoding.
