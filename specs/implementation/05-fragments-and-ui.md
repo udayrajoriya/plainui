@@ -80,6 +80,8 @@ The sanitizer is mandatory for every fragment response, including same-origin re
 
 ## T067 Preserve focus and enforce fragment ownership boundaries
 
+**Status:** completed 16 October 2026. [Completion evidence](../../evidence/tasks/T067.md).
+
 **Depends on:** T059,T066. **Sources:** RFC §12. **Files:** `fragments/src/focus.ts`, `tests/integration/fragment-ownership.spec.ts`.
 
 1. Capture active element before commit. If it survives connected and inside permitted ownership, preserve it without focus calls.

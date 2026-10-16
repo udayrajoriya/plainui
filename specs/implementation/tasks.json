@@ -1613,7 +1613,9 @@
       ],
       "stepCount": 6,
       "acceptance": "`fragment.focus-survives`, `fragment.focus-replaced`, `fragment.router-overlap`, `fragment.action-ancestor`, `fragment.sibling-cleanup`, `fragment.no-late-focus` pass.",
-      "status": "pending"
+      "status": "completed",
+      "completedOn": "2026-10-16",
+      "evidence": "evidence/tasks/T067.md"
     },
     {
       "id": "T068",
