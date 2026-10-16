@@ -1,1 +1,23 @@
-{"name":"@plainui/internal-runtime","version":"0.0.0","private":true,"type":"module","engines":{"node":">=24.21.0 <25"}}
+{
+  "name": "plainui",
+  "version": "1.0.0",
+  "description": "A declarative UI framework for progressively enhanced HTML",
+  "type": "module",
+  "sideEffects": ["./plainui.js", "./plainui-*.js", "./plainui.css"],
+  "exports": {
+    ".": { "types": "./plainui.d.mts", "import": "./plainui.mjs", "default": "./plainui.mjs" },
+    "./router": { "types": "./plainui-router.d.mts", "import": "./plainui-router.mjs", "default": "./plainui-router.mjs" },
+    "./fragments": { "types": "./plainui-fragments.d.mts", "import": "./plainui-fragments.mjs", "default": "./plainui-fragments.mjs" },
+    "./ui": { "types": "./plainui-ui.d.mts", "import": "./plainui-ui.mjs", "default": "./plainui-ui.mjs" },
+    "./styles.css": "./plainui.css",
+    "./schema": "./schema.json",
+    "./plainui.js": "./plainui.js",
+    "./plainui-router.js": "./plainui-router.js",
+    "./plainui-fragments.js": "./plainui-fragments.js",
+    "./plainui-ui.js": "./plainui-ui.js",
+    "./integrity-manifest.json": "./integrity-manifest.json",
+    "./package.json": "./package.json"
+  },
+  "files": ["plainui*", "schema.json", "integrity-manifest.json", "THIRD_PARTY_NOTICES.txt", "types"],
+  "engines": { "node": ">=20" }
+}

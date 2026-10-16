@@ -1896,7 +1896,7 @@
       ],
       "stepCount": 6,
       "acceptance": "`package.exports`, `package.tarball`, `package.integrity`, `package.classic-esm-parity`, `package.zero-build`, `package.no-network-dependency`, `package.types` pass.",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "T080",

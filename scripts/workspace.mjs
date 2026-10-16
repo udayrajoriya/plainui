@@ -58,6 +58,10 @@ if (task in deferred) {
   runNode(join(root, 'scripts', 'check-boundaries.mjs'));
   if (process.exitCode === 0) runNode(join(root, 'scripts', 'build.mjs'));
   if (process.exitCode === 0) runNode(join(root, 'scripts', 'check-build.mjs'));
+} else if (task === 'test:package') {
+  runNode(join(root, 'scripts', 'package.mjs'));
+  if (process.exitCode === 0) runNode(packageBin('vitest', 'vitest'), ['run', 'tests/integration/package.spec.ts']);
+  if (process.exitCode === 0) runNode(packageBin('@playwright/test', 'playwright'), ['test', 'tests/browser/package.spec.ts']);
 } else if (task === 'check:boundaries') {
   runNode(join(root, 'scripts', 'check-boundaries.mjs'));
 } else if (task === 'check:generated') {

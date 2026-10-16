@@ -1,1 +1,10 @@
-{"name":"@plainui/internal-tooling","version":"0.0.0","private":true,"type":"module","engines":{"node":">=24.21.0 <25"}}
+{
+  "name": "@plainui/cli",
+  "version": "1.0.0",
+  "description": "Static validation and build tooling for PlainUI",
+  "type": "module",
+  "bin": { "plainui": "./plainui-cli.mjs" },
+  "exports": { ".": "./plainui-cli.mjs", "./package.json": "./package.json" },
+  "files": ["plainui-cli.mjs", "plainui-cli.mjs.map", "THIRD_PARTY_NOTICES.txt"],
+  "engines": { "node": ">=20" }
+}

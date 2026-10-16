@@ -50,7 +50,7 @@ async function buildVariant(directory, debug) {
         platform: 'browser',
         target: 'es2022',
         minify: !debug,
-        sourcemap: 'external',
+        sourcemap: 'linked',
         metafile: true,
         logLevel: 'silent',
         define: { __PLAINUI_DEBUG__: String(debug) },
@@ -72,7 +72,7 @@ async function buildVariant(directory, debug) {
     outfile: cssFile,
     bundle: true,
     minify: !debug,
-    sourcemap: 'external',
+    sourcemap: 'linked',
     metafile: true,
     logLevel: 'silent',
   });
@@ -98,7 +98,7 @@ if (declarations.error) throw declarations.error;
 if (declarations.status !== 0) throw new Error('TypeScript declaration build failed');
 
 const declarationsByEntry = {
-  'plainui.d.ts': "export { PlainUI, getModuleBridge } from './types/packages/runtime/src/esm.js';\nexport type { AppScaffold, OfficialModuleBridge } from './types/packages/runtime/src/esm.js';\n",
+  'plainui.d.ts': "export * from './types/packages/runtime/src/esm.js';\n",
   ...Object.fromEntries(modules.map((name) => [
     `plainui-${name}.d.ts`,
     `export { install${name === 'ui' ? 'UI' : name[0].toUpperCase() + name.slice(1)} } from './types/packages/${name}/src/entry-esm.js';\n`,
@@ -119,6 +119,6 @@ await writeFile(join(dist, 'build-manifest.json'), `${JSON.stringify({
   dev: development,
 }, null, 2)}\n`);
 
-await build({entryPoints:[join(root,'packages/tooling/src/bin.ts')],outfile:join(dist,'plainui-cli.mjs'),bundle:true,format:'esm',platform:'node',target:'node24',minify:true,logLevel:'silent'});
+await build({entryPoints:[join(root,'packages/tooling/src/bin.ts')],outfile:join(dist,'plainui-cli.mjs'),bundle:true,format:'esm',platform:'node',target:'node24',minify:true,sourcemap:'linked',logLevel:'silent'});
 
 console.log(`Built ${Object.keys(release).length} production and ${Object.keys(development).length} development entries.`);
