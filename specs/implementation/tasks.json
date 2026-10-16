@@ -1208,7 +1208,8 @@
       ],
       "stepCount": 6,
       "acceptance": "`slot.caller-vs-component`, `slot.named-order`, `slot.fallback`, `slot.unmatched`, `slot.duplicate-placeholder`, `slot.no-double-mount`, `slot.dispose-with-host` pass.",
-      "status": "pending"
+      "status": "completed",
+      "evidence": "../../evidence/tasks/T050.md"
     },
     {
       "id": "T051",

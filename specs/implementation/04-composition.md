@@ -49,6 +49,8 @@ Component lexical scope, DOM ownership, and navigation lifetime are separate con
 
 ## T050 Implement slot projection with caller scopes
 
+**Status:** completed 16 October 2026. [Completion evidence](../../evidence/tasks/T050.md).
+
 **Depends on:** T012,T049. **Sources:** RFC §§4.2,11; Design §10. **Files:** `components/src/slots/{capture,assign,project}.ts`.
 
 1. Capture host child nodes before clearing its render region; associate each with caller lexical scope and original declaration source.
