@@ -139,6 +139,8 @@ Component lexical scope, DOM ownership, and navigation lifetime are separate con
 
 ## T056 Implement guard preparation and cancellation
 
+**Status:** completed 16 October 2026. [Completion evidence](../../evidence/tasks/T056.md).
+
 **Depends on:** T024,T055. **Sources:** RFC §10; Design §11. **Files:** `router/src/navigation/{prepare,guards,transaction}.ts`.
 
 1. Allocate navigation generation and abort previous pending navigation when a new eligible request arrives; snapshot current committed route as from.

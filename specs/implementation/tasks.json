@@ -1351,7 +1351,8 @@
       ],
       "stepCount": 6,
       "acceptance": "`guard.sync-false`, `guard.async-false`, `guard.reject`, `guard.order`, `guard.latest-wins`, `guard.unmount`, `guard.no-dom-before-commit` pass.",
-      "status": "pending"
+      "status": "completed",
+      "evidence": "../../evidence/tasks/T056.md"
     },
     {
       "id": "T057",
