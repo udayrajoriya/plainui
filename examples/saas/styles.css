@@ -1,0 +1,1 @@
+body{font:16px/1.5 system-ui;margin:auto;max-width:70rem;padding:1rem}header{display:flex;justify-content:space-between}label,input,textarea{display:block}input,textarea{margin-block-end:.5rem;min-width:20rem}[role=tab][aria-selected=true]{font-weight:700}dialog{max-width:28rem}

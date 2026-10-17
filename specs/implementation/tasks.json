@@ -2036,7 +2036,7 @@
       ],
       "stepCount": 6,
       "acceptance": "login/detail/edit/paginate/guard/logout scenario passes; independent invalidation request counts match; old session delayed response is ignored; widget/dialog cleanup passes across routes for both backends.",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "T086",
