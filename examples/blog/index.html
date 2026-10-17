@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="{{SERVER_DESCRIPTION}}">
+  <meta name="plainui-demo-adapter" content="{{SERVER_ADAPTER}}">
+  <title>{{SERVER_TITLE}}</title>
+  <link rel="stylesheet" href="/dist/plainui.css">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header><a href="/">PlainUI Blog</a></header>
+  <section id="server-content">
+    <form action="/" method="get"><label for="server-query">Search articles</label><input id="server-query" name="q"><button>Search</button></form>
+    <!--SERVER_CONTENT-->
+  </section>
+  <main ui-app="blog" ui-state='{"query":"","selectedId":"a1"}' hidden>
+    <template ui-import="/components/article-card.html"></template>
+    <div ui-outlet></div>
+    <template ui-route="/" ui-title="'PlainUI Blog'">
+      <h1 tabindex="-1">PlainUI Blog</h1>
+      <form action="/" method="get" role="search">
+        <label for="query">Search articles</label>
+        <input id="query" name="q" type="search" ui-model="query" autocomplete="off">
+        <button ui-on:click.prevent="searchArticles()">Search</button>
+      </form>
+      <template ui-data="articles" ui-get="/api/articles" ui-query="{'q': query}" ui-adapter="demo"></template>
+      <p aria-live="polite" ui-show="articles.loading">Loading articles…</p>
+      <section role="alert" ui-show="articles.status === 'error'"><p>Articles could not be loaded.</p><button type="button" ui-on:click="retryArticles()">Try again</button></section>
+      <p ui-show="articles.status === 'success' &amp;&amp; articles.data.total === 0">No articles match this search.</p>
+      <div ui-show="articles.status === 'success'">
+        <template ui-for="article in articles.data.items" ui-key="article.id">
+          <article-card ui-prop-article="article"><a slot="title" ui-href="'/articles/' + article.id" ui-text="article.title" ui-link ui-on:click="selectArticle(article.id)"></a><p slot="summary" ui-text="article.summary"></p></article-card>
+        </template>
+      </div>
+    </template>
+    <template ui-route="/articles/:id" ui-title="$route.params.id + ' · PlainUI Blog'">
+      <p><a href="/" ui-link>Back to articles</a></p>
+      <h1 tabindex="-1">Article</h1>
+      <template ui-data="article" ui-get="/api/articles/{selectedId}" ui-adapter="demo"></template>
+      <p aria-live="polite" ui-show="article.loading">Loading article…</p>
+      <section role="alert" ui-show="article.status === 'error'"><p>Article could not be loaded.</p><button type="button" ui-on:click="retryArticle()">Try again</button></section>
+      <div ui-show="article.status === 'success'">
+        <h2 ui-text="article.data.title"></h2>
+        <p ui-text="article.data.summary"></p>
+        <button type="button" ui-get="/fragments/articles/{selectedId}?attack=1" ui-response="html" ui-target="articleBody" ui-swap="inner">Load article body</button>
+        <section ui-ref="articleBody" aria-live="polite"></section>
+      </div>
+    </template>
+    <template ui-route="*" ui-title="'Article not found · PlainUI Blog'"><h1 tabindex="-1">Article not found</h1><p><a href="/" ui-link>Back to articles</a></p></template>
+  </main>
+  <script type="module" src="/app.mjs"></script>
+</body>
+</html>

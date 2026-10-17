@@ -6,7 +6,7 @@ import {evaluate} from './expression/evaluate.js';
 
 export {PlainUIError,parseExpression,evaluate};
 export type {ResolvedOptions} from './config.js';
-export type {ModuleRuntime} from './integration.js';
+export type {ModuleRuntime,FragmentActionService} from './integration.js';
 export type {RouteRecord} from './public-api/types.js';
 export type {BehaviorFactory,ReadonlyJson} from './public-api/types.js';
 

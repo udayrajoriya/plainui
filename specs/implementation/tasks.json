@@ -1987,7 +1987,7 @@
       ],
       "stepCount": 6,
       "acceptance": "keyboard search/detail/back flow passes; JS-disabled article is readable; API failure/empty/fragment attack cases are visible/safe; both backends run unchanged component sources.",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "T084",

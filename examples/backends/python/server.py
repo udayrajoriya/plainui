@@ -83,7 +83,8 @@ class Handler(BaseHTTPRequestHandler):
             if match and method=='GET':
                 identifier=unquote(match.group(1));article=next((entry for entry in STATE.data['articles'] if entry['id']==identifier),None)
                 if not article:return self.send_error_json(404,'NOT_FOUND','Record not found')
-                return self.send_html(f'<article><h1>{html.escape(article["title"])}</h1><p>{html.escape(STATE.data["articleBodies"][identifier])}</p></article>')
+                attack='<script>globalThis.fragmentAttack=true</script><style>body{display:none}</style><span ui-app="evil">blocked directive</span>' if parse_qs(parts.query).get('attack')==['1'] else ''
+                return self.send_html(f'<article><h1>{html.escape(article["title"])}</h1><p>{html.escape(STATE.data["articleBodies"][identifier])}</p>{attack}</article>')
             if path=='/api/products' and method=='GET':return self.send_json(200,page(STATE.data['products'],query,'name'))
             match=re.fullmatch(r'/api/products/([^/]+)',path)
             if match and method=='GET':
@@ -187,13 +188,29 @@ class Handler(BaseHTTPRequestHandler):
         payload=text.encode();self.send_response(200);self.headers_common('text/html; charset=utf-8');self.send_header('content-length',str(len(payload)));self.end_headers();self.wfile.write(payload)
     def static(self,path,method,item):
         relative=unquote(path).lstrip('/');candidate=(self.server.frontend/relative).resolve()
-        try:candidate.relative_to(self.server.frontend)
-        except ValueError:return self.send_not_found()
+        if relative.startswith('dist/'):
+            candidate=(REPO/'dist'/relative[5:]).resolve()
+            try:candidate.relative_to(REPO/'dist')
+            except ValueError:return self.send_not_found()
+        else:
+            try:candidate.relative_to(self.server.frontend)
+            except ValueError:return self.send_not_found()
         if method=='GET' and candidate.is_file():
             payload=candidate.read_bytes();content={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8','.svg':'image/svg+xml'}.get(candidate.suffix,'application/octet-stream');self.send_response(200);self.headers_common(content);self.send_header('content-length',str(len(payload)));self.end_headers();self.wfile.write(payload);return
         if method=='GET' and not Path(relative).suffix and (self.server.frontend/'index.html').is_file():
-            text=(self.server.frontend/'index.html').read_text('utf-8').replace('</head>',f'<meta name="csrf-token" content="{html.escape(item["csrf"])}"></head>');return self.send_html(text)
+            text=(self.server.frontend/'index.html').read_text('utf-8')
+            if self.server.frontend.name=='blog':text=self.blog_document(text,urlsplit(self.path))
+            text=text.replace('</head>',f'<meta name="csrf-token" content="{html.escape(item["csrf"])}"></head>');return self.send_html(text)
         return self.send_not_found()
+    def blog_document(self,template,url):
+        title='PlainUI Blog';description='A progressively enhanced PlainUI reference blog';match=re.fullmatch(r'/articles/([^/]+)/?',url.path)
+        if match:
+            identifier=unquote(match.group(1));article=next((value for value in STATE.data['articles'] if value['id']==identifier),None)
+            if article:title=f'{article["title"]} · PlainUI Blog';description=article['summary'];content=f'<article data-server-article><h1>{html.escape(article["title"])}</h1><p>{html.escape(STATE.data["articleBodies"][identifier])}</p><p><a href="/">Back to articles</a></p></article>'
+            else:title='Article not found · PlainUI Blog';content='<h1>Article not found</h1><p><a href="/">Back to articles</a></p>'
+        else:
+            query=parse_qs(url.query).get('q',[''])[0].lower();articles=[article for article in STATE.data['articles'] if not query or query in article['title'].lower()];content='<h1>PlainUI Blog</h1>'+('<ul>'+''.join(f'<li><a href="/articles/{article["id"]}">{html.escape(article["title"])}</a><p>{html.escape(article["summary"])}</p></li>' for article in articles)+'</ul>' if articles else '<p>No articles match this search.</p>')
+        return template.replace('{{SERVER_TITLE}}',html.escape(title)).replace('{{SERVER_DESCRIPTION}}',html.escape(description)).replace('<!--SERVER_CONTENT-->',content).replace('{{SERVER_ADAPTER}}','alternate')
     def send_not_found(self):self.send_response(404);self.headers_common();self.end_headers()
 
 def main():
