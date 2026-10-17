@@ -1,0 +1,1 @@
+{"modules":["data","forms","router","ui"],"registrations":{"commands":["completeLogin","selectProject","previousPage","nextPage","markDirty","guardLeave","setTab","editConfirmed","logout"],"behaviors":["manualTabs","metricChart"],"adapters":[{"name":"demo","version":"1"}]},"assetRoot":".","assets":["app.mjs","styles.css"]}

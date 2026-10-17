@@ -9,7 +9,6 @@ const require = createRequire(import.meta.url);
 const task = process.argv[2];
 const deferred = {
   'test:security': 'T090',
-  'validate:examples': 'T087',
   'check:size': 'T094',
   bench: 'T094',
   'check:release': 'T097',
@@ -58,6 +57,9 @@ if (task in deferred) {
   runNode(join(root, 'scripts', 'check-boundaries.mjs'));
   if (process.exitCode === 0) runNode(join(root, 'scripts', 'build.mjs'));
   if (process.exitCode === 0) runNode(join(root, 'scripts', 'check-build.mjs'));
+} else if (task === 'validate:examples') {
+  runNode(join(root, 'scripts', 'build.mjs'));
+  if (process.exitCode === 0) runNode(join(root, 'scripts', 'validate-examples.mjs'));
 } else if (task === 'test:package') {
   runNode(join(root, 'scripts', 'package.mjs'));
   if (process.exitCode === 0) runNode(packageBin('vitest', 'vitest'), ['run', 'tests/integration/package.spec.ts']);

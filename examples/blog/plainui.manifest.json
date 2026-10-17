@@ -1,0 +1,1 @@
+{"modules":["data","forms","components","router","fragments"],"registrations":{"commands":["retryArticles","retryArticle","searchArticles","selectArticle"],"adapters":[{"name":"demo","version":"1"}]},"assetRoot":".","assets":["app.mjs","styles.css"]}

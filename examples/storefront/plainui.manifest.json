@@ -1,0 +1,1 @@
+{"modules":["data","forms","components","fragments","ui"],"registrations":{"commands":["addToCart","removeFromCart","changeQuantity","previousPage","nextPage","confirmOrder"],"formatters":["cartTotal"],"adapters":[{"name":"demo","version":"1"}]},"assetRoot":".","assets":["app.mjs","styles.css"]}

@@ -1,0 +1,1 @@
+{"modules":["data","ui"],"registrations":{"commands":["renderChart"],"behaviors":["chart"]},"assetRoot":".","assets":["chart.js"]}
