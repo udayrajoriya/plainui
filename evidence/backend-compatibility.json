@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-17",
+  "commit": null,
+  "runtimes": {
+    "node": "v20.13.1",
+    "python": "3.11.9"
+  },
+  "backends": [
+    {
+      "name": "node-demo",
+      "adapter": "identity",
+      "adapterVersion": "1"
+    },
+    {
+      "name": "python-demo",
+      "adapter": "alternate",
+      "adapterVersion": "1"
+    }
+  ],
+  "frontendHashes": {
+    "examples/blog/app.mjs": "0393ebda32ef0febd6cddb039c6fc470a368ec7bf29f63f31c925081559dad63",
+    "examples/blog/components/article-card.html": "826a13782cb1ed91d741741c67536df12be8adcb881e5bb4829a236229528be4",
+    "examples/blog/index.html": "76fc13d3801411280f543c2737cae36f82c1b54b218604515a5dd5d06568dfd7",
+    "examples/saas/app.mjs": "ea1cd22cdb9c280705ca8f1ec7f69a1d3db5e32273f9c9aeb635915fb4e37252",
+    "examples/saas/index.html": "0c54f97070b9f390cf9921797125c2e5d38e3dec2525421958d8d3c38a3a85c1",
+    "examples/storefront/app.mjs": "30f40913b7e4909c3acdb12e7df2ef04f06e7e33379514f85c637fea2d1e4dcc",
+    "examples/storefront/components/product-card.html": "f3f95487a351db82eb297ecee79f1fd3f0f83adb0feb7aeb8a8d9c3935789211",
+    "examples/storefront/index.html": "fcdc4c11425cc04d433937788bc788cf2d5dc76d303336a67e2123a9b909f446"
+  },
+  "verification": {
+    "contractSuite": "passed",
+    "paritySuite": "passed",
+    "browserMatrix": {
+      "engines": [
+        "chromium",
+        "firefox",
+        "webkit"
+      ],
+      "tests": 30,
+      "status": "passed"
+    },
+    "fragmentSanitization": "passed by blog and storefront browser flows",
+    "multipart": "passed by backend parity integration"
+  },
+  "unchangedFrontend": true,
+  "knownDemoLimitations": [
+    "In-memory sample data",
+    "Test controls require --test-mode",
+    "Session and CSRF values are demonstration credentials only"
+  ]
+}
