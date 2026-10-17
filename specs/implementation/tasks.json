@@ -14,13 +14,13 @@
       "implementationSteps": [
         "Record SHA-256 hashes, titles, revisions, and dates of both supplied DOCX files. Preserve their originals.",
         "Produce text/Markdown transcriptions preserving numbered sections, tables, examples, and normative keywords. Check every table row against the DOCX XML text; do not transcribe only headings.",
-        "Copy each C01\u2013C14 plan decision into a decision record with source clause, selected behavior, rationale, and affected fixture family.",
+        "Copy each C01–C14 plan decision into a decision record with source clause, selected behavior, rationale, and affected fixture family.",
         "Draft a revision containing every **Specification clarification**, especially ready/diagnostics APIs, outer-ref handling, enhanced-template allowance, one router per document, refresh coalescing, and toast options. Explicitly mark it proposed until accepted by the project owner; implementation can follow this plan as its proposed baseline, but release cannot claim an accepted RFC while that decision is pending.",
         "Record precedence: RFC public behavior, accepted clarification, design algorithm, then implementation detail. Resolve Design cache expiresAt and router ranking as C08/C11 specify.",
         "Create an exclusion list matching 00-plan. Attach no estimates or promised dates."
       ],
       "stepCount": 6,
-      "acceptance": "`baseline.sources` hashes both inputs; `baseline.decisions` has C01\u2013C14; `baseline.clarifications` lists every change to public semantics with no hidden TBD; no source document is overwritten.",
+      "acceptance": "`baseline.sources` hashes both inputs; `baseline.decisions` has C01–C14; `baseline.clarifications` lists every change to public semantics with no hidden TBD; no source document is overwritten.",
       "status": "completed",
       "completedDate": "2026-10-10",
       "evidence": "../../evidence/tasks/T001.md"
@@ -58,7 +58,7 @@
       "anchor": "t003-establish-package-boundaries-and-build-entry-points",
       "fileTargets": "`scripts/build.mjs`, `scripts/check-boundaries.mjs`, each package `src/index.ts`, runtime entry files.",
       "implementationSteps": [
-        "Define allowed imports: core\u2192schema; data/forms/components\u2192core/schema and declared service interfaces; runtime\u2192core/data/forms/components; each optional module\u2192schema/core's official module bridge only. Forms may consume a data action-service interface; it must not import controller implementation.",
+        "Define allowed imports: core→schema; data/forms/components→core/schema and declared service interfaces; runtime→core/data/forms/components; each optional module→schema/core's official module bridge only. Forms may consume a data action-service interface; it must not import controller implementation.",
         "Put shared request/DOM service interfaces in core integration types to break cycles. Inject implementations during runtime composition.",
         "Make build entry stubs for the required distribution filenames and CSS. Use classic IIFE for `.js`, ESM for `.mjs`, minification for release, source maps alongside output.",
         "Configure ESM optional modules to import the public runtime's module bridge by relative distribution path, never bundle another core. Classic modules consume the existing `window.PlainUI` bridge and fail clearly if core is absent.",
@@ -85,7 +85,7 @@
         "Enter every registry row, dynamic family, alias, enum, default, value kind, placement, companion requirement, conflict, and optional module from 07-coverage.",
         "Represent presence flags as empty-string-only, integer literals with exact min/max, and identifiers with the RFC regex. Do not parse attributes heuristically by looking at their contents.",
         "Add cross-attribute rules: one HTTP method; resource requires empty template/get; GET forbids body; loop requires key; if/for conflict; model conflicts value/checked; show conflicts hidden; text conflicts owned children/outlet/component/field-error.",
-        "Add configuration schema from RFC \u00a73.1 and C07, plus prop/behavior-specific schemas. Reject unknown keys recursively.",
+        "Add configuration schema from RFC §3.1 and C07, plus prop/behavior-specific schemas. Reject unknown keys recursively.",
         "Define stable diagnostic codes for every validation rule, mapping to severity and redaction-safe template. Retain all codes named in either source and the plan; do not use free-form exceptions as public diagnostic identifiers.",
         "Generate JSON schema/metadata and the directive reference table from this source. Include grammar/schema versions for fixture compatibility.",
         "Add a checker that enumerates registry rows and requires valid, invalid, lifecycle coverage IDs for each spelling/family."
@@ -284,8 +284,8 @@
       "stepCount": 6,
       "acceptance": "`owner.child-before-parent`, `owner.cleanup-connected`, `owner.double-dispose`, `owner.throwing-cleanup`, `owner.abort-reentrancy`, `range.move-focus`, `range.broken-anchor`, `owner.zero-after-unmount` pass.",
       "status": "completed",
-        "completedOn": "2026-10-14",
-        "evidence": "evidence/tasks/T012.md"
+      "completedOn": "2026-10-14",
+      "evidence": "evidence/tasks/T012.md"
     },
     {
       "id": "T013",
@@ -308,8 +308,8 @@
       "stepCount": 6,
       "acceptance": "`state.immediate-read`, `state.batch-once`, `state.parent-child-invalidation`, `state.sibling-noop`, `state.branch-dependencies`, `state.async-batch`, `state.disposed-write` pass.",
       "status": "completed",
-        "completedOn": "2026-10-14",
-        "evidence": "evidence/tasks/T013.md"
+      "completedOn": "2026-10-14",
+      "evidence": "evidence/tasks/T013.md"
     },
     {
       "id": "T014",
@@ -333,8 +333,8 @@
       "stepCount": 6,
       "acceptance": "`scheduler.phase-order`, `scheduler.sync-batch`, `derived.multi-hop`, `derived.cycle-partial`, `scheduler.disposal-mid-flush`, `scheduler.limit-100`, `scheduler.other-root`, `afterflush.cancel` pass.",
       "status": "completed",
-        "completedOn": "2026-10-14",
-        "evidence": "evidence/tasks/T014.md"
+      "completedOn": "2026-10-14",
+      "evidence": "evidence/tasks/T014.md"
     },
     {
       "id": "T015",
@@ -358,8 +358,8 @@
       "stepCount": 6,
       "acceptance": "`persist.local-session`, `persist.version`, `persist.corrupt`, `persist.quota`, `persist.coalesced`, `persist.key-collision`, `persist.reset-session` pass.",
       "status": "completed",
-        "completedOn": "2026-10-14",
-        "evidence": "evidence/tasks/T015.md"
+      "completedOn": "2026-10-14",
+      "evidence": "evidence/tasks/T015.md"
     },
     {
       "id": "T016",
@@ -383,8 +383,8 @@
       "stepCount": 6,
       "acceptance": "`compile.data-alias`, `compile.empty-flags`, `compile.unknown`, `compile.ignore`, `compile.conflicts`, `compile.local-fallback`, `compile.declarations-first` pass, with CLI-compatible structured rule IDs.",
       "status": "completed",
-        "completedOn": "2026-10-14",
-        "evidence": "evidence/tasks/T016.md"
+      "completedOn": "2026-10-14",
+      "evidence": "evidence/tasks/T016.md"
     },
     {
       "id": "T017",
@@ -410,8 +410,8 @@
       "stepCount": 6,
       "acceptance": "`boot.classic-auto`, `boot.esm-explicit`, `boot.nested`, `boot.duplicate-name`, `boot.double-distribution`, `boot.same-app-repeat`, `boot.ready`, `boot.unmount-during-import` pass.",
       "status": "completed",
-        "completedOn": "2026-10-14",
-        "evidence": "evidence/tasks/T017.md"
+      "completedOn": "2026-10-14",
+      "evidence": "evidence/tasks/T017.md"
     },
     {
       "id": "T018",
@@ -436,8 +436,8 @@
       "stepCount": 6,
       "acceptance": "`bind.text-xss`, `bind.array-requires-json`, `bind.boolean-aria`, `bind.url-schemes`, `bind.static-class`, `bind.noop-write`, `bind.show-preserves-state` pass.",
       "status": "completed",
-        "completedOn": "2026-10-14",
-        "evidence": "evidence/tasks/T018.md"
+      "completedOn": "2026-10-14",
+      "evidence": "evidence/tasks/T018.md"
     },
     {
       "id": "T019",
@@ -462,8 +462,8 @@
       "stepCount": 6,
       "acceptance": "`if.whitespace-chain`, `if.orphan`, `if.branch-order`, `if.cleanup-once`, `if.same-branch-state`, `if.no-match`, `if.limit-preserves` pass.",
       "status": "completed",
-        "completedOn": "2026-10-14",
-        "evidence": "evidence/tasks/T019.md"
+      "completedOn": "2026-10-14",
+      "evidence": "evidence/tasks/T019.md"
     },
     {
       "id": "T020",
@@ -489,8 +489,8 @@
       "stepCount": 6,
       "acceptance": "`for.typed-keys`, `for.duplicate-atomic`, `for.invalid-key`, `for.reorder-focus`, `for.item-replacement-state`, `for.remove-dispose`, `for.empty`, `for.alias-readonly` pass.",
       "status": "completed",
-        "completedOn": "2026-10-15",
-        "evidence": "evidence/tasks/T020.md"
+      "completedOn": "2026-10-15",
+      "evidence": "evidence/tasks/T020.md"
     },
     {
       "id": "T021",
@@ -516,8 +516,8 @@
       "stepCount": 6,
       "acceptance": "`observe.framework-no-duplicate`, `observe.external-add`, `observe.same-scope-move`, `observe.cross-scope`, `observe.remove-reinsert`, `observe.attribute-change`, `observe.ignore` pass.",
       "status": "completed",
-        "completedOn": "2026-10-15",
-        "evidence": "evidence/tasks/T021.md"
+      "completedOn": "2026-10-15",
+      "evidence": "evidence/tasks/T021.md"
     },
     {
       "id": "T022",
@@ -542,8 +542,8 @@
       "stepCount": 6,
       "acceptance": "`command.quoted-semicolon`, `command.nested-expression`, `event.self-order`, `event.once`, `event.no-dom-leak`, `event.lifecycle-modifier`, `event.request-conflict` pass.",
       "status": "completed",
-        "completedOn": "2026-10-15",
-        "evidence": "evidence/tasks/T022.md"
+      "completedOn": "2026-10-15",
+      "evidence": "evidence/tasks/T022.md"
     },
     {
       "id": "T023",
@@ -566,7 +566,7 @@
       ],
       "stepCount": 6,
       "acceptance": "`command.sequential`, `command.reads-prior-write`, `command.stop-on-failure`, `command.module-missing`, `command.focus-after-flush`, `command.async-disposal`, `command.emit-detail` pass.",
-        "status": "complete"
+      "status": "complete"
     },
     {
       "id": "T024",
@@ -590,7 +590,7 @@
       ],
       "stepCount": 6,
       "acceptance": "`api.types`, `api.js-usage`, `api.dead-scope`, `api.app-vs-local`, `api.readonly-snapshot`, `api.unregister-twice` pass.",
-        "status": "complete"
+      "status": "complete"
     },
     {
       "id": "T025",
@@ -616,7 +616,7 @@
       ],
       "stepCount": 6,
       "acceptance": "M1 evidence names exact build and test results; every foundation directive has valid/invalid/disposal coverage; no unresolved foundation blocker remains.",
-        "status": "complete"
+      "status": "complete"
     },
     {
       "id": "T026",
@@ -639,7 +639,7 @@
       ],
       "stepCount": 6,
       "acceptance": "`url.encoded-slash` id=`a/b` becomes `a%2Fb`; `url.null` suspends; `url.query-replace` `/x?q=old&q=older` plus `{q:['a','b']}` yields two new values; `url.authority`, `url.credentials`, `url.protocol`, and `url.relative-base` pass.",
-        "status": "complete"
+      "status": "complete"
     },
     {
       "id": "T027",
@@ -662,7 +662,7 @@
       ],
       "stepCount": 6,
       "acceptance": "`request.header-case`, `request.header-null`, `request.forbidden-header`, `request.prepare-origin`, `request.csrf-late-read`, `request.csrf-missing-no-fetch`, `request.cross-origin-no-token`, `request.multipart-boundary` pass.",
-        "status": "complete"
+      "status": "complete"
     },
     {
       "id": "T028",
@@ -684,7 +684,7 @@
       ],
       "stepCount": 6,
       "acceptance": "`adapter.envelope`, `adapter.validation-map`, `adapter.async-stale`, `adapter.non-json`, `adapter.invalid-error`, `adapter.throw`, `adapter.version-cache` pass with literal expected normalized objects.",
-        "status": "complete"
+      "status": "complete"
     },
     {
       "id": "T029",
@@ -707,7 +707,7 @@
       ],
       "stepCount": 7,
       "acceptance": "`transport.empty-204`, `transport.empty-200`, `transport.whitespace-json`, `transport.plus-json`, `transport.wrong-type`, `transport.redirect-no-follow`, `transport.body-once`, `transport.abort-vs-timeout` pass.",
-        "status": "complete"
+      "status": "complete"
     },
     {
       "id": "T030",
@@ -719,7 +719,7 @@
       "anchor": "t030-implement-attempt-retries-and-cancellation",
       "fileTargets": "`data/src/transport/retry.ts`.",
       "implementationSteps": [
-        "Accept retry count 0\u20133 for GET; reject retry on mutation directives at validation. Attempts total `1 + retry`.",
+        "Accept retry count 0–3 for GET; reject retry on mutation directives at validation. Attempts total `1 + retry`.",
         "Retry network failures, deadline timeouts, HTTP 502/503/504 only, with delays 500/1000/2000 ms. Do not inspect arbitrary adapter retryable=true to expand this list.",
         "Allocate a fresh controller/deadline for each attempt. Check operation signal/epoch/liveness before starting and after delay.",
         "Register backoff timer with operation owner; cancellation clears it immediately and resolves operation cancellation, not a timeout error.",
@@ -728,7 +728,7 @@
       ],
       "stepCount": 6,
       "acceptance": "`retry.timeline` fourth attempt starts after cumulative delays 3500 ms excluding attempt durations; `retry.no-400-500-parse`, `retry.cancel-backoff`, `retry.per-attempt-timeout`, `retry.mutation-once` pass.",
-        "status": "complete"
+      "status": "complete"
     },
     {
       "id": "T031",
@@ -749,7 +749,7 @@
         "Delete settled flights even if callbacks throw; isolate subscriber callbacks. Never let old invalidation generations populate settled cache."
       ],
       "stepCount": 6,
-      "acceptance": "`flight.shared-count` two resources\u2192one fetch; `flight.partial-cancel` first dispose leaves fetch alive; `flight.last-cancel` aborts; `flight.secret-header-distinct`, `flight.retry-policy-distinct`, `flight.old-generation`, `flight.callback-throws` pass.",
+      "acceptance": "`flight.shared-count` two resources→one fetch; `flight.partial-cancel` first dispose leaves fetch alive; `flight.last-cancel` aborts; `flight.secret-header-distinct`, `flight.retry-policy-distinct`, `flight.old-generation`, `flight.callback-throws` pass.",
       "status": "completed",
       "completedDate": "2026-10-15",
       "evidence": "../../evidence/tasks/T031.md"
@@ -866,7 +866,7 @@
         "Resolve ui-trigger only from supported DOM events; reject duplicate request and ui-on same-trigger binding on that element.",
         "Create optional named read-only action cell in nearest lexical scope plus `$action` context for action element descendants. Initialize pending=false,status=idle,data=null,error=null.",
         "Compile URL/query/headers/body once into AST plans; do not send anything during compilation. Register no listener if the action configuration is statically invalid.",
-        "Validate form encoding/defaults and lifecycle handlers before activation; delegate forms to T042\u2013T045.",
+        "Validate form encoding/defaults and lifecycle handlers before activation; delegate forms to T042–T045.",
         "HTML action options require fragments module/target/swap and cannot appear on a resource. JSON actions reject target/swap/enhance options."
       ],
       "stepCount": 6,
@@ -939,7 +939,7 @@
       "implementationSteps": [
         "Validate writable path, supported control type, and conflicting bind sinks. Reject file inputs and non-controls for ui-model.",
         "Text/textarea controls use input; maintain per-control composition flag, suppress writes from compositionstart through intermediate input, and commit once at compositionend.",
-        "Number/range use valueAsNumber and raw empty detection; empty\u2192null, finite valid\u2192number, invalid text\u2192retain model and set a framework-owned validity message. Clearing/reentering valid text clears only that message.",
+        "Number/range use valueAsNumber and raw empty detection; empty→null, finite valid→number, invalid text→retain model and set a framework-owned validity message. Clearing/reentering valid text clears only that message.",
         "Initial state writes to controls after persistence; later model updates change DOM only when normalized values differ. Preserve selection/caret and active IME text.",
         "Do not dispatch synthetic input/change from programmatic updates. Register native listeners and validity cleanup with owner.",
         "Type-changing bound input attributes must reselect the supported adapter safely; changes to/from file type are diagnosed and model binding disabled for that control."
@@ -1155,7 +1155,7 @@
         "Resolve top-level and nested import URLs using C10, enforce same origin and HTTP(S), remove URL hash, reject userinfo, and include canonical URL in root-local graph identity.",
         "Fetch once per root with same-origin credentials, redirect:error, app timeout, root signal, and text/html content type requirement. Share a promise for duplicate imports.",
         "Parse with the private inert template service proved in T007. Accept only definition templates, import templates, whitespace, and comments at top level. Reject scripts/styles at every depth, including inside definitions; do not execute/install them.",
-        "Traverse DFS with visiting/visited sets and report the full canonical pathname cycle without sensitive query values. A\u2192B\u2192A fails deterministically.",
+        "Traverse DFS with visiting/visited sets and report the full canonical pathname cycle without sensitive query values. A→B→A fails deterministically.",
         "Resolve dependencies before registering dependent definitions; reject duplicate definitions across files. Record failed URLs so repeated instances do not refetch endlessly.",
         "Bound each request by timeout and all work by root signal. Resolve app.ready after import graph settles, including localized failures; unrelated static bindings can render during loading."
       ],
@@ -2011,7 +2011,7 @@
       ],
       "stepCount": 6,
       "acceptance": "cart survives reload; reorder preserves item controls; tampered prices are ignored by server; duplicate submit sends one mutation; error values persist; summary sanitization and latest-target-wins pass on both backends.",
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "T085",
@@ -2283,7 +2283,7 @@
       "anchor": "t096-close-full-conformance-and-beta-gate",
       "fileTargets": "`scripts/check-release.mjs`, `evidence/milestones/M6.md`, `evidence/requirements.json`.",
       "implementationSteps": [
-        "Reconcile every RFC/design clause and C01\u2013C14 decision against 07-coverage and executable fixture IDs. Every directive family requires valid, invalid, lifecycle, and alias cases.",
+        "Reconcile every RFC/design clause and C01–C14 decision against 07-coverage and executable fixture IDs. Every directive family requires valid, invalid, lifecycle, and alias cases.",
         "Run all suites against minified classic and ESM production artifacts, not just source modules. Include parser property tests, seeded races, CLI parity, strict CSP, actual-browser matrix, and example compatibility.",
         "Verify all release evidence references the same candidate commit and locked dependencies; stale reports are not accepted without a documented unaffected-scope justification.",
         "Require contract clarifications accepted, no unresolved critical bugs, all required docs/examples delivered, measured budgets passed, and manual security/accessibility evidence present.",
@@ -2380,4 +2380,3 @@
     }
   ]
 }
-

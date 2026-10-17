@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="plainui-demo-adapter" content="{{SERVER_ADAPTER}}"><meta name="csrf-token" content="plainui-demo-csrf">
+  <title>PlainUI Storefront</title><link rel="stylesheet" href="/dist/plainui.css"><link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<main ui-app="storefront" ui-store='{"cart":[]}' ui-persist="local" ui-persist-key="storefront-cart-v1">
+  <template ui-import="/components/product-card.html"></template>
+  <div ui-state='{"filter":"","page":1,"draft":{"clientOrderId":"sample-order","email":"","address":""},"orderId":"o1"}'>
+  <h1>PlainUI Storefront</h1>
+  <section aria-labelledby="products-heading">
+    <h2 id="products-heading">Products</h2>
+    <label for="filter">Filter products</label><input id="filter" type="search" ui-model="filter"><button type="button" ui-on:click="refresh('products')">Apply filter</button>
+    <template ui-data="products" ui-get="/api/products" ui-query="{'q': filter, 'page': page}" ui-adapter="demo"></template>
+    <p aria-live="polite" ui-show="products.loading">Loading products…</p>
+    <section role="alert" ui-show="products.status === 'error'"><p>Products could not be loaded.</p><button type="button" ui-on:click="refresh('products')">Retry</button></section>
+    <p ui-show="products.status === 'success' &amp;&amp; products.data.total === 0">No products found.</p>
+    <p ui-show="products.stale">Product data may be stale.</p>
+    <div class="products" ui-show="products.status === 'success'">
+      <template ui-for="product in products.data.items" ui-key="product.id">
+        <product-card ui-prop-product="product"><span slot="name" ui-text="product.name"></span><span slot="price" ui-text="currency(product.priceCents / 100, product.currency)"></span><button slot="action" type="button" ui-on:click="addToCart(product.id)">Add to cart</button></product-card>
+      </template>
+    </div>
+    <p><button type="button" ui-on:click="previousPage()">Previous</button> <button type="button" ui-on:click="nextPage()">Next</button></p>
+  </section>
+  <section aria-labelledby="cart-heading">
+    <h2 id="cart-heading">Cart</h2><p ui-show="len(store.cart) === 0">Your cart is empty.</p>
+    <ul><template ui-for="line in store.cart" ui-key="line.productId"><li><span ui-text="line.productId"></span> <button type="button" ui-on:click="changeQuantity(line.productId, -1)" aria-label="Decrease quantity">−</button> <output ui-text="line.quantity"></output> <button type="button" ui-on:click="changeQuantity(line.productId, 1)" aria-label="Increase quantity">+</button> <button type="button" ui-on:click="removeFromCart(line.productId)">Remove</button></li></template></ul>
+    <template ui-derived="estimatedTotal" ui-value="cartTotal(store.cart, products.data.items)"></template><p>Estimated total: <strong ui-text="currency(estimatedTotal / 100, 'USD')"></strong>. Final price and stock are confirmed by the server.</p>
+  </section>
+  <section aria-labelledby="checkout-heading">
+    <h2 id="checkout-heading">Checkout</h2>
+    <form action="/api/orders" method="post" ui-ref="checkoutForm" ui-post="/api/orders" ui-action="checkout" ui-body="{'clientOrderId': draft.clientOrderId, 'email': draft.email, 'address': draft.address, 'items': store.cart, 'priceCents': 1}" ui-adapter="demo" ui-concurrency="drop" ui-on:success="confirmOrder($result.id)">
+      <label for="client-order">Client order ID</label><input id="client-order" name="clientOrderId" required ui-model="draft.clientOrderId"><span ui-field-error="clientOrderId"></span>
+      <label for="email">Email</label><input id="email" name="email" type="email" required ui-model="draft.email"><span ui-field-error="email"></span>
+      <label for="address">Address</label><textarea id="address" name="address" required ui-model="draft.address"></textarea><span ui-field-error="address"></span>
+      <span ui-field-error="items"></span>
+      <button>Place order</button><button type="button" ui-on:click="reset('checkoutForm')">Reset</button>
+      <p aria-live="polite" ui-show="checkout.pending">Submitting order…</p><p role="alert" ui-show="checkout.status === 'error'">The order was not confirmed. Correct the fields or reconcile before trying again.</p>
+    </form>
+    <form action="/api/orders/by-client-id/sample-order" method="get" ui-get="/api/orders/by-client-id/{draft.clientOrderId}" ui-action="reconcile" ui-adapter="demo" ui-encoding="form"><button>Check order status</button><p ui-show="reconcile.status === 'success'">The server has this order.</p></form>
+  </section>
+  <dialog ui-ref="confirmation"><h2>Order confirmed</h2><p>Server-authoritative total accepted.</p><form method="dialog"><button>Close</button></form></dialog>
+  <div ui-toasts></div><button type="button" ui-get="/fragments/orders/{orderId}?attack=1" ui-response="html" ui-target="summary" ui-swap="inner" ui-concurrency="replace">Load order summary</button><section ui-ref="summary" tabindex="-1" aria-live="polite"></section>
+  </div>
+</main>
+<script type="module" src="/app.mjs"></script>
+</body></html>

@@ -97,7 +97,8 @@ class Handler(BaseHTTPRequestHandler):
             if match and method=='GET':
                 order=next((entry for entry in STATE.data['orders'] if entry['id']==unquote(match.group(1))),None)
                 if not order:return self.send_error_json(404,'NOT_FOUND','Record not found')
-                return self.send_html(f'<section><h2>Order {html.escape(order["id"])}</h2><p>Total: {order["totalCents"]} {html.escape(order["currency"])}</p></section>')
+                attack='<script>globalThis.fragmentAttack=true</script><style>body{display:none}</style><span ui-app="evil">blocked directive</span>' if parse_qs(parts.query).get('attack')==['1'] else ''
+                return self.send_html(f'<section><h2>Order {html.escape(order["id"])}</h2><p>Total: {order["totalCents"]} {html.escape(order["currency"])}</p>{attack}</section>')
             if path=='/api/session' and method=='POST':return self.login(item)
             if path=='/api/session' and method=='GET':
                 user=self.user(item);return self.send_json(200,{'user':user}) if user else self.send_error_json(401,'UNAUTHORIZED','Sign in required')
@@ -200,6 +201,7 @@ class Handler(BaseHTTPRequestHandler):
         if method=='GET' and not Path(relative).suffix and (self.server.frontend/'index.html').is_file():
             text=(self.server.frontend/'index.html').read_text('utf-8')
             if self.server.frontend.name=='blog':text=self.blog_document(text,urlsplit(self.path))
+            text=text.replace('{{SERVER_ADAPTER}}','alternate')
             text=text.replace('</head>',f'<meta name="csrf-token" content="{html.escape(item["csrf"])}"></head>');return self.send_html(text)
         return self.send_not_found()
     def blog_document(self,template,url):
